@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/product_nav"
+    app:startDestination="@id/productList">
+
+    <fragment
+        android:id="@+id/productList"
+        android:name="com.example.votree.fragment.product.ProductList"
+        android:label="fragment_product_list"
+        tools:layout="@layout/fragment_product_list">
+        <action
+            android:id="@+id/action_productList_to_addNewProduct"
+            app:destination="@id/addNewProduct" />
+    </fragment>
+    <fragment
+        android:id="@+id/addNewProduct"
+        android:name="com.example.votree.fragment.product.AddNewProduct"
+        android:label="fragment_add_new_product"
+        tools:layout="@layout/fragment_add_new_product">
+        <action
+            android:id="@+id/action_addNewProduct_to_productList"
+            app:destination="@id/productList" />
+    </fragment>
+</navigation>
