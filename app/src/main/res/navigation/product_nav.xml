@@ -8,19 +8,34 @@
     <fragment
         android:id="@+id/productList"
         android:name="com.example.votree.fragment.product.ProductList"
-        android:label="fragment_product_list"
+        android:label="List"
         tools:layout="@layout/fragment_product_list">
         <action
             android:id="@+id/action_productList_to_addNewProduct"
             app:destination="@id/addNewProduct" />
+        <action
+            android:id="@+id/action_productList_to_productDetail"
+            app:destination="@id/productDetail" />
     </fragment>
     <fragment
         android:id="@+id/addNewProduct"
         android:name="com.example.votree.fragment.product.AddNewProduct"
-        android:label="fragment_add_new_product"
+        android:label="New Product"
         tools:layout="@layout/fragment_add_new_product">
         <action
             android:id="@+id/action_addNewProduct_to_productList"
             app:destination="@id/productList" />
+    </fragment>
+    <fragment
+        android:id="@+id/productDetail"
+        android:name="com.example.votree.fragment.product.ProductDetail"
+        android:label="Details"
+        tools:layout="@layout/fragment_product_detail">
+        <action
+            android:id="@+id/action_productDetail_to_productList"
+            app:destination="@id/productList" />
+        <argument
+            android:name="currentProduct"
+            app:argType="com.example.votree.data.product.Product" />
     </fragment>
 </navigation>
