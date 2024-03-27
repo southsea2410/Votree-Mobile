@@ -67,4 +67,10 @@
         <item>DESERT</item>
         <item>UNKNOWN</item>
     </string-array>
+
+    <string name="default_web_client_id">488648588931-8ch1qldukqfju8gj8846k8p8ckshmjf7.apps.googleusercontent.com</string>
+
+    <string name="facebook_app_id">1234</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">56789</string>
 </resources>

@@ -3,6 +3,7 @@ plugins {
     id("com.android.application") version "8.2.2" apply false
     id("org.jetbrains.kotlin.android") version "1.9.22" apply false
     id("com.google.gms.google-services") version "4.4.1" apply false
+    id("com.google.devtools.ksp") version "1.9.23-1.0.19" apply false
 }
 
 buildscript {
@@ -15,5 +16,6 @@ buildscript {
         val nav_version = "2.7.7"
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
         classpath("androidx.navigation:navigation-safe-args-generator:2.7.7")
+        classpath("com.google.gms:google-services:4.4.1")
     }
 }
