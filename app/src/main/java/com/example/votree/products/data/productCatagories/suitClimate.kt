@@ -1,4 +1,4 @@
-package com.example.votree.data.productCatagories
+package com.example.votree.products.data.productCatagories
 
 import androidx.room.TypeConverter
 
@@ -18,7 +18,8 @@ enum class SuitClimate {
     HUMID_CONTINENTAL,
     MONSOONAL,
     OCEANIC,
-    STEPPE
+    STEPPE,
+    UNKNOWN
 }
 
 class SuitClimateConverter {

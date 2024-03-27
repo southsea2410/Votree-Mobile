@@ -13,6 +13,7 @@
 
         <!-- Media -->
         <ImageView
+            android:id="@+id/productImage_iv"
             android:layout_width="match_parent"
             android:layout_height="194dp"
             android:contentDescription="Test"

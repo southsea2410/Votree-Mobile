@@ -5,4 +5,66 @@
     <string name="product_name">Product Name</string>
     <string name="short_description">Short Description</string>
     <string name="long_description">Description</string>
+
+    <string-array name="plant_types">
+        <item>FLOWERING_PLANTS</item>
+        <item>TREES</item>
+        <item>SHRUBS</item>
+        <item>FERNS</item>
+        <item>MOSSES</item>
+        <item>GRASSES</item>
+        <item>SUCCULENTS</item>
+        <item>CACTI</item>
+        <item>VINES</item>
+        <item>AQUATIC_PLANTS</item>
+        <item>BULBS</item>
+        <item>PALMS</item>
+        <item>CONIFERS</item>
+        <item>HERBS</item>
+        <item>PERENNIALS</item>
+        <item>UNKNOWN</item>
+    </string-array>
+
+    <string-array name="suit_climate">
+        <item>TROPICAL</item>
+        <item>TEMPERATE</item>
+        <item>ARID</item>
+        <item>SEMI_ARID</item>
+        <item>MEDITERRANEAN</item>
+        <item>SUBTROPICAL</item>
+        <item>POLAR</item>
+        <item>ALPINE</item>
+        <item>DESERT</item>
+        <item>MARITIME</item>
+        <item>CONTINENTAL</item>
+        <item>HUMID_SUBTROPICAL</item>
+        <item>HUMID_CONTINENTAL</item>
+        <item>MONSOONAL</item>
+        <item>OCEANIC</item>
+        <item>STEPPE</item>
+        <item>UNKNOWN</item>
+    </string-array>
+
+    <string-array name="suit_environment">
+        <item>INDOOR</item>
+        <item>OUTDOOR</item>
+        <item>SHADE</item>
+        <item>SUN</item>
+        <item>WATER</item>
+        <item>DRY</item>
+        <item>HUMID</item>
+        <item>WET</item>
+        <item>AQUATIC</item>
+        <item>TERRESTRIAL</item>
+        <item>SEMI_AQUATIC</item>
+        <item>ARID</item>
+        <item>MOUNTAINOUS</item>
+        <item>TROPICAL</item>
+        <item>TEMPERATE</item>
+        <item>SUBTROPICAL</item>
+        <item>ALPINE</item>
+        <item>MARITIME</item>
+        <item>DESERT</item>
+        <item>UNKNOWN</item>
+    </string-array>
 </resources>

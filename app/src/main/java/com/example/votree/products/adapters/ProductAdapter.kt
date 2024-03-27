@@ -1,13 +1,17 @@
-package com.example.votree.fragment.product
+package com.example.votree.products.adapters
+
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.votree.R
-import com.example.votree.data.product.Product
+import com.example.votree.products.fragments.ProductListDirections
+import com.example.votree.products.models.Product
 
 class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
@@ -20,6 +24,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
         var averageRate = itemView.findViewById<TextView>(R.id.productRate_tv)
         var quantityOfSold = itemView.findViewById<TextView>(R.id.productSold_tv)
         var productListLayout = itemView.findViewById<View>(R.id.productListLayout)
+        val productImage = itemView.findViewById<ImageView>(R.id.productImage_iv)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -40,6 +45,11 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
             holder.shortDescription.text = currentItem.shortDescription
             holder.averageRate.text = currentItem.averageRate.toString()
             holder.quantityOfSold.text = currentItem.quantitySold.toString()
+            Glide.with(this)
+                .load(currentItem.imageUrl)
+//                .placeholder(R.drawable.placeholder_image)
+//                .error(R.drawable.error_image)
+                .into(holder.productImage)
         }
 
         holder.productListLayout.setOnClickListener {

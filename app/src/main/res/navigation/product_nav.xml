@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/productList"
-        android:name="com.example.votree.fragment.product.ProductList"
+        android:name="com.example.votree.products.fragments.ProductList"
         android:label="List"
         tools:layout="@layout/fragment_product_list">
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/addNewProduct"
-        android:name="com.example.votree.fragment.product.AddNewProduct"
+        android:name="com.example.votree.products.fragments.AddNewProduct"
         android:label="New Product"
         tools:layout="@layout/fragment_add_new_product">
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/productDetail"
-        android:name="com.example.votree.fragment.product.ProductDetail"
+        android:name="com.example.votree.products.fragments.ProductDetail"
         android:label="Details"
         tools:layout="@layout/fragment_product_detail">
         <action
@@ -36,6 +36,6 @@
             app:destination="@id/productList" />
         <argument
             android:name="currentProduct"
-            app:argType="com.example.votree.data.product.Product" />
+            app:argType="com.example.votree.products.models.Product" />
     </fragment>
 </navigation>

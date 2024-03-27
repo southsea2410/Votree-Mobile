@@ -1,4 +1,4 @@
-package com.example.votree.data.productCatagories
+package com.example.votree.products.data.productCatagories
 
 import androidx.room.TypeConverter
 
@@ -21,7 +21,8 @@ enum class SuitEnvironment {
     SUBTROPICAL,
     ALPINE,
     MARITIME,
-    DESERT
+    DESERT,
+    UNKNOWN
 }
 
 class SuitEnvironmentConverter {

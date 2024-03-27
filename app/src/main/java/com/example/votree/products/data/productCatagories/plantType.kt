@@ -1,4 +1,4 @@
-package com.example.votree.data.productCatagories
+package com.example.votree.products.data.productCatagories
 
 import androidx.room.TypeConverter
 
@@ -17,7 +17,8 @@ enum class PlantType {
     PALMS,
     CONIFERS,
     HERBS,
-    PERENNIALS
+    PERENNIALS,
+    UNKNOWN
 }
 
 // Define a TypeConverter to convert PlantType enum to String and vice versa
