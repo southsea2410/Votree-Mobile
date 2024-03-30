@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "488648588931",
+    "project_id": "votree-mobile-app",
+    "storage_bucket": "votree-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488648588931:android:b91e14044871d27015e5b6",
+        "android_client_info": {
+          "package_name": "com.codingstuff.loginandsignup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "488648588931-masu4n29uk6q3g68rr36v68r9eduh98l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codingstuff.loginandsignup",
+            "certificate_hash": "ac1aad1ad7e46843ef5eecb997528f16df00b35c"
+          }
+        },
+        {
+          "client_id": "488648588931-8ch1qldukqfju8gj8846k8p8ckshmjf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmo55GO01WpRQCEplnbiBsGwn_a6hln7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "488648588931-8ch1qldukqfju8gj8846k8p8ckshmjf7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488648588931:android:de20ff482749ef8915e5b6",
+        "android_client_info": {
+          "package_name": "com.example.a02"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "488648588931-8ch1qldukqfju8gj8846k8p8ckshmjf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmo55GO01WpRQCEplnbiBsGwn_a6hln7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "488648588931-8ch1qldukqfju8gj8846k8p8ckshmjf7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488648588931:android:481117fc4ea6379615e5b6",
+        "android_client_info": {
+          "package_name": "com.example.votree"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "488648588931-8ch1qldukqfju8gj8846k8p8ckshmjf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmo55GO01WpRQCEplnbiBsGwn_a6hln7I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "488648588931-8ch1qldukqfju8gj8846k8p8ckshmjf7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

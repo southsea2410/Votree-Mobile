@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_navigation"
+    app:startDestination="@id/tipsFragment">
+
+    <fragment
+        android:id="@+id/tipsFragment"
+        android:name="com.example.votree.admin.list.TipsFragment"
+        android:label="fragment_tips"
+        tools:layout="@layout/fragment_tips" >
+        <action
+            android:id="@+id/action_tipsFragment_to_tipDetailFragment2"
+            app:destination="@id/tipDetailFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/tipDetailFragment2"
+        android:name="com.example.votree.admin.fragments.TipDetailFragment"
+        android:label="fragment_tip_detail"
+        tools:layout="@layout/fragment_tip_detail" >
+        <action
+            android:id="@+id/action_tipDetailFragment2_to_tipsFragment"
+            app:destination="@id/tipsFragment" />
+    </fragment>
+</navigation>
