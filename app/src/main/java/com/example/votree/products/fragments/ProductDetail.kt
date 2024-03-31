@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.example.votree.R
+import com.example.votree.products.view_models.CartViewModel
 
 class ProductDetail : Fragment() {
 
@@ -46,6 +47,14 @@ class ProductDetail : Fragment() {
             Log.d("ProductDetail", "Error loading image")
         }
 
+        var cartViewModel = CartViewModel()
+
+        val addToCartButton = view.findViewById<TextView>(R.id.addToCart_btn)
+        addToCartButton.setOnClickListener {
+            // Add product to cart
+            cartViewModel.addProductToCart(args.currentProduct.id, 1)
+        }
         return view
     }
+
 }

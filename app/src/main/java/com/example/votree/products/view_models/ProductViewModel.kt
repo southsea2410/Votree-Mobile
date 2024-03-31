@@ -40,6 +40,21 @@ class ProductViewModel : ViewModel() {
         }
     }
 
+    // Function to fetch a single product by its ID
+    fun getProductById(productId: String): LiveData<Product?> {
+        val productLiveData = MutableLiveData<Product?>()
+
+        productsCollection.document(productId).get().addOnSuccessListener { documentSnapshot ->
+            val product = documentSnapshot.toObject(Product::class.java)
+            productLiveData.value = product
+        }.addOnFailureListener { e ->
+            Log.e(TAG, "Error fetching product with ID: $productId", e)
+            productLiveData.value = null
+        }
+
+        return productLiveData
+    }
+
     companion object {
         private const val TAG = "ProductViewModel"
     }

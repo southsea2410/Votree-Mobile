@@ -37,5 +37,13 @@
         <argument
             android:name="currentProduct"
             app:argType="com.example.votree.products.models.Product" />
+        <action
+            android:id="@+id/action_productDetail_to_cartList"
+            app:destination="@id/cartList" />
     </fragment>
+    <fragment
+        android:id="@+id/cartList"
+        android:name="com.example.votree.products.fragments.CartList"
+        android:label="fragment_cart_list"
+        tools:layout="@layout/fragment_cart_list" />
 </navigation>

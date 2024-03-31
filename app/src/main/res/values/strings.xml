@@ -5,6 +5,7 @@
     <string name="product_name">Product Name</string>
     <string name="short_description">Short Description</string>
     <string name="long_description">Description</string>
+    <string name="price_format">$ %.2f</string>
 
     <string-array name="plant_types">
         <item>FLOWERING_PLANTS</item>
@@ -73,4 +74,5 @@
     <string name="facebook_app_id">1234</string>
     <string name="fb_login_protocol_scheme">fb1234</string>
     <string name="facebook_client_token">56789</string>
+    <string name="add_to_cart">Add to Cart</string>
 </resources>
