@@ -7,19 +7,26 @@ import com.google.firebase.auth.FirebaseAuth
 
 class AuthHandler(private val context: Context) {
 
-    private lateinit var firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth by lazy {
+        FirebaseAuth.getInstance()
+    }
 
-    fun checkAuthentication() {
-        // Initialize Firebase Auth
-        firebaseAuth = FirebaseAuth.getInstance()
+    val isUserAuthenticated: Boolean
+        get() = firebaseAuth.currentUser != null
 
-        // Check if user is signed in (non-null) and update UI accordingly
-        val currentUser = firebaseAuth.currentUser
-        if (currentUser == null) {
-            // User is not signed in, redirect to SignInActivity
-            val intent = Intent(context, SignInActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            context.startActivity(intent)
+    fun redirectToSignIn() {
+        // User is not signed in, redirect to SignInActivity
+        val intent = Intent(context, SignInActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        context.startActivity(intent)
+    }
+
+    fun storeUserIdInSharedPreferences() {
+        firebaseAuth.currentUser?.uid?.let { userId ->
+            val sharedPreferences = context.getSharedPreferences("user_info", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("uid", userId)
+            editor.apply()
         }
     }
 }

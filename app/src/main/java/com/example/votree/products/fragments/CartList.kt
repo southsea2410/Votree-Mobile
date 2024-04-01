@@ -12,7 +12,7 @@ import com.example.votree.products.adapters.CartAdapter
 import com.example.votree.products.view_models.CartViewModel
 import com.example.votree.products.view_models.ProductViewModel
 
-class CartListFragment : Fragment() {
+class CartList : Fragment() {
 
     private lateinit var viewModel: CartViewModel
     private lateinit var binding: FragmentCartListBinding
