@@ -2,11 +2,8 @@ package com.example.votree.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.firebase.Timestamp
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import java.util.Date
 
 @Serializable
 data class Tip (

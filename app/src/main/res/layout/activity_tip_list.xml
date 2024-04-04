@@ -1,301 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:pointerIcon="arrow"
+    android:layout_marginTop="0.5dp"
+    android:backgroundTint="#3B693A"
+    tools:openDrawer="start"
     tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:fitsSystemWindows="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
+        app:layout_scrollInterpolator="@android:anim/decelerate_interpolator"
+        app:liftOnScroll="true"
+        app:liftOnScrollTargetViewId="@+id/tipListRecycleView">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:menu="@menu/top_app_bar"
+            app:navigationIcon="@drawable/icon_menu"
+            app:navigationIconTint="@color/md_theme_primary"
+            app:title="@string/tips"
+            app:titleCentered="true" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="0.5dp"
+            android:background="@color/md_theme_primary_mediumContrast"
+            android:backgroundTint="@color/md_theme_primary_mediumContrast" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/topAppBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                app:title="@string/app_name"
-                app:menu="@menu/top_app_bar"
-                app:navigationIcon="@drawable/ic_close_24dp" />
-
-        </com.google.android.material.appbar.AppBarLayout>
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tipListRecycleView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="63dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
     </FrameLayout>
 
-<!--    <FrameLayout-->
-<!--        android:id="@+id/fragment_container"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent">-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--            xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--            xmlns:tools="http://schemas.android.com/tools"-->
-<!--            android:id="@+id/studentInformationLayout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            tools:context=".MainActivity">-->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="305dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#FFFFFF"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/header_menu"
+        app:itemIconTint="@color/md_theme_primary"
+        app:itemTextColor="@color/md_theme_primary"
+        tools:ignore="MissingConstraints" />
 
-<!--            <TextView-->
-<!--                android:id="@+id/chooseClassText"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:text="Tip Detail"-->
-<!--                android:textSize="34sp"-->
-<!--                android:textStyle="bold"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.5"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--            <Button-->
-<!--                android:id="@+id/saveButton"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:layout_marginBottom="10dp"-->
-<!--                android:backgroundTint="#0099FF"-->
-<!--                android:text="Approve"-->
-<!--                android:textSize="16sp"-->
-<!--                android:textStyle="normal"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/option2_2"-->
-<!--                tools:ignore="UnknownId" />-->
-
-<!--            <Button-->
-<!--                android:id="@+id/deleteButton"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:backgroundTint="#FF6600"-->
-<!--                android:text="Unapprove"-->
-<!--                android:textSize="16sp"-->
-<!--                app:layout_constraintBottom_toTopOf="@+id/saveButton"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent" />-->
-
-<!--            <ScrollView-->
-<!--                android:id="@+id/scrollView2"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:layout_marginBottom="32dp"-->
-<!--                app:layout_constraintBottom_toTopOf="@+id/deleteButton"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.0"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/chooseClassText">-->
-
-<!--                <LinearLayout-->
-<!--                    android:id="@+id/tip_detail_layout"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:orientation="vertical">-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/userName"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginStart="20dp"-->
-<!--                        android:layout_marginEnd="20dp"-->
-<!--                        android:text="User name" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/tipUsername"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="20dp"-->
-<!--                        android:layout_marginRight="20dp"-->
-<!--                        android:ems="10"-->
-<!--                        android:minHeight="48dp" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/title"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="20dp"-->
-<!--                        android:layout_marginTop="20dp"-->
-<!--                        android:layout_marginRight="20dp"-->
-<!--                        android:text="Title" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/tipTitle"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="20dp"-->
-<!--                        android:layout_marginRight="20dp"-->
-<!--                        android:ems="10"-->
-<!--                        android:minHeight="48dp" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/shortDescription"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="20dp"-->
-<!--                        android:layout_marginTop="20dp"-->
-<!--                        android:layout_marginRight="20dp"-->
-<!--                        android:text="Short Description" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/tipShortDescription"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="20dp"-->
-<!--                        android:layout_marginRight="20dp"-->
-<!--                        android:ems="10"-->
-<!--                        android:minHeight="48dp" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/content"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="20dp"-->
-<!--                        android:layout_marginTop="20dp"-->
-<!--                        android:layout_marginRight="20dp"-->
-<!--                        android:text="Tip Content" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/tipContent"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="20dp"-->
-<!--                        android:layout_marginRight="20dp"-->
-<!--                        android:ems="10"-->
-<!--                        android:minHeight="48dp" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/className"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="20dp"-->
-<!--                        android:layout_marginTop="20dp"-->
-<!--                        android:layout_marginRight="20dp"-->
-<!--                        android:text="Class" />-->
-
-<!--                    <RelativeLayout-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        >-->
-
-<!--                        <Spinner-->
-<!--                            android:id="@+id/spinnerClass"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="30dp"-->
-<!--                            android:layout_marginLeft="18dp"-->
-<!--                            android:layout_marginTop="5dp"-->
-<!--                            android:layout_marginRight="18dp"-->
-<!--                            android:minHeight="48dp"-->
-<!--                            android:spinnerMode="dropdown"-->
-<!--                            tools:ignore="TouchTargetSizeCheck" />-->
-
-<!--                        <View-->
-<!--                            android:id="@+id/buttonSpinner"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="35dp"-->
-<!--                            android:layout_alignParentEnd="true"-->
-<!--                            android:layout_marginEnd="20dp"-->
-<!--                            android:layout_marginStart="20dp" />-->
-
-<!--                    </RelativeLayout>-->
-
-<!--                    <View-->
-<!--                        android:id="@+id/view"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="1dp"-->
-<!--                        android:layout_marginLeft="22dp"-->
-<!--                        android:layout_marginRight="22dp"-->
-<!--                        android:background="#000000" />-->
-
-<!--                    <TextView-->
-<!--                        android:id="@+id/gender"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="20dp"-->
-<!--                        android:layout_marginTop="20dp"-->
-<!--                        android:layout_marginRight="20dp"-->
-<!--                        android:text="Gender"-->
-<!--                        android:textSize="16sp"-->
-<!--                        app:flow_horizontalAlign="center"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toTopOf="parent"-->
-<!--                        tools:ignore="Suspicious0dp" />-->
-
-<!--                    <RadioGroup-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="match_parent"-->
-<!--                        android:orientation="horizontal"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/gender">-->
-
-<!--                        <RadioButton-->
-<!--                            android:id="@+id/maleOpt"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_marginStart="20dp"-->
-<!--                            android:layout_marginTop="0dp"-->
-<!--                            android:text="Male"-->
-<!--                            android:textSize="16sp"-->
-<!--                            app:layout_constraintStart_toStartOf="parent"-->
-<!--                            app:layout_constraintTop_toBottomOf="@+id/gender" />-->
-
-<!--                        <RadioButton-->
-<!--                            android:id="@+id/femaleOpt"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_marginStart="30dp"-->
-<!--                            android:layout_marginTop="0dp"-->
-<!--                            android:text="Female"-->
-<!--                            android:textSize="16sp"-->
-<!--                            app:layout_constraintStart_toStartOf="parent"-->
-<!--                            app:layout_constraintTop_toBottomOf="@+id/maleOpt" />-->
-
-<!--                        <RadioButton-->
-<!--                            android:id="@+id/otherOpt"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_marginStart="30dp"-->
-<!--                            android:layout_marginTop="0dp"-->
-<!--                            android:text="Other"-->
-<!--                            android:textSize="16sp"-->
-<!--                            app:layout_constraintStart_toStartOf="parent"-->
-<!--                            app:layout_constraintTop_toBottomOf="@+id/femaleOpt" />-->
-
-<!--                    </RadioGroup>-->
-
-<!--                </LinearLayout>-->
-<!--            </ScrollView>-->
-
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--    </FrameLayout>-->
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

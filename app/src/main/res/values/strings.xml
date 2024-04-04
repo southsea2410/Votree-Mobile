@@ -12,6 +12,7 @@
     <string name="previous">Previous</string>
     <string name="search">Search</string>
     <string name="more">More</string>
+    <string name="tips">Tips</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -49,4 +50,21 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="first_image_of_tip">First Image of Tip</string>
+    <string name="this_is_icon_for_illustration">This is icon for illustration</string>
+    <string name="tip_name">Celebrating The First Day of Spring With These Flowers</string>
+    <string name="status">PENDING</string>
+    <string name="user_name">Kha Huynh</string>
+    <string name="store_name">BA_10 Store</string>
+    <string name="upvotes_placeholder">%d upvotes</string>
+    <string name="date_of_tip">Jan 1, 2021</string>
+    <string name="reject">Reject</string>
+    <string name="approve">Approve</string>
+    <string name="votree_logo">VoTree Logo</string>
+    <string name="nav_tips">Tips</string>
+    <string name="nav_accounts">Accounts</string>
+    <string name="nav_promotions">Promotions</string>
+    <string name="nav_reports">Reports</string>
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="close_nav">Close Navigation Drawer</string>
 </resources>

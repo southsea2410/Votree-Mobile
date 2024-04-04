@@ -1,24 +1,21 @@
 package com.example.votree.admin.adapters
 
 import android.os.Parcelable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Tip
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 
 class TipListAdapter(private var listener: OnItemClickListener) :
     RecyclerView.Adapter<TipListAdapter.ViewHolder>() {
-
-    private val storage = Firebase.storage
-    private val storageRef = storage.reference
 
     private var tipList = emptyList<Tip>()
 
@@ -37,75 +34,31 @@ class TipListAdapter(private var listener: OnItemClickListener) :
         val currentTip = tipList[position]
         val firstImageUrl = currentTip.imageList.firstOrNull()
 
-
-
-        val forestRef = storageRef.child("images/productTips/1.jpg")
-
-        Log.d("TipListAdapter", "forestRef: $forestRef")
-
         Glide.with(viewHolder.itemView.context)
-            .load("https://firebasestorage.googleapis.com/v0/b/votree-mobile-app.appspot.com/o/images%2FproductTips%2F1.jpg?alt=media&token=cfc4cf1b-f9fa-407c-93d8-13e6e8a2177f")
+            .load(firstImageUrl)
             .into(viewHolder.itemView.findViewById(R.id.list_item_avatar))
 
-        Log.d("Hi", "Hi")
 
+        when (currentTip.approvalStatus) {
+            -1 -> {
+                viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background = ContextCompat.getDrawable(viewHolder.itemView.context, R.color.md_theme_tertiaryContainer)
+                viewHolder.itemView.findViewById<ImageView>(R.id.item_icon).setImageResource(R.drawable.red_tick)
+            }
+            1 -> {
+                viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background = ContextCompat.getDrawable(viewHolder.itemView.context, R.color.md_theme_primaryContainer)
+                viewHolder.itemView.findViewById<ImageView>(R.id.item_icon).setImageResource(R.drawable.green_tick)
+            }
+            else -> {
+                viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background = ContextCompat.getDrawable(viewHolder.itemView.context, R.color.md_theme_onPrimary)
+                viewHolder.itemView.findViewById<ImageView>(R.id.item_icon).setImageResource(R.drawable.baseline_arrow_right_24)
+            }
+        }
         viewHolder.itemView.findViewById<TextView>(R.id.list_item_title).text = currentTip.title
         viewHolder.itemView.findViewById<TextView>(R.id.list_item_short_description).text = currentTip.shortDescription
         viewHolder.itemView.setOnClickListener {
             listener.onTipItemClicked(viewHolder.itemView, position)
         }
-//        val imageView = viewHolder.itemView.findViewById<ImageView>(R.id.list_item_avatar)
-
-        // Load the first image URL into the ImageView
-//        if (firstImageUrl != null) {
-//            val storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(firstImageUrl)
-//            storageRef.getBytes(Long.MAX_VALUE)
-//                .addOnSuccessListener { bytes ->
-//                    // Decode the byte array into a Bitmap
-//                    val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-//                    // Set the Bitmap to the ImageView
-//                    imageView.setImageBitmap(bitmap)
-//                }
-//                .addOnFailureListener { exception ->
-//                    // Handle any errors
-//                }
-//        } else {
-//            // If no image URL is available, you can set a default image or hide the ImageView
-//            imageView.setImageResource(R.drawable.default_image)
-//        }
-
-//        viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).setOnClickListener {
-//            val context = it.context
-//            val sharedPref = context.getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
-//            sharedPref?.edit()?.apply {
-//                putString("Full Name", currentTip.name)
-//                putString("Birthday", currentTip.dateOfBirth)
-//                val genderOptionId = when (currentStudent.gender) {
-//                    "Male" -> R.id.maleOpt
-//                    "Female" -> R.id.femaleOpt
-//                    else -> R.id.otherOpt
-//                }
-//                putInt("Gender", genderOptionId)
-//                apply()
-//            }
-//            val student_tmp = com.models.Student("${currentStudent.id}", currentStudent.name, currentStudent.className, currentStudent.dateOfBirth, currentStudent.gender)
-//            val intent = Intent(context, StudentInformationActivity::class.java)
-//            intent.putExtra("student", student_tmp)
-//            intent.putExtra("studentOrder", position)
-//            context.startActivity(intent)
-
-//        }
-//        viewHolder.itemView.findNavController().navigate(action)
     }
-//
-//    fun setData(student: List<Student>) {
-//        this.studentList = student
-//        notifyDataSetChanged()
-//    }
-//
-//    private fun getStudentDOBAndGender(student: Student): String {
-//        return "${student.dateOfBirth} - ${student.gender}"
-//    }
 
     fun setData(tips: List<Tip>) {
         this.tipList = tips
@@ -115,8 +68,4 @@ class TipListAdapter(private var listener: OnItemClickListener) :
     fun getTip(position: Int): Parcelable {
         return tipList[position]
     }
-
-//    fun handleData(tip: Tip) {
-//        viewHolder.itemView.findViewById<TextView>(R.id.list_item_title).text = currentTip.title
-//    }
 }
