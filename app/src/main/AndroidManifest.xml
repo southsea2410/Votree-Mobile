@@ -34,6 +34,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".tips.fragments.WriteTip"
+            />
+        <activity
             android:name=".users.activities.SignInActivity"
             android:exported="false"></activity>
         <activity

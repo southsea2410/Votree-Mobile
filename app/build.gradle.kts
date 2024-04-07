@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs")
-//    id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
 }
@@ -65,6 +64,9 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -79,8 +81,7 @@ dependencies {
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
-    // kapt
-//    kapt("androidx.room:room-compiler:2.6.1")
+
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     // Declare the dependencies for the Firebase Cloud Firestore and Analytics libraries
@@ -96,5 +97,8 @@ dependencies {
     // Facebook SDK
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Activity KTX
+    implementation("androidx.activity:activity-ktx:1.8.2")
 }
 
