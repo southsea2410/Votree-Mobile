@@ -30,13 +30,15 @@ class TipAdapter : ListAdapter<ProductTip, TipAdapter.ProductTipViewHolder>(Prod
         parent: ViewGroup,
         viewType: Int
     ): TipAdapter.ProductTipViewHolder {
+        Log.d("TipAdapter", "onCreateViewHolder")
         val layoutInflater = LayoutInflater.from(parent.context)
-        val template : View = layoutInflater.inflate(R.layout.tip_list_item, null)
+        val template : View = layoutInflater.inflate(R.layout.tip_list_item, parent)
         return ProductTipViewHolder(template)
     }
 
     override fun onBindViewHolder(holder: TipAdapter.ProductTipViewHolder, position: Int) {
         val tip = getItem(position)
+        Log.d("TipAdapter", "onCreateViewHolder + ${tip.title}")
         holder.titleView.text = tip.title
         holder.voteView.text = tip.vote.toString() + " votes"
         Glide.with(holder.itemView)
@@ -49,7 +51,7 @@ class TipAdapter : ListAdapter<ProductTip, TipAdapter.ProductTipViewHolder>(Prod
             return oldItem === newItem
         }
         override fun areContentsTheSame(oldItem: ProductTip, newItem: ProductTip): Boolean {
-            return oldItem === newItem
+            return oldItem == newItem
         }
     }
 }

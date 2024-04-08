@@ -16,36 +16,36 @@ class TipsViewModel : ViewModel() {
     val topTipList : LiveData<List<ProductTip>> = _topTipList
 
     init {
-        queryTopTips()
         queryAllTips()
+        queryTopTips()
     }
 
     fun queryAllTips() {
-        val collection = firestore.collection("ProductTip")
+        val collection = firestore.collection("ProductTip2")
         collection
-            .orderBy("createdAt", Query.Direction.ASCENDING)
+//            .orderBy("createdAt", Query.Direction.ASCENDING)
             .get()
             .addOnSuccessListener { documents ->
                 _tipList.value = documents.toObjects(ProductTip::class.java)
-                Log.d("TipViewModel", "Done getting documents: " + _tipList.value?.size)
+                Log.d("TipsViewModel", "Done getting documents: " + _tipList.value?.get(0).toString())
             }
             .addOnFailureListener{
-                Log.d("TipViewModel", "Error getting documents: ", it)
+                Log.d("TipsViewModel", "Error getting documents: ", it)
             }
     }
 
     fun queryTopTips() {
-        val collection = firestore.collection("ProductTip")
+        val collection = firestore.collection("ProductTip2")
         collection
             .orderBy("vote", Query.Direction.DESCENDING)
             .limit(5)
             .get()
             .addOnSuccessListener { documents ->
                 _topTipList.value = documents.toObjects(ProductTip::class.java)
-                Log.d("TipViewModel", "Done getting documents: " + _topTipList.value?.size)
+                Log.d("TipsViewModel", "Done getting documents: " + _topTipList.value?.size)
             }
             .addOnFailureListener{
-                Log.d("TipViewModel", "Error getting documents: ", it)
+                Log.d("TipsViewModel", "Error getting documents: ", it)
             }
     }
 }

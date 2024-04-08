@@ -1,4 +1,4 @@
-package com.example.votree.tips.fragments
+package com.example.votree.tips
 
 import android.net.Uri
 import android.os.Bundle
@@ -11,11 +11,10 @@ import com.example.votree.R
 import com.example.votree.databinding.ActivityWriteTipBinding
 import com.example.votree.tips.models.ProductTip
 import com.google.android.material.button.MaterialButton
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
-class WriteTip : AppCompatActivity(R.layout.activity_write_tip) {
+class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
     private val fireStoreInstance = FirebaseFirestore.getInstance()
     private val storageInstance = FirebaseStorage.getInstance()
     var imageUri : Uri? = null
@@ -49,8 +48,6 @@ class WriteTip : AppCompatActivity(R.layout.activity_write_tip) {
             val tip = ProductTip(
                 0,
                 content=binding.tipContentInputEditText.text.toString(),
-                createdAt=FieldValue.serverTimestamp().toString(),
-                updatedAt=FieldValue.serverTimestamp().toString(),
                 shortDescription=binding.tipShortDescriptionInputEditText.text.toString(),
                 title=binding.tipTitleInputEditText.text.toString(),
                 userId = "1",
@@ -63,30 +60,30 @@ class WriteTip : AppCompatActivity(R.layout.activity_write_tip) {
     }
 
     private fun pushTiptoDatabase(tip: ProductTip) {
-        val storageRef = storageInstance.reference
         if (imageUri == null) {
             Toast.makeText(this, "Please add an image", Toast.LENGTH_SHORT).show()
             return
         }
+        val storageRef = storageInstance.reference.child("images/${imageUri?.lastPathSegment}")
         storageRef.putFile(imageUri!!)
             .addOnSuccessListener {
                 storageRef.downloadUrl.addOnSuccessListener { uri ->
                     tip.imageList[0] = uri.toString()
-                    fireStoreInstance.collection("ProductTip").add(tip)
+                    fireStoreInstance.collection("ProductTip2").add(tip)
                         .addOnSuccessListener { documentReference ->
-                            val documentId = documentReference.id.toString()
+                            val documentId = documentReference.id
                             fireStoreInstance.collection("products").document(documentId)
-                                .update("id", documentId);
+                                .update("id", documentId)
                             Toast.makeText(
                                 this,
                                 "Product added successfully",
                                 Toast.LENGTH_SHORT
-                            ).show();
-                            finish();
+                            ).show()
+                            finish()
                         }
                         .addOnFailureListener {
                             Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT)
-                                .show();
+                                .show()
                         }
                 }
             }
