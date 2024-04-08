@@ -5,7 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class UserFirestoreAdapter {
+class  UserAdapter{
 
     private val db: FirebaseFirestore by lazy {
         Firebase.firestore
@@ -19,14 +19,16 @@ class UserFirestoreAdapter {
             .addOnFailureListener { callback(false) }
     }
 
-    fun getUser(userId: String, callback: (User?) -> Unit) {
+    fun getUser(email: String, callback: (List<User>) -> Unit) {
         db.collection("users")
-            .document(userId)
+            .whereEqualTo("email", email)
             .get()
-            .addOnSuccessListener { documentSnapshot ->
-                val user = documentSnapshot.toObject(User::class.java)
-                callback(user)
+            .addOnSuccessListener { querySnapshot ->
+                val users = querySnapshot.documents.mapNotNull { document ->
+                    document.toObject(User::class.java)
+                }
+                callback(users)
             }
-            .addOnFailureListener { callback(null) }
+            .addOnFailureListener { callback(emptyList()) }
     }
 }

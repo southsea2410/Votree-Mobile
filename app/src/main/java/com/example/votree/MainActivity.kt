@@ -51,52 +51,60 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.votree.users.activities.SignInActivity
+import com.example.votree.users.adapters.UserAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var auth: FirebaseAuth
-
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var etToken: EditText
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        try {
+            super.onCreate(savedInstanceState)
 
-        // Initialize Firebase Auth
-        firebaseAuth = FirebaseAuth.getInstance()
+            // Initialize Firebase Auth
+            firebaseAuth = FirebaseAuth.getInstance()
+            val userAdapter = UserAdapter()
 
-        // Check if user is signed in (non-null) and update UI accordingly
-        val currentUser = firebaseAuth.currentUser
-        if (currentUser == null) {
-            // User is not signed in, redirect to SignInActivity
-            val intent = Intent(this, SignInActivity::class.java)
-            startActivity(intent)
-            finish() // Prevent user from going back to MainActivity if they press back button
-        } else {
-            setContentView(R.layout.activity_main)
-
+            // Check if user is signed in (non-null) and update UI accordingly
+            val currentUser = firebaseAuth.currentUser
             val email = intent.getStringExtra("email")
-            val displayName = intent.getStringExtra("name")
-
-            findViewById<TextView>(R.id.userInfoTextView).text = "Email: $email\nName: $displayName"
-
-            findViewById<Button>(R.id.logoutButton).setOnClickListener {
+            if (email == null) {
+                // User is not signed in, redirect to SignInActivity
                 val intent = Intent(this, SignInActivity::class.java)
                 startActivity(intent)
-                finish()
-            }
+                finish() // Prevent user from going back to MainActivity if they press back button
+            } else {
+                setContentView(R.layout.profile)
 
-            etToken = findViewById(R.id.etToken)
-            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val token = task.result
-                    etToken.setText(token)
-                } else {
-                    println("Fetching FCM registration token failed")
+                userAdapter.getUser(email.toString()) { users ->
+                    val user = users.first()
+                    findViewById<TextView>(R.id.Name).text = user.fullName
+                    findViewById<TextView>(R.id.Phone).text = user.phoneNumber
+                    findViewById<TextView>(R.id.Address).text = user.password
+                    findViewById<TextView>(R.id.Email).text = user.email
                 }
+
+                findViewById<Button>(R.id.logoutButton).setOnClickListener {
+                    val intent = Intent(this, SignInActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                /*findViewById<TextView>(R.id.userInfoTextView).text = "Email: $email\nName: $displayName"
+
+                etToken = findViewById(R.id.etToken)
+                FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val token = task.result
+                        etToken.setText(token)
+                    } else {
+                        println("Fetching FCM registration token failed")
+                    }
+                }*/
             }
+        } catch (e: Exception) {
+            println(e.message)
         }
     }
 }
