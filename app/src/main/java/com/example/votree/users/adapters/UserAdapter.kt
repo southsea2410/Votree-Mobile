@@ -1,37 +1,32 @@
 package com.example.votree.users.adapters
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.navigation.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.votree.R
-import com.example.votree.products.adapters.ProductAdapter
-import com.example.votree.products.fragments.ProductListDirections
-import com.example.votree.products.models.Product
 import com.example.votree.users.models.User
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
-class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserFirestoreAdapter {
 
-    class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var fullName = itemView.findViewById<TextView>(R.id.Name)
-        var phoneNumber = itemView.findViewById<TextView>(R.id.Phone)
-        var address = itemView.findViewById<TextView>(R.id.Address)
-        var email = itemView.findViewById<TextView>(R.id.Email)
-        var currentPassword = itemView.findViewById<TextView>(R.id.CurPass)
-        var newPassword = itemView.findViewById<View>(R.id.NewPass)
-        val confirmPassword = itemView.findViewById<ImageView>(R.id.ConPass)
+    private val db: FirebaseFirestore by lazy {
+        Firebase.firestore
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserAdapter.UserViewHolder {
-        return UserAdapter.UserViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.profile, parent, false)
-        )
+    fun addUser(user: User, callback: (Boolean) -> Unit) {
+        db.collection("users")
+            .document(user.id)
+            .set(user)
+            .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { callback(false) }
     }
 
-
-
+    fun getUser(userId: String, callback: (User?) -> Unit) {
+        db.collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                val user = documentSnapshot.toObject(User::class.java)
+                callback(user)
+            }
+            .addOnFailureListener { callback(null) }
+    }
 }
