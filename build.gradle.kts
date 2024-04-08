@@ -1,7 +1,14 @@
 buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
     dependencies {
         classpath("com.google.gms:google-services:4.4.1")
         classpath("org.jetbrains.kotlin:kotlin-serialization:1.9.22")
+        val nav_version = "2.7.7"
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
+        classpath("androidx.navigation:navigation-safe-args-generator:2.7.7")
     }
 }
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
@@ -10,18 +17,4 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.9.22" apply false
     id("com.google.gms.google-services") version "4.4.1" apply false
     id("com.google.devtools.ksp") version "1.9.23-1.0.19" apply false
-}
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.google.gms:google-services:4.4.1")
-        val nav_version = "2.7.7"
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
-        classpath("androidx.navigation:navigation-safe-args-generator:2.7.7")
-        classpath("com.google.gms:google-services:4.4.1")
-    }
 }
