@@ -9,7 +9,7 @@
         android:id="@+id/tipsFragment"
         android:name="com.example.votree.admin.list.TipsFragment"
         android:label="fragment_tips"
-        tools:layout="@layout/fragment_tips" >
+        tools:layout="@layout/fragment_tip_list" >
         <action
             android:id="@+id/action_tipsFragment_to_tipDetailFragment2"
             app:destination="@id/tipDetailFragment2" />

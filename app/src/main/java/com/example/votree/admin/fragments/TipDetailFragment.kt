@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.models.Tip
@@ -35,14 +36,14 @@ class TipDetailFragment : Fragment() {
         approveButton?.setOnClickListener {
             db.collection("ProductTip").document(tip!!.id).update("approvalStatus", 1)
                 .addOnSuccessListener {
-                    activity?.supportFragmentManager?.popBackStackImmediate()
+                    activity?.supportFragmentManager?.popBackStack("tip_list_fragment", POP_BACK_STACK_INCLUSIVE)
                 }
         }
 
         rejectButton?.setOnClickListener {
             db.collection("ProductTip").document(tip!!.id).update("approvalStatus", -1)
                 .addOnSuccessListener {
-                    activity?.supportFragmentManager?.popBackStack()
+                    activity?.supportFragmentManager?.popBackStack("tip_list_fragment", POP_BACK_STACK_INCLUSIVE)
                 }
         }
 

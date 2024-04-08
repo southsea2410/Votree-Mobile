@@ -4,6 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Go to Product List"/>
+
     <!--    <androidx.fragment.app.FragmentContainerView-->
     <!--        android:id="@+id/productList_f"-->
     <!--        android:name="androidx.navigation.fragment.NavHostFragment"-->
@@ -47,7 +53,6 @@
         android:layout_marginTop="36dp"
         android:layout_marginBottom="90dp"
         android:background="@drawable/plus_button"
-        app:layout_constraintBottom_toTopOf="@+id/customRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.731"
         app:layout_constraintStart_toEndOf="@+id/textViewTitle"
@@ -61,7 +66,6 @@
         android:layout_marginTop="36dp"
         android:layout_marginBottom="90dp"
         android:background="@drawable/grid_button"
-        app:layout_constraintBottom_toTopOf="@+id/customRecyclerView"
         app:layout_constraintEnd_toStartOf="@+id/textViewTitle"
         app:layout_constraintHorizontal_bias="0.247"
         app:layout_constraintStart_toStartOf="parent"

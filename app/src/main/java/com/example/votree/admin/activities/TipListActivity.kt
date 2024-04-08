@@ -1,6 +1,5 @@
 package com.example.votree.admin.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -11,12 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.R
 import com.example.votree.admin.adapters.TipListAdapter
-import com.example.votree.admin.fragments.TipDetailFragment
+import com.example.votree.admin.fragments.TipListFragment
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Tip
 import com.google.android.material.appbar.MaterialToolbar
@@ -32,6 +30,9 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
     private val db = Firebase.firestore
     private val adapter: TipListAdapter by lazy { TipListAdapter(this) }
     private val tipList = mutableListOf<Tip>()
+    private val SharedPrefs = "sharedPrefs"
+    private var currentFragment: Fragment? = null
+    private var currentFlag: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,13 +55,47 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
 
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+
+            override fun onDrawerOpened(drawerView: View) {}
+
+            override fun onDrawerClosed(drawerView: View) {
+
+                when (currentFlag) {
+                    getCurrentFlag() -> return
+                    else -> {
+                        setCurrentFlag(currentFlag)
+                    }
+                }
+
+                currentFragment = when (getCurrentFlag()) {
+                    0 -> TipListFragment()
+                    else -> TipListFragment()
+                }
+
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, currentFragment!!)
+                    .addToBackStack(null)
+                    .commit()
+
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {}
+        })
+
         val toggle = ActionBarDrawerToggle(this, drawerLayout, topAppBar, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        val recycleViewTipList: RecyclerView = findViewById(R.id.tipListRecycleView)
-        recycleViewTipList.adapter = adapter
-        recycleViewTipList.layoutManager = LinearLayoutManager(this)
+        val defaultFragment = when (getCurrentFlag()) {
+            0 -> TipListFragment()
+            else -> TipListFragment()
+        }
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, defaultFragment)
+            .addToBackStack(null)
+            .commit()
 
         fetchDataFromFirestore()
 
@@ -82,16 +117,6 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
             setupNormalActionBar()
             supportFragmentManager.popBackStack()
         }
-
-        val fragment = TipDetailFragment()
-        val bundle = Bundle().apply {
-            putParcelable("tip", adapter.getTip(position))
-        }
-        fragment.arguments = bundle
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -108,14 +133,16 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (query != null) {
-            searchTip(query)
+            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as? TipListFragment
+            fragment?.searchTip(query)
         }
         return true
     }
 
     override fun onQueryTextChange(query: String?): Boolean {
         if (query != null) {
-            searchTip(query)
+            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as? TipListFragment
+            fragment?.searchTip(query)
         }
         return true
     }
@@ -123,19 +150,27 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         when (p0.itemId) {
             R.id.nav_tips -> {
-                startActivity(Intent(this, TipListActivity::class.java))
+                currentFlag = 0
+                drawerLayout.closeDrawer(GravityCompat.START)
+
                 return true
             }
             R.id.nav_accounts -> {
-                Log.d("TipListActivity", "Profile clicked")
+                currentFlag = 1
+
+                drawerLayout.closeDrawer(GravityCompat.START)
                 return true
             }
             R.id.nav_promotions -> {
-                Log.d("TipListActivity", "Settings clicked")
+                currentFlag = 2
+
+                drawerLayout.closeDrawer(GravityCompat.START)
                 return true
             }
             R.id.nav_reports -> {
-                Log.d("TipListActivity", "Settings clicked")
+                currentFlag = 3
+
+                drawerLayout.closeDrawer(GravityCompat.START)
                 return true
             }
             else -> return false
@@ -153,6 +188,18 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
         }
 
         super.onBackPressed()
+    }
+
+    private fun getCurrentFlag() : Int {
+        val sharedPreferences = getSharedPreferences(SharedPrefs, MODE_PRIVATE)
+        return sharedPreferences.getInt("currentFlag", 0)
+    }
+
+    private fun setCurrentFlag(currentFlag: Int) {
+        val sharedPreferences = getSharedPreferences(SharedPrefs, MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("currentFlag", currentFlag)
+        editor.apply()
     }
 
     private fun fetchDataFromFirestore() {
@@ -175,7 +222,13 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
             }
     }
 
-    private fun setupNormalActionBar() {
+    private val backStackListener = FragmentManager.OnBackStackChangedListener {
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            setupNormalActionBar()
+        }
+    }
+
+    fun setupNormalActionBar() {
         setSupportActionBar(topAppBar)
         val toggle = ActionBarDrawerToggle(this, drawerLayout, topAppBar, R.string.open_nav, R.string.close_nav)
         drawerLayout.addDrawerListener(toggle)
@@ -188,20 +241,6 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
                 }
                 else -> false
             }
-        }
-    }
-
-    private fun searchTip(query: String) {
-        val searchResult = tipList.filter {
-            it.title.contains(query, ignoreCase = true) || it.shortDescription.contains(query, ignoreCase = true)
-        }
-
-        adapter.setData(searchResult)
-    }
-
-    private val backStackListener = FragmentManager.OnBackStackChangedListener {
-        if (supportFragmentManager.backStackEntryCount == 0) {
-            setupNormalActionBar()
         }
     }
 }
