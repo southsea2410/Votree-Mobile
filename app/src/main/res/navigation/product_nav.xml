@@ -48,5 +48,27 @@
         android:id="@+id/cartList"
         android:name="com.example.votree.products.fragments.CartList"
         android:label="fragment_cart_list"
-        tools:layout="@layout/fragment_cart_list" />
+        tools:layout="@layout/fragment_cart_list">
+        <action
+            android:id="@+id/action_cartList_to_checkout"
+            app:destination="@id/checkout" />
+    </fragment>
+    <fragment
+        android:id="@+id/checkout"
+        android:name="com.example.votree.products.fragments.Checkout"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout">
+        <action
+            android:id="@+id/action_checkout_to_shippingAddressFragment"
+            app:destination="@id/shippingAddressFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shippingAddressFragment"
+        android:name="com.example.votree.products.fragments.ShippingAddressFragment"
+        android:label="fragment_shipping_address"
+        tools:layout="@layout/fragment_shipping_address">
+        <action
+            android:id="@+id/action_shippingAddressFragment_to_checkout"
+            app:destination="@id/checkout" />
+    </fragment>
 </navigation>

@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.products.models.Cart
+import com.example.votree.products.view_models.CartViewModel
 import com.example.votree.products.view_models.ProductViewModel
 
 class CartAdapter(
     private val context: Context,
     private val cart: Cart,
-    private val productViewModel: ProductViewModel
+    private val productViewModel: ProductViewModel,
+    private val cartViewModel: CartViewModel
 ) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,6 +43,8 @@ class CartAdapter(
         private val productQuantityTextView: TextView = itemView.findViewById(R.id.quantity_et)
         private val productImageView: ImageView = itemView.findViewById(R.id.productImage_iv)
         private val removeButton: Button = itemView.findViewById(R.id.remove_btn)
+        private val addProductQuantityButton: Button = itemView.findViewById(R.id.add_btn)
+        private val subtractProductQuantityButton: Button = itemView.findViewById(R.id.sub_btn)
 
         fun bind(productId: String, quantity: Int) {
             // Fetch product information based on product ID
@@ -54,22 +58,28 @@ class CartAdapter(
                     productQuantityTextView.text = quantity.toString()
                     Glide.with(itemView)
                         .load(product?.imageUrl)
+                        .placeholder(R.drawable.img_placeholder)
                         .into(productImageView)
                 })
 
             // Set click listener for remove button
             removeButton.setOnClickListener {
-                // Notify listener about item removal
-                onRemoveClickListener?.invoke(productId)
+                cartViewModel.removeCartItem(productId)
+            }
+
+            // Set click listener for add button
+            addProductQuantityButton.setOnClickListener {
+                cartViewModel.updateCartItem(productId, 1)
+                // Update the quantity text view
+                productQuantityTextView.text = (quantity + 1).toString()
+            }
+
+            // Set click listener for subtract button
+            subtractProductQuantityButton.setOnClickListener {
+                cartViewModel.updateCartItem(productId, -1)
+                // Update the quantity text view
+                productQuantityTextView.text = (quantity - 1).toString()
             }
         }
-    }
-
-    // Callback for remove button click listener
-    private var onRemoveClickListener: ((String) -> Unit)? = null
-
-    // Function to set remove button click listener
-    fun setOnRemoveClickListener(listener: (String) -> Unit) {
-        this.onRemoveClickListener = listener
     }
 }

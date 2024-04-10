@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.votree.databinding.FragmentCartListBinding
 import com.example.votree.products.adapters.CartAdapter
@@ -30,18 +31,18 @@ class CartList : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(CartViewModel::class.java)
-        observeCart()
 
+        observeCart()
+        gotoCheckout()
         setupRecyclerView()
     }
 
     private fun observeCart() {
-
         val productViewModel = ProductViewModel()
 
         viewModel.cart.observe(viewLifecycleOwner) { cart ->
             cart?.let {
-                cartAdapter = CartAdapter(requireContext(), cart, productViewModel)
+                cartAdapter = CartAdapter(requireContext(), cart, productViewModel, viewModel)
                 binding.cartListRv.adapter = cartAdapter
             }
         }
@@ -49,6 +50,12 @@ class CartList : Fragment() {
 
     private fun setupRecyclerView() {
         binding.cartListRv.layoutManager = LinearLayoutManager(requireContext())
-        // Optionally, you can set item decoration, animator, etc., for the RecyclerView
+    }
+
+    private fun gotoCheckout() {
+        binding.buyNowBtn.setOnClickListener {
+            val action = CartListDirections.actionCartListToCheckout()
+            findNavController().navigate(action)
+        }
     }
 }

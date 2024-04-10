@@ -43,9 +43,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-//    sourceSets {
-//        getByName("main").java.srcDirs("build/generated/source/navigation-args")
-//    }
 }
 
 dependencies {
@@ -56,14 +53,20 @@ dependencies {
 
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.google.firebase:firebase-firestore-ktx:24.11.0")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database-ktx:20.3.1")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
-
-
+    implementation("com.google.firebase:firebase-functions-ktx:20.4.0")
     implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    // Declare the dependencies for the Firebase Cloud Firestore and Analytics libraries
+    implementation("com.google.firebase:firebase-firestore")
+
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation("androidx.activity:activity:1.8.0")
 
@@ -80,12 +83,8 @@ dependencies {
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
-    // kapt
-//    kapt("androidx.room:room-compiler:2.6.1")
-    // Import the BoM for the Firebase platform
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
-    // Declare the dependencies for the Firebase Cloud Firestore and Analytics libraries
-    implementation("com.google.firebase:firebase-firestore")
+
+
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
@@ -96,6 +95,16 @@ dependencies {
 
     // Facebook SDK
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
+    // Stripe Android SDK
+    implementation("com.stripe:stripe-android:20.40.3")
+
+    //
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }
 

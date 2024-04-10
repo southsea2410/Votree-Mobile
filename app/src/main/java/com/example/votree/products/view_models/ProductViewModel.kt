@@ -55,6 +55,12 @@ class ProductViewModel : ViewModel() {
         return productLiveData
     }
 
+    // Function to get product price by id
+    fun getProductPriceById(productId: String): Double? {
+        val product = _products.value?.find { it.id == productId }
+        return product?.price
+    }
+
     companion object {
         private const val TAG = "ProductViewModel"
     }

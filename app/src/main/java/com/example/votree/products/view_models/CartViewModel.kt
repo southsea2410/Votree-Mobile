@@ -1,16 +1,22 @@
 package com.example.votree.products.view_models
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.example.votree.products.models.Cart
+import com.example.votree.products.repositories.CartRepository
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+
 
 class CartViewModel : ViewModel() {
-    private val firestore = FirebaseFirestore.getInstance()
-    private val cartCollection = firestore.collection("carts")
+    private val cartRepository = CartRepository()
     private val currentUser = FirebaseAuth.getInstance().currentUser
+    private val productViewModel = ProductViewModel()
     private val _cart: MutableLiveData<Cart?> = MutableLiveData()
     val cart: MutableLiveData<Cart?>
         get() = _cart
@@ -21,62 +27,44 @@ class CartViewModel : ViewModel() {
 
     private fun fetchCart() {
         currentUser?.uid?.let { userId ->
-            Log.d(TAG, "Fetching cart for user: $userId")
-            cartCollection.document(userId).addSnapshotListener { snapshot, error ->
-                if (error != null) {
-                    Log.e(TAG, "Error fetching cart: $error")
-                    return@addSnapshotListener
-                }
-
-                val cart = snapshot?.toObject(Cart::class.java)
+            cartRepository.getCart(userId).onEach { cart ->
                 _cart.value = cart
-            }
+            }.launchIn(viewModelScope)
         }
     }
 
     fun addProductToCart(productId: String, quantity: Int) {
         currentUser?.uid?.let { userId ->
-            val userCartRef = cartCollection.document(userId)
-            userCartRef.get().addOnSuccessListener { documentSnapshot ->
-                val cart = documentSnapshot.toObject(Cart::class.java)
-                if (cart != null) {
-                    cart.productsMap[productId] = quantity
-                    // Update the cart in Firestore
-                    userCartRef.set(cart)
-                        .addOnSuccessListener {
-                            Log.d(TAG, "Product added to cart successfully")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e(TAG, "Error adding product to cart", e)
-                        }
-                } else {
-                    // Create a new cart with the product
-                    val newCart =
-                        Cart(userId = userId, productsMap = mutableMapOf(productId to quantity))
-                    userCartRef.set(newCart)
-                        .addOnSuccessListener {
-                            // Update the cart's ID after creation
-                            val newCartId = userCartRef.id
-                            newCart.id = newCartId
-                            userCartRef.set(newCart)
-                                .addOnSuccessListener {
-                                    Log.d(TAG, "New cart created with product and updated ID")
-                                }
-                                .addOnFailureListener { e ->
-                                    Log.e(TAG, "Error updating cart ID", e)
-                                }
-                        }
-                        .addOnFailureListener { e ->
-                            Log.e(TAG, "Error creating new cart", e)
-                        }
-                }
-            }.addOnFailureListener { e ->
-                Log.e(TAG, "Error fetching cart", e)
+            viewModelScope.launch {
+                cartRepository.addToCart(userId, productId, quantity)
             }
         }
     }
 
-    companion object {
-        private const val TAG = "CartViewModel"
+    fun updateCartItem(productId: String, quantityChange: Int) {
+        currentUser?.uid?.let { userId ->
+            viewModelScope.launch {
+                cartRepository.updateCartItem(userId, productId, quantityChange)
+            }
+        }
+    }
+
+
+    fun removeCartItem(productId: String) {
+        currentUser?.uid?.let { userId ->
+            viewModelScope.launch {
+                cartRepository.removeCartItem(userId, productId)
+            }
+        }
+    }
+
+    fun calculateTotalProductsPrice(cart: Cart): LiveData<Double> {
+        return liveData {
+            val total = cart.productsMap.entries.sumByDouble { (productId, quantity) ->
+                val price = productViewModel.getProductPriceById(productId)
+                price?.times(quantity) ?: 0.0
+            }
+            emit(total)
+        }
     }
 }
