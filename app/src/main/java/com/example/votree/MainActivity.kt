@@ -10,16 +10,16 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
-import com.example.votree.databinding.ActivityMainBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.example.votree.databinding.ActivityMainBinding
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.users.activities.SignInActivity
 import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
@@ -80,7 +80,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun setupPermissions() {
         permissionManager = PermissionManager(this)
@@ -100,7 +99,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar.toolbar)
         binding.toolbar.btnCart.setOnClickListener {
-//            navigateToCart()
+            navigateToCart()
         }
     }
 
@@ -112,6 +111,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    private fun navigateToCart() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.navigate(R.id.cartList)
     }
 
     private fun setupRegisterToSellerButton() {
@@ -137,3 +143,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
