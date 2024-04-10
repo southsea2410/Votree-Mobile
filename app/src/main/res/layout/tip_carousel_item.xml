@@ -12,5 +12,19 @@
         android:id="@+id/carousel_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:foreground="@drawable/gradient"
         android:scaleType="centerCrop"/>
+    <TextView
+        android:id="@+id/carousel_item_text"
+        android:scrollHorizontally="false"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_gravity="bottom|start"
+        style="?attr/textAppearanceTitleLarge"
+        android:textColor="@color/md_theme_onPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="24dp"
+        android:text="Item text"/>
 </com.google.android.material.carousel.MaskableFrameLayout>

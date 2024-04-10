@@ -1,5 +1,6 @@
 package com.example.votree.tips.adapters
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,17 +11,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
+import com.example.votree.tips.TipDetailActivity
 import com.example.votree.tips.models.ProductTip
 import com.google.android.material.textview.MaterialTextView
 
 class TipCarouselAdapter : ListAdapter<ProductTip, TipCarouselAdapter.TipCarouselViewHolder>(TipCarouselItemComparators()) {
     inner class TipCarouselViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.carousel_image_view)
-        init {
-//            itemView.setOnClickListener {
-//                onItemClick.invoke(getItem(adapterPosition), adapterPosition)
-//            }
-        }
+        val titleView: MaterialTextView = itemView.findViewById(R.id.carousel_item_text)
     }
 
     override fun onCreateViewHolder(
@@ -38,6 +36,14 @@ class TipCarouselAdapter : ListAdapter<ProductTip, TipCarouselAdapter.TipCarouse
             .load(tip.imageList[0])
             .placeholder(R.drawable.img_placeholder)    // Chỗ này không có placeholder là không load được, không hiểu tại sao :))
             .into(holder.imageView)
+        holder.titleView.text = tip.title
+
+        val intent = Intent(holder.itemView.context, TipDetailActivity::class.java)
+        intent.putExtra("tipData", tip)
+        holder.itemView.setOnClickListener {
+            Log.d("TipCarouselAdapter", "Item clicked: ${tip.title}")
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
     class TipCarouselItemComparators : DiffUtil.ItemCallback<ProductTip>() {

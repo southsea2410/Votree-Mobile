@@ -1,9 +1,11 @@
 package com.example.votree.tips.models
 
+import android.os.Parcelable
 import com.google.firebase.firestore.ServerTimestamp
+import kotlinx.parcelize.Parcelize
 import java.util.Date
 
-
+@Parcelize
 data class ProductTip(
     var approvalStatus: Int = 0,
     var content: String = "",
@@ -15,7 +17,7 @@ data class ProductTip(
     var userId: String = "",
     var vote: Int = 0,
     var id: String = "",
-) {
+) : Parcelable {
     override fun toString(): String {
         return "ProductTip(approvalStatus=$approvalStatus, content='$content', createdAt=$createdAt, updatedAt=$updatedAt, imageList=$imageList, shortDescription='$shortDescription', title='$title', userId='$userId', vote=$vote, id='$id')"
     }

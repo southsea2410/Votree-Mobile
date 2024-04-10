@@ -60,11 +60,10 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
     }
 
     private fun pushTiptoDatabase(tip: ProductTip) {
-        if (imageUri == null) {
-            Toast.makeText(this, "Please add an image", Toast.LENGTH_SHORT).show()
+        if (!checkTipContent(tip)) {
             return
         }
-        val storageRef = storageInstance.reference.child("images/${imageUri?.lastPathSegment}")
+        val storageRef = storageInstance.reference.child("images/ProductTip/${imageUri?.lastPathSegment}")
         storageRef.putFile(imageUri!!)
             .addOnSuccessListener {
                 storageRef.downloadUrl.addOnSuccessListener { uri ->
@@ -90,5 +89,17 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
             .addOnFailureListener {
                 Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun checkTipContent(tip: ProductTip): Boolean {
+        if (tip.title.isEmpty() || tip.content.isEmpty() || tip.shortDescription.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (imageUri == null) {
+            Toast.makeText(this, "Please add an image", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
     }
 }
