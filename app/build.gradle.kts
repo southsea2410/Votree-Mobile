@@ -1,11 +1,13 @@
+import com.google.android.libraries.mapsplatform.secrets_gradle_plugin.loadPropertiesFile
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs")
-//    id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -21,6 +23,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
+
+        buildConfigField("String", "PLACES_API_KEY", "")
     }
 
     buildTypes {
@@ -42,6 +46,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 //    sourceSets {
 //        getByName("main").java.srcDirs("build/generated/source/navigation-args")
@@ -65,6 +70,8 @@ dependencies {
 
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.firebase:firebase-functions-ktx:20.4.0")
+    implementation("androidx.activity:activity:1.8.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -80,7 +87,6 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
     // kapt
-//    kapt("androidx.room:room-compiler:2.6.1")
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     // Declare the dependencies for the Firebase Cloud Firestore and Analytics libraries
@@ -96,5 +102,8 @@ dependencies {
     // Facebook SDK
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-}
 
+    // Places API
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.22"))
+    implementation("com.google.android.libraries.places:places:3.3.0")
+}
