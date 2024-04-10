@@ -13,6 +13,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.votree.admin.activities.AdminMainActivity
 import androidx.navigation.ui.setupWithNavController
 import com.example.votree.databinding.ActivityMainBinding
 import com.example.votree.users.activities.RegisterToSeller
@@ -50,10 +51,14 @@ class MainActivity : AppCompatActivity() {
             setupToolbar()
             setupNavigation()
 
-            if (it == "user") {
-                Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
-            } else if (it == "store") {
-                Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
+            when (it) {
+                "user" -> Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
+                "store" -> Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
+                "admin" -> {
+                    val intent = Intent(this, AdminMainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
             }
         })
     }

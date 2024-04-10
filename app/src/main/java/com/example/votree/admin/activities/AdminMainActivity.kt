@@ -200,18 +200,21 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
             R.id.nav_tips -> {
                 currentFlag = 0
                 drawerLayout.closeDrawer(GravityCompat.START)
+                topAppBar.title = "Tips"
 
                 return true
             }
             R.id.nav_accounts -> {
                 currentFlag = 1
                 drawerLayout.closeDrawer(GravityCompat.START)
+                topAppBar.title = "Accounts"
 
                 return true
             }
             R.id.nav_reports -> {
                 currentFlag = 2
                 drawerLayout.closeDrawer(GravityCompat.START)
+                topAppBar.title = "Reports"
 
                 return true
             }
