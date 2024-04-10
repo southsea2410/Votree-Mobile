@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.serialization")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs")
     id("com.google.devtools.ksp")
@@ -56,7 +57,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation("com.google.firebase:firebase-storage:20.3.0")
@@ -91,6 +92,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     // Declare the dependencies for the Firebase Cloud Firestore and Analytics libraries
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.firebaseui:firebase-ui-firestore:7.2.0")
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
@@ -111,3 +113,4 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.22"))
     implementation("com.google.android.libraries.places:places:3.3.0")
 }
+
