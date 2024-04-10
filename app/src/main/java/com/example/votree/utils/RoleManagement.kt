@@ -13,6 +13,7 @@ object RoleManagement {
             db.collection("users").document(uid).get().addOnSuccessListener { document ->
                 if (document.exists()) {
                     val role = document.toObject(User::class.java)?.role
+                    onSuccess(role)
                 } else {
                     Log.d("RoleManagement", "No such document")
                     onSuccess(null)
