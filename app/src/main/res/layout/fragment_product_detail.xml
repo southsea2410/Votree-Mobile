@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".products.fragments.ProductDetail">
 
-    <ScrollView
-        android:id="@+id/scrollView2"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/productDetail_sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="32dp">
+        android:clipToPadding="false"
+        android:paddingBottom="100dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -143,6 +143,12 @@
                 android:text="DETAILS"
                 android:textSize="16sp" />
 
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -216,47 +222,52 @@
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text="Long Description" />
-
-
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="24dp"
-        android:background="#00FFFFFF"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_add_to_cart"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <LinearLayout
+        android:id="@+id/productDetail_bab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:fabAlignmentMode="center">
 
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="24dp"
-        android:background="#00FFFFFF"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_chat"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageButton" />
+        <Button
+            android:id="@+id/chatting_btn"
+            style="@style/Widget.Material3.Button.TonalButton.Icon"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="0.3"
+            app:cornerRadius="5dp"
+            app:icon="@drawable/ic_chat"
+            app:iconGravity="textTop"
+            app:iconPadding="0dp" />
 
-    <Button
-        android:id="@+id/buyNow_btn"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:text="Buy Now"
-        app:cornerRadius="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageButton2" />
+        <Button
+            android:id="@+id/addToCart_btn"
+            style="@style/Widget.Material3.Button.TonalButton.Icon"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="0.3"
+            app:cornerRadius="5dp"
+            app:icon="@drawable/ic_add_to_cart"
+            app:iconGravity="textTop"
+            app:iconPadding="0dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/buyNow_btn"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="90dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="5dp"
+            android:layout_weight="0.6"
+            android:text="Buy Now"
+            app:cornerRadius="5dp" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

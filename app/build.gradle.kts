@@ -47,9 +47,6 @@ android {
         viewBinding = true
         buildConfig = true
     }
-//    sourceSets {
-//        getByName("main").java.srcDirs("build/generated/source/navigation-args")
-//    }
 }
 
 dependencies {
@@ -60,15 +57,16 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+
     implementation("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.google.firebase:firebase-firestore-ktx:24.11.0")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database-ktx:20.3.1")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation("com.google.firebase:firebase-functions-ktx:20.4.0")
-
-
     implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
+
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
@@ -112,5 +110,16 @@ dependencies {
     // Places API
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.22"))
     implementation("com.google.android.libraries.places:places:3.3.0")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
+    // Stripe Android SDK
+    implementation("com.stripe:stripe-android:20.40.3")
+
+    //
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }
 

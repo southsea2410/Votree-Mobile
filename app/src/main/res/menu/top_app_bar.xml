@@ -22,5 +22,4 @@
         android:id="@+id/more"
         android:title="@string/more"
         app:showAsAction="never" />
-
 </menu>
