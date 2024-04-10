@@ -1,5 +1,3 @@
-import com.google.android.libraries.mapsplatform.secrets_gradle_plugin.loadPropertiesFile
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -66,12 +64,14 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database-ktx:20.3.1")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
+    implementation("com.google.firebase:firebase-functions-ktx:20.4.0")
 
 
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
-    implementation("com.google.firebase:firebase-functions-ktx:20.4.0")
-    implementation("androidx.activity:activity:1.8.0")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
+    implementation("androidx.activity:activity:1.8.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -86,7 +86,7 @@ dependencies {
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
-    // kapt
+
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     // Declare the dependencies for the Firebase Cloud Firestore and Analytics libraries
@@ -98,10 +98,14 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     // Facebook SDK
     implementation("com.facebook.android:facebook-android-sdk:latest.release")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Activity KTX
+    implementation("androidx.activity:activity-ktx:1.8.2")
 
     // Places API
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.22"))

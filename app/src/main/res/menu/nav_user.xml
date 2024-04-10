@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/productList"
+        android:enabled="true"
+        android:icon="@drawable/home"
+        android:title="Home"/>
+    <item
+        android:id="@+id/main_tip_fragment"
+        android:enabled="true"
+        android:icon="@drawable/plant_tip"
+        android:title="Tips"
+        />
+</menu>

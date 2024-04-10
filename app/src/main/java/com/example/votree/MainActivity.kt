@@ -1,5 +1,6 @@
 package com.example.votree
 
+
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
@@ -10,9 +11,11 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.example.votree.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.votree.databinding.ActivityMainBinding
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.users.activities.SignInActivity
 import com.example.votree.utils.AuthHandler
@@ -24,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var permissionManager: PermissionManager
+    private val bottomNavigation by lazy { findViewById<BottomNavigationView>(R.id.bottom_navigation_view) }
     private lateinit var authHandler: AuthHandler
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -37,20 +41,35 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        permissionManager = PermissionManager(this)
+        permissionManager.checkPermissions()
+
         setupToolbar()
         setupPermissions()
-        setupNavigation()
+//        setupNavigation()
         setupLogoutButton()
         setupRegisterToSellerButton()
 
         RoleManagement.checkUserRole(firebaseAuth = authHandler.firebaseAuth, onSuccess = {
             if (it == "user") {
                 Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
-            } else if (it == "store")
-            {
+            } else if (it == "store") {
                 Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
             }
         })
+
+//        val navHostFragment =
+//        supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
+//        val navController = navHostFragment.navController
+//        navController.setGraph(R.navigation.nav_user_graph)
+//        bottomNavigation.setupWithNavController(navController)
+//        bottomNavigation.inflateMenu(R.menu.nav_user)
+//    }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.main_navigation_fragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     private fun checkUserAuthentication() {
@@ -71,8 +90,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNavigation() {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.productList_f) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+        navController.setGraph(R.navigation.nav_user_graph)
+        bottomNavigation.setupWithNavController(navController)
+        bottomNavigation.inflateMenu(R.menu.nav_user)
         setupActionBarWithNavController(navController, AppBarConfiguration(navController.graph))
     }
 
@@ -115,11 +137,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.productList_f)
-        return navController.navigateUp() || super.onSupportNavigateUp()
-    }
 }
-
-

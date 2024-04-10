@@ -2,8 +2,14 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/product_nav"
-    app:startDestination="@id/productList">
+    app:startDestination="@id/productList"
+    android:id="@+id/nav_user_graph">
+
+    <fragment
+        android:id="@+id/main_tip_fragment"
+        android:name="com.example.votree.tips.TipMainScreenFragment"
+        android:label="Tips Main Screen"
+        tools:layout="@layout/fragment_tip_main_screen" />
 
     <fragment
         android:id="@+id/productList"
