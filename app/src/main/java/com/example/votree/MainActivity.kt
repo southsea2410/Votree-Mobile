@@ -15,6 +15,7 @@ import com.example.votree.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.users.activities.SignInActivity
 import com.example.votree.utils.AuthHandler
@@ -50,10 +51,14 @@ class MainActivity : AppCompatActivity() {
         setupRegisterToSellerButton()
 
         RoleManagement.checkUserRole(firebaseAuth = authHandler.firebaseAuth, onSuccess = {
-            if (it == "user") {
-                Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
-            } else if (it == "store") {
-                Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
+            when (it) {
+                "user" -> Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
+                "store" -> Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
+                "admin" -> {
+                    val intent = Intent(this, AdminMainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
             }
         })
 
