@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/studentInformationLayout"
+    android:id="@+id/tipDetailLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/md_theme_onPrimary"
@@ -90,7 +90,7 @@
                             android:gravity="bottom">
 
                             <ImageView
-                                android:id="@+id/list_item_avatar"
+                                android:id="@+id/tip_list_item_avatar"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
 
@@ -214,19 +214,19 @@
                                 app:strokeWidth="2dp"
                                 style="?android:attr/buttonBarButtonStyle" />
 
-                        <Button
-                            android:id="@+id/approveButton"
-                            android:layout_width="142dp"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="@color/md_theme_primary"
-                            android:textColor="@color/md_theme_onPrimary"
-                            android:layout_margin="10dp"
-                            android:text="@string/approve"
-                            android:textSize="14sp"
-                            app:layout_constraintBottom_toTopOf="@+id/saveButton"
-                            app:strokeColor="@color/md_theme_primary"
-                            app:strokeWidth="2dp"
-                            style="?android:attr/buttonBarButtonStyle" />
+                            <Button
+                                android:id="@+id/approveButton"
+                                android:layout_width="142dp"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/md_theme_primary"
+                                android:textColor="@color/md_theme_onPrimary"
+                                android:layout_margin="10dp"
+                                android:text="@string/approve"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toTopOf="@+id/saveButton"
+                                app:strokeColor="@color/md_theme_primary"
+                                app:strokeWidth="2dp"
+                                style="?android:attr/buttonBarButtonStyle" />
 
                         </LinearLayout>
 

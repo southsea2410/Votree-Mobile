@@ -36,25 +36,25 @@ class TipListAdapter(private var listener: OnItemClickListener) :
 
         Glide.with(viewHolder.itemView.context)
             .load(firstImageUrl)
-            .into(viewHolder.itemView.findViewById(R.id.list_item_avatar))
+            .into(viewHolder.itemView.findViewById(R.id.tip_list_item_avatar))
 
 
         when (currentTip.approvalStatus) {
             -1 -> {
                 viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background = ContextCompat.getDrawable(viewHolder.itemView.context, R.color.md_theme_tertiaryContainer)
-                viewHolder.itemView.findViewById<ImageView>(R.id.item_icon).setImageResource(R.drawable.red_tick)
+                viewHolder.itemView.findViewById<ImageView>(R.id.tip_item_icon).setImageResource(R.drawable.red_tick)
             }
             1 -> {
                 viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background = ContextCompat.getDrawable(viewHolder.itemView.context, R.color.md_theme_primaryContainer)
-                viewHolder.itemView.findViewById<ImageView>(R.id.item_icon).setImageResource(R.drawable.green_tick)
+                viewHolder.itemView.findViewById<ImageView>(R.id.tip_item_icon).setImageResource(R.drawable.green_tick)
             }
             else -> {
                 viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background = ContextCompat.getDrawable(viewHolder.itemView.context, R.color.md_theme_onPrimary)
-                viewHolder.itemView.findViewById<ImageView>(R.id.item_icon).setImageResource(R.drawable.baseline_arrow_right_24)
+                viewHolder.itemView.findViewById<ImageView>(R.id.tip_item_icon).setImageResource(R.drawable.baseline_arrow_right_24)
             }
         }
-        viewHolder.itemView.findViewById<TextView>(R.id.list_item_title).text = currentTip.title
-        viewHolder.itemView.findViewById<TextView>(R.id.list_item_short_description).text = currentTip.shortDescription
+        viewHolder.itemView.findViewById<TextView>(R.id.tip_list_item_title).text = currentTip.title
+        viewHolder.itemView.findViewById<TextView>(R.id.tip_list_item_short_description).text = currentTip.shortDescription
         viewHolder.itemView.setOnClickListener {
             listener.onTipItemClicked(viewHolder.itemView, position)
         }

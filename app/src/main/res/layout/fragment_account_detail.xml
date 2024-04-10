@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/md_theme_onPrimary"
+    android:id="@+id/accountTipDetail">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <ScrollView
+            android:id="@+id/accountScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <LinearLayout
+                android:id="@+id/account_detail_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/account_avatar"
+                        android:layout_width="94dp"
+                        android:layout_height="94dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:src="@drawable/avatar_default"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/account_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/user_name"
+                            android:textColor="@color/md_theme_primary"
+                            android:textSize="32sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/accountRoleIcon"
+                                android:layout_width="7dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginEnd="7dp"
+                                android:src="@drawable/icon_dot"
+                                android:layout_marginStart="5dp"
+                                android:contentDescription="@string/this_is_icon_for_illustration"
+                                app:layout_constraintTop_toBottomOf="@+id/tipImage"
+                                app:tint="@color/md_theme_onPrimaryContainer"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/user_role"
+                                android:textSize="12sp"
+                                android:textColor="@color/md_theme_onPrimaryContainer"
+                                android:id="@+id/account_role"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_user_name"
+                            android:textColor="@color/md_theme_primary"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_phone_number"
+                            android:textColor="@color/md_theme_primary"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_email"
+                            android:textColor="@color/md_theme_primary"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_address"
+                            android:textColor="@color/md_theme_primary"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_accumulate_point"
+                            android:textColor="@color/md_theme_primary"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_created_date"
+                            android:textColor="@color/md_theme_primary"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_updated_date"
+                            android:textColor="@color/md_theme_primary"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="10dp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/account_username"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/user_name"
+                            android:textColor="@color/md_theme_scrim_mediumContrast"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:id="@+id/account_phone_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/user_name"
+                            android:textColor="@color/md_theme_scrim_mediumContrast"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:id="@+id/account_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/user_name"
+                            android:textColor="@color/md_theme_scrim_mediumContrast"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:id="@+id/account_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/user_name"
+                            android:textColor="@color/md_theme_scrim_mediumContrast"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:id="@+id/account_accumulate_point"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/user_name"
+                            android:textColor="@color/md_theme_scrim_mediumContrast"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:id="@+id/account_created_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/user_name"
+                            android:textColor="@color/md_theme_scrim_mediumContrast"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:id="@+id/account_updated_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="@string/user_name"
+                            android:textColor="@color/md_theme_scrim_mediumContrast"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="20dp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/account_transactionList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:soundEffectsEnabled="true"
+                        android:text="@string/link_text"
+                        android:textColor="@color/md_theme_primary"
+                        android:textStyle="bold"
+                        android:textColorLink="@color/md_theme_primary"/>
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_arrow"
+                        android:background="@null"
+                        android:contentDescription="@string/this_is_icon_for_illustration"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:onClick="onTransactionListClick"
+                        app:tint="@color/md_theme_primary" />
+                    
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="46dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal">
+
+                    <Button
+                        android:id="@+id/deleteButton"
+                        android:layout_width="92dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="@color/md_theme_error"
+                        android:text="Delete"
+                        android:textColor="@color/md_theme_onPrimary"
+                        android:textSize="14sp"
+                        android:textStyle="normal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/option2_2"
+                        app:strokeColor="@color/md_theme_error"
+                        app:strokeWidth="2dp"
+                        style="?android:attr/buttonBarButtonStyle" />
+
+                    <Button
+                        android:id="@+id/unbanButton"
+                        android:layout_width="92dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/md_theme_tertiaryContainer"
+                        android:textColor="@color/md_theme_error"
+                        android:layout_margin="10dp"
+                        android:text="Unban"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+                        app:strokeColor="@color/md_theme_tertiaryContainer"
+                        app:strokeWidth="2dp"
+                        style="?android:attr/buttonBarButtonStyle" />
+
+                    <Button
+                        android:id="@+id/timeOutButton"
+                        android:layout_width="92dp"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/yellow"
+                        android:textColor="@color/md_theme_onPrimary"
+                        android:layout_margin="10dp"
+                        android:text="Time out"
+                        android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+                        app:strokeColor="@color/yellow"
+                        app:strokeWidth="2dp"
+                        style="?android:attr/buttonBarButtonStyle" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="45dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Banned"
+                            android:textColor="@color/md_theme_primary"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:text="Time Out Date:"
+                            android:textColor="@color/md_theme_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/account_banned"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Yes"
+                            android:textColor="@color/md_theme_scrim_mediumContrast"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <TextView
+                            android:id="@+id/account_time_out_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Jan 1, 2021 - Jan 1, 2021"
+                            android:textColor="@color/md_theme_scrim_mediumContrast"
+                            android:textSize="16sp"
+                            android:layout_marginBottom="20dp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

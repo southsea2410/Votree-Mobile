@@ -137,4 +137,18 @@
     <string name="facebook_app_id">1234</string>
     <string name="fb_login_protocol_scheme">fb1234</string>
     <string name="facebook_client_token">56789</string>
+    <string name="user_role">USER</string>
+    <string name="title_user_name">User Name:</string>
+    <string name="title_gender">Gender:</string>
+    <string name="title_phone_number">Phone Number:</string>
+    <string name="title_email">Email:</string>
+    <string name="title_address">Address:</string>
+    <string name="title_accumulate_point">Accumulate Point:</string>
+    <string name="title_created_date">Created Date:</string>
+    <string name="title_updated_date">Updated Date:</string>
+    <string name="link_text">Transaction List</string>
+    <string name="reported_by">Reported by: %s</string>
+    <string name="being_reported">Being reported: %s</string>
+    <string name="by_user">By</string>
+    <string name="reported_date">Reported date: %s</string>
 </resources>

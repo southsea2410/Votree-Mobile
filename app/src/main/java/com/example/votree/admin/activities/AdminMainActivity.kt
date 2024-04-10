@@ -13,30 +13,40 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.votree.R
+import com.example.votree.admin.adapters.AccountListAdapter
+import com.example.votree.admin.adapters.ReportListAdapter
 import com.example.votree.admin.adapters.TipListAdapter
+import com.example.votree.admin.fragments.AccountListFragment
+import com.example.votree.admin.fragments.ReportListFragment
 import com.example.votree.admin.fragments.TipListFragment
 import com.example.votree.admin.interfaces.OnItemClickListener
+import com.example.votree.models.Report
 import com.example.votree.models.Tip
+import com.example.votree.models.User
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @Suppress("DEPRECATION")
-class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQueryTextListener, NavigationView.OnNavigationItemSelectedListener {
+class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQueryTextListener, NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var topAppBar: MaterialToolbar
     private val db = Firebase.firestore
-    private val adapter: TipListAdapter by lazy { TipListAdapter(this) }
+    private val tipAdapter: TipListAdapter by lazy { TipListAdapter(this) }
+    private val accountAdapter: AccountListAdapter by lazy { AccountListAdapter(this) }
+    private val reportAdapter: ReportListAdapter by lazy { ReportListAdapter(this) }
     private val tipList = mutableListOf<Tip>()
+    private val accountList = mutableListOf<User>()
+    private val reportList = mutableListOf<Report>()
     private val SharedPrefs = "sharedPrefs"
     private var currentFragment: Fragment? = null
     private var currentFlag: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tip_list)
+        setContentView(R.layout.activity_main_admin)
 
         drawerLayout = findViewById(R.id.mainLayout)
         topAppBar = findViewById(R.id.topAppBar)
@@ -45,7 +55,7 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
         topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.more -> {
-                    Log.d("TipListActivity", "More clicked")
+                    Log.d("ListActivity", "More clicked")
                     true
                 }
                 else -> false
@@ -71,6 +81,8 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
 
                 currentFragment = when (getCurrentFlag()) {
                     0 -> TipListFragment()
+                    1 -> AccountListFragment()
+                    2 -> ReportListFragment()
                     else -> TipListFragment()
                 }
 
@@ -90,6 +102,8 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
 
         val defaultFragment = when (getCurrentFlag()) {
             0 -> TipListFragment()
+            1 -> AccountListFragment()
+            2 -> ReportListFragment()
             else -> TipListFragment()
         }
         supportFragmentManager.beginTransaction()
@@ -119,6 +133,30 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
         }
     }
 
+    override fun onAccountItemClicked(view: View?, position: Int) {
+
+        val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
+        topAppBar.menu.clear()
+        topAppBar.setNavigationIcon(R.drawable.icon_back)
+        topAppBar.setNavigationOnClickListener {
+            setupNormalActionBar()
+            supportFragmentManager.popBackStack()
+        }
+    }
+
+    override fun onReportItemClicked(view: View?, position: Int) {
+
+        val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
+        topAppBar.menu.clear()
+        topAppBar.setNavigationIcon(R.drawable.icon_back)
+        topAppBar.setNavigationOnClickListener {
+            setupNormalActionBar()
+            supportFragmentManager.popBackStack()
+        }
+    }
+
+    override fun searchItem(query: String) { }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
         menuInflater.inflate(R.menu.top_app_bar, menu)
@@ -133,16 +171,26 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (query != null) {
-            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as? TipListFragment
-            fragment?.searchTip(query)
+            val fragment = when (getCurrentFlag()) {
+                0 -> supportFragmentManager.findFragmentById(R.id.fragment_container) as? TipListFragment
+                1 -> supportFragmentManager.findFragmentById(R.id.fragment_container) as? AccountListFragment
+                2 -> supportFragmentManager.findFragmentById(R.id.fragment_container) as? ReportListFragment
+                else -> supportFragmentManager.findFragmentById(R.id.fragment_container) as? TipListFragment
+            }
+            fragment?.searchItem(query)
         }
         return true
     }
 
     override fun onQueryTextChange(query: String?): Boolean {
         if (query != null) {
-            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as? TipListFragment
-            fragment?.searchTip(query)
+            val fragment = when (getCurrentFlag()) {
+                0 -> supportFragmentManager.findFragmentById(R.id.fragment_container) as? TipListFragment
+                1 -> supportFragmentManager.findFragmentById(R.id.fragment_container) as? AccountListFragment
+                2 -> supportFragmentManager.findFragmentById(R.id.fragment_container) as? ReportListFragment
+                else -> supportFragmentManager.findFragmentById(R.id.fragment_container) as? TipListFragment
+            }
+            fragment?.searchItem(query)
         }
         return true
     }
@@ -157,20 +205,14 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
             }
             R.id.nav_accounts -> {
                 currentFlag = 1
-
                 drawerLayout.closeDrawer(GravityCompat.START)
-                return true
-            }
-            R.id.nav_promotions -> {
-                currentFlag = 2
 
-                drawerLayout.closeDrawer(GravityCompat.START)
                 return true
             }
             R.id.nav_reports -> {
-                currentFlag = 3
-
+                currentFlag = 2
                 drawerLayout.closeDrawer(GravityCompat.START)
+
                 return true
             }
             else -> return false
@@ -202,8 +244,8 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
         editor.apply()
     }
 
-    private fun fetchDataFromFirestore() {
-        db.collection("ProductTip")
+    private fun fetchTipFromFirestore() {
+        db.collection("ProductTip2")
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("TipListActivity", "listen:error", e)
@@ -218,8 +260,57 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
                     tipList.add(tip)
                 }
 
-                adapter.setData(tipList)
+                tipAdapter.setData(tipList)
             }
+    }
+
+    private fun fetchAccountFromFirestore() {
+        db.collection("users")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.w("AccountListActivity", "listen:error", e)
+                    return@addSnapshotListener
+                }
+
+                tipList.clear()
+
+                for (doc in snapshots!!) {
+                    val account = doc.toObject(User::class.java)
+                    account.id = doc.id
+                    accountList.add(account)
+                }
+
+                accountAdapter.setData(accountList)
+            }
+    }
+
+    private fun fetchReportFromFirestore() {
+        db.collection("reports")
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.w("ReportListActivity", "listen:error", e)
+                    return@addSnapshotListener
+                }
+
+                reportList.clear()
+
+                for (doc in snapshots!!) {
+                    val report = doc.toObject(Report::class.java)
+                    report.id = doc.id
+                    reportList.add(report)
+                }
+
+                reportAdapter.setData(reportList)
+            }
+    }
+
+    private fun fetchDataFromFirestore() {
+        when(getCurrentFlag()) {
+            0 -> fetchTipFromFirestore()
+            1 -> fetchAccountFromFirestore()
+            2 -> fetchReportFromFirestore()
+            else -> fetchTipFromFirestore()
+        }
     }
 
     private val backStackListener = FragmentManager.OnBackStackChangedListener {
@@ -236,7 +327,7 @@ class TipListActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQ
         topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.more -> {
-                    Log.d("TipListActivity", "More clicked")
+                    Log.d("ListActivity", "More clicked")
                     true
                 }
                 else -> false

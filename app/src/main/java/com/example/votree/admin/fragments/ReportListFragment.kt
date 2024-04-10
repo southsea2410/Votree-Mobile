@@ -11,17 +11,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.R
 import com.example.votree.admin.activities.AdminMainActivity
-import com.example.votree.admin.adapters.TipListAdapter
+import com.example.votree.admin.adapters.AccountListAdapter
+import com.example.votree.admin.adapters.ReportListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
-import com.example.votree.models.Tip
+import com.example.votree.models.Report
+import com.example.votree.models.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class TipListFragment : Fragment(), OnItemClickListener {
+class ReportListFragment : Fragment(), OnItemClickListener {
 
     private val db = Firebase.firestore
-    private val adapter: TipListAdapter by lazy { TipListAdapter(this) }
-    private val tipList = mutableListOf<Tip>()
+    private val adapter: ReportListAdapter by lazy { ReportListAdapter(this) }
+    private val reportList = mutableListOf<Report>()
     private var previousBackStackEntryCount = 0
 
     override fun onCreateView(
@@ -29,11 +31,11 @@ class TipListFragment : Fragment(), OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_tip_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_report_list, container, false)
 
-        val recycleViewTipList: RecyclerView? = view?.findViewById(R.id.tipListRecycleView)
-        recycleViewTipList?.adapter = adapter
-        recycleViewTipList?.layoutManager = LinearLayoutManager(context)
+        val recyclerViewReportList: RecyclerView? = view?.findViewById(R.id.reportListRecycleView)
+        recyclerViewReportList?.adapter = adapter
+        recyclerViewReportList?.layoutManager = LinearLayoutManager(context)
 
         fetchDataFromFirestore()
 
@@ -54,52 +56,47 @@ class TipListFragment : Fragment(), OnItemClickListener {
         return view
     }
 
-    override fun onTipItemClicked(view: View?, position: Int) {
+    override fun onTipItemClicked(view: View?, position: Int) {}
 
-        (activity as AdminMainActivity).onTipItemClicked(view, position)
+    override fun onAccountItemClicked(view: View?, position: Int) {}
 
-        val fragment = TipDetailFragment()
+    override fun onReportItemClicked(view: View?, position: Int) {
+        (activity as AdminMainActivity).onReportItemClicked(view, position)
+
+        val fragment = ReportDetailFragment()
         val bundle = Bundle().apply {
-            putParcelable("tip", adapter.getTip(position))
+            putParcelable("report", adapter.getReport(position))
         }
         fragment.arguments = bundle
 
         val fragmentManager = (activity as FragmentActivity).supportFragmentManager
 
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("tip_list_fragment").commit()
-    }
-
-    override fun onAccountItemClicked(view: View?, position: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onReportItemClicked(view: View?, position: Int) {
-        TODO("Not yet implemented")
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_list_fragment").commit()
     }
 
     private fun fetchDataFromFirestore() {
-        db.collection("ProductTip2")
+        db.collection("reports")
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
-                    Log.w("TipListActivity", "listen:error", e)
+                    Log.w("ReportListActivity", "listen:error", e)
                     return@addSnapshotListener
                 }
 
-                tipList.clear()
+                reportList.clear()
 
                 for (doc in snapshots!!) {
-                    val tip = doc.toObject(Tip::class.java)
-                    tip.id = doc.id
-                    tipList.add(tip)
+                    val report = doc.toObject(Report::class.java)
+                    report.id = doc.id
+                    reportList.add(report)
                 }
 
-                adapter.setData(tipList)
+                adapter.setData(reportList)
             }
     }
 
     override fun searchItem(query: String) {
-        val searchResult = tipList.filter {
-            it.title.contains(query, ignoreCase = true) || it.shortDescription.contains(query, ignoreCase = true)
+        val searchResult = reportList.filter {
+            it.reporterId.contains(query, ignoreCase = true) || it.shortDescription.contains(query, ignoreCase = true)
         }
 
         adapter.setData(searchResult)

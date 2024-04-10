@@ -42,17 +42,11 @@ package com.example.votree
 //    }
 //}
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.votree.admin.activities.TipListActivity
-import com.example.votree.users.activities.SignInActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.messaging.FirebaseMessaging
+import com.example.votree.admin.activities.AdminMainActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -62,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         val button = findViewById<Button>(R.id.button)
         button.setOnClickListener {
-            val intent = Intent(this, TipListActivity::class.java)
+            val intent = Intent(this, AdminMainActivity::class.java)
             startActivity(intent)
         }
     }

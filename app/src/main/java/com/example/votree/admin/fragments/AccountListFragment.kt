@@ -11,17 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.R
 import com.example.votree.admin.activities.AdminMainActivity
-import com.example.votree.admin.adapters.TipListAdapter
+import com.example.votree.admin.adapters.AccountListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
-import com.example.votree.models.Tip
+import com.example.votree.models.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class TipListFragment : Fragment(), OnItemClickListener {
+class AccountListFragment : Fragment(), OnItemClickListener {
 
     private val db = Firebase.firestore
-    private val adapter: TipListAdapter by lazy { TipListAdapter(this) }
-    private val tipList = mutableListOf<Tip>()
+    private val adapter: AccountListAdapter by lazy { AccountListAdapter(this) }
+    private val accountList = mutableListOf<User>()
     private var previousBackStackEntryCount = 0
 
     override fun onCreateView(
@@ -29,11 +29,11 @@ class TipListFragment : Fragment(), OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_tip_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_account_list, container, false)
 
-        val recycleViewTipList: RecyclerView? = view?.findViewById(R.id.tipListRecycleView)
-        recycleViewTipList?.adapter = adapter
-        recycleViewTipList?.layoutManager = LinearLayoutManager(context)
+        val recyclerViewAccountList: RecyclerView? = view?.findViewById(R.id.accountListRecycleView)
+        recyclerViewAccountList?.adapter = adapter
+        recyclerViewAccountList?.layoutManager = LinearLayoutManager(context)
 
         fetchDataFromFirestore()
 
@@ -55,22 +55,21 @@ class TipListFragment : Fragment(), OnItemClickListener {
     }
 
     override fun onTipItemClicked(view: View?, position: Int) {
+        TODO("Not yet implemented")
+    }
 
-        (activity as AdminMainActivity).onTipItemClicked(view, position)
+    override fun onAccountItemClicked(view: View?, position: Int) {
+        (activity as AdminMainActivity).onAccountItemClicked(view, position)
 
-        val fragment = TipDetailFragment()
+        val fragment = AccountDetailFragment()
         val bundle = Bundle().apply {
-            putParcelable("tip", adapter.getTip(position))
+            putParcelable("account", adapter.getAccount(position))
         }
         fragment.arguments = bundle
 
         val fragmentManager = (activity as FragmentActivity).supportFragmentManager
 
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("tip_list_fragment").commit()
-    }
-
-    override fun onAccountItemClicked(view: View?, position: Int) {
-        TODO("Not yet implemented")
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("account_list_fragment").commit()
     }
 
     override fun onReportItemClicked(view: View?, position: Int) {
@@ -78,28 +77,28 @@ class TipListFragment : Fragment(), OnItemClickListener {
     }
 
     private fun fetchDataFromFirestore() {
-        db.collection("ProductTip2")
+        db.collection("users")
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
-                    Log.w("TipListActivity", "listen:error", e)
+                    Log.w("AccountListActivity", "listen:error", e)
                     return@addSnapshotListener
                 }
 
-                tipList.clear()
+                accountList.clear()
 
                 for (doc in snapshots!!) {
-                    val tip = doc.toObject(Tip::class.java)
-                    tip.id = doc.id
-                    tipList.add(tip)
+                    val account = doc.toObject(User::class.java)
+                    account.id = doc.id
+                    accountList.add(account)
                 }
 
-                adapter.setData(tipList)
+                adapter.setData(accountList)
             }
     }
 
     override fun searchItem(query: String) {
-        val searchResult = tipList.filter {
-            it.title.contains(query, ignoreCase = true) || it.shortDescription.contains(query, ignoreCase = true)
+        val searchResult = accountList.filter {
+            it.userName.contains(query, ignoreCase = true) || it.role.contains(query, ignoreCase = true)
         }
 
         adapter.setData(searchResult)

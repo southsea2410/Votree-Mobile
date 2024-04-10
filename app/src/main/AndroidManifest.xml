@@ -35,7 +35,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".admin.activities.TipListActivity" />
+        <activity android:name=".admin.activities.AdminMainActivity" />
         <activity
             android:name=".users.activities.SignInActivity"
             android:exported="false"></activity>

@@ -2,12 +2,12 @@ package com.example.votree.models
 
 import android.os.Parcel
 import android.os.Parcelable
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlinx.parcelize.Parceler
+import kotlinx.parcelize.Parcelize
+import java.util.Date
 
-@Serializable
+@Parcelize
 data class User (
-    @SerialName("id")
     var id: String,
     var userName: String,
     var fullName: String,
@@ -15,16 +15,16 @@ data class User (
     var phoneNumber: String,
     var address: String,
     var email: String,
-    var avatar: List<String>,
+    var avatar: String,
     var active: Boolean,
     var role: String,
     var storeId: String,
-    var expirePremium: String,
+    var expirePremium: Date = Date(),
     var accumulatePoint: Int,
     var totalRevenue: Int,
     var transactionIdList: List<String>,
-    var createdAt: String,
-    var updatedAt: String
+    var createdAt: Date = Date(),
+    var updatedAt: Date = Date()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -34,51 +34,44 @@ data class User (
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.createStringArrayList()!!,
+        parcel.readString()!!,
         parcel.readBoolean(),
         parcel.readString()!!,
         parcel.readString()!!,
-        parcel.readString()!!,
+        Date(parcel.readLong()),
         parcel.readInt(),
         parcel.readInt(),
         parcel.createStringArrayList()!!,
-        parcel.readString()!!,
-        parcel.readString()!!
-    ) {}
+        Date(parcel.readLong()),
+        Date(parcel.readLong())
+    )
 
-    constructor() : this("", "", "", "", "", "", "", emptyList(), false, "", "", "", 0, 0, emptyList(), "", "")
+    constructor() : this("", "", "", "", "", "", "", "", false, "", "", Date(), 0, 0, emptyList(), Date(), Date())
 
-    override fun describeContents(): Int {
-        return 0
-    }
+    companion object : Parceler<User> {
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(id)
-        dest.writeString(userName)
-        dest.writeString(fullName)
-        dest.writeString(password)
-        dest.writeString(phoneNumber)
-        dest.writeString(address)
-        dest.writeString(email)
-        dest.writeStringList(avatar)
-        dest.writeBoolean(active)
-        dest.writeString(role)
-        dest.writeString(storeId)
-        dest.writeString(expirePremium)
-        dest.writeInt(accumulatePoint)
-        dest.writeInt(totalRevenue)
-        dest.writeStringList(transactionIdList)
-        dest.writeString(createdAt)
-        dest.writeString(updatedAt)
-    }
-
-    companion object CREATOR : Parcelable.Creator<User> {
-        override fun createFromParcel(parcel: Parcel): User {
-            return User(parcel)
+        override fun User.write(parcel: Parcel, flags: Int) {
+            parcel.writeString(id)
+            parcel.writeString(userName)
+            parcel.writeString(fullName)
+            parcel.writeString(password)
+            parcel.writeString(phoneNumber)
+            parcel.writeString(address)
+            parcel.writeString(email)
+            parcel.writeString(avatar)
+            parcel.writeBoolean(active)
+            parcel.writeString(role)
+            parcel.writeString(storeId)
+            parcel.writeLong(expirePremium.time)
+            parcel.writeInt(accumulatePoint)
+            parcel.writeInt(totalRevenue)
+            parcel.writeStringList(transactionIdList)
+            parcel.writeLong(createdAt.time)
+            parcel.writeLong(updatedAt.time)
         }
 
-        override fun newArray(size: Int): Array<User?> {
-            return arrayOfNulls(size)
+        override fun create(parcel: Parcel): User {
+            return User(parcel)
         }
 
     }
