@@ -7,7 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 class AuthHandler(private val context: Context) {
 
-    private val firebaseAuth: FirebaseAuth by lazy {
+    val firebaseAuth: FirebaseAuth by lazy {
         FirebaseAuth.getInstance()
     }
 

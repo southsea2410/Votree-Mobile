@@ -20,7 +20,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
-    private lateinit var firebaseAuth: FirebaseAuth
+    private  var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,8 +114,23 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    private fun signOut() {
-        firebaseAuth.signOut()
-        googleSignInClient.signOut()
+    fun signOut() {
+        firebaseAuth = FirebaseAuth.getInstance()
+        // googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+
+        if (firebaseAuth.currentUser != null) {
+            firebaseAuth.signOut()
+        }
+        // if (googleSignInClient != null) {
+        //     googleSignInClient.signOut()
+        // }
+
+        // Check if shared preferences have any keys, then clear it if it does
+//        val sharedPreferences = getSharedPreferences("user_info", MODE_PRIVATE)
+//        if (sharedPreferences.all.isNotEmpty()) {
+//            val editor = sharedPreferences.edit()
+//            editor.clear()
+//            editor.apply() // or editor.commit() if you need synchronous operation
+//        }
     }
 }

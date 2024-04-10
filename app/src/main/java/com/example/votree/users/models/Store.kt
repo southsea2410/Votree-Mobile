@@ -9,7 +9,7 @@ data class Store(
     var id: String = "",
     val storeName: String = "",
     val storeLocation: String = "",
-    val email: String = "",
+    val storeEmail: String = "",
     val storePhoneNumber: String = "",
     val discountCodeIdList: List<String> = mutableListOf(),
     val transactionIdList: List<String> = mutableListOf(),
