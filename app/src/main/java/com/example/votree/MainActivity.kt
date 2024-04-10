@@ -1,6 +1,5 @@
 package com.example.votree
 
-
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         setupToolbar()
         setupPermissions()
-//        setupNavigation()
+        setupNavigation()
         setupLogoutButton()
         setupRegisterToSellerButton()
 

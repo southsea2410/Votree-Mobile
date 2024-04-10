@@ -114,23 +114,23 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-     fun signOut() {
-         firebaseAuth = FirebaseAuth.getInstance()
-//         googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+    fun signOut() {
+        firebaseAuth = FirebaseAuth.getInstance()
+        // googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
 
-         if (firebaseAuth.currentUser != null) {
-             firebaseAuth.signOut()
-         }
-//            if (googleSignInClient != null) {
-//                googleSignInClient.signOut()
-//            }
+        if (firebaseAuth.currentUser != null) {
+            firebaseAuth.signOut()
+        }
+        // if (googleSignInClient != null) {
+        //     googleSignInClient.signOut()
+        // }
 
-         // Delete sharedReference
-         val sharedPref = getSharedPreferences("user_info", MODE_PRIVATE)
-         if (sharedPref != null) {
-             val editor = sharedPref.edit()
-             editor.clear()
-             editor.apply()
-         }
+        // Check if shared preferences have any keys, then clear it if it does
+//        val sharedPreferences = getSharedPreferences("user_info", MODE_PRIVATE)
+//        if (sharedPreferences.all.isNotEmpty()) {
+//            val editor = sharedPreferences.edit()
+//            editor.clear()
+//            editor.apply() // or editor.commit() if you need synchronous operation
+//        }
     }
 }
