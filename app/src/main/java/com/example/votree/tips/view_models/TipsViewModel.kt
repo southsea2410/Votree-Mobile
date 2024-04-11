@@ -28,6 +28,7 @@ class TipsViewModel : ViewModel() {
             .get()
             .addOnSuccessListener { documents ->
                 _tipList.value = documents.toObjects(ProductTip::class.java)
+                Log.d("TipsViewModel", "Done getting documents: " + _tipList.value?.get(0).toString())
             }
             .addOnFailureListener{
                 Log.d("TipsViewModel", "Error getting documents: ", it)
