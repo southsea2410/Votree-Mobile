@@ -35,15 +35,16 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="20dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center" >
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="Type of report:"
                         android:textColor="@color/md_theme_primary"
                         android:textSize="16sp"
@@ -51,14 +52,42 @@
 
                     <TextView
                         android:id="@+id/reportType"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_marginStart="10dp"
                         android:text="Tip"
-                        android:textColor="@color/md_theme_scrim"
-                        android:textSize="16sp" />
+                        android:textColor="@color/md_theme_error"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/viewDetailButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="View"
+                        android:textColor="@color/md_theme_error"
+                        android:textSize="15sp"
+                        android:textStyle="normal"
+                        android:drawablePadding="8dp"
+                        app:backgroundTint="@color/transparent"
+                        app:strokeColor="@color/md_theme_error"
+                        app:strokeWidth="2dp"
+                        style="?android:attr/buttonBarButtonStyle" />
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/reportedDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/reported_date"
+                    android:textColor="@color/md_theme_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -80,41 +109,77 @@
                     android:textColor="@color/md_theme_scrim"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/reportedBy"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="20dp"
-                    android:text="@string/reported_by"
-                    android:textColor="@color/md_theme_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal"
+                    android:gravity="center" >
 
-                <TextView
-                    android:id="@+id/beingReported"
+                    <TextView
+                        android:id="@+id/reportedBy"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/reported_by"
+                        android:textColor="@color/md_theme_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/viewReporterButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="View"
+                        android:textColor="@color/md_theme_primary"
+                        android:textSize="15sp"
+                        android:textStyle="normal"
+                        android:drawablePadding="8dp"
+                        app:backgroundTint="@color/transparent"
+                        app:strokeColor="@color/md_theme_primary"
+                        app:strokeWidth="2dp"
+                        style="?android:attr/buttonBarButtonStyle" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/being_reported"
-                    android:textColor="@color/md_theme_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal"
+                    android:gravity="center" >
 
-                <TextView
-                    android:id="@+id/reportedDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/reported_date"
-                    android:textColor="@color/md_theme_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/beingReported"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/being_reported"
+                        android:textColor="@color/md_theme_onTertiaryContainer"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/viewUserButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="View"
+                        android:textColor="@color/md_theme_onTertiaryContainer"
+                        android:textSize="15sp"
+                        android:textStyle="normal"
+                        android:drawablePadding="8dp"
+                        app:backgroundTint="@color/transparent"
+                        app:strokeColor="@color/md_theme_onTertiaryContainer"
+                        app:strokeWidth="2dp"
+                        style="?android:attr/buttonBarButtonStyle" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -127,44 +192,30 @@
                     android:layout_gravity="center_horizontal">
 
                     <Button
-                        android:id="@+id/deleteButton"
-                        android:layout_width="92dp"
+                        android:id="@+id/unresolveButton"
+                        android:layout_width="142dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/md_theme_error"
-                        android:text="Delete"
-                        android:textColor="@color/md_theme_onPrimary"
+                        android:backgroundTint="@color/md_theme_errorContainer"
+                        android:text="Unresolve"
+                        android:textColor="@color/md_theme_error"
                         android:textSize="14sp"
                         android:textStyle="normal"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/option2_2"
-                        app:strokeColor="@color/md_theme_error"
+                        app:strokeColor="@color/md_theme_errorContainer"
                         app:strokeWidth="2dp"
                         style="?android:attr/buttonBarButtonStyle" />
 
                     <Button
-                        android:id="@+id/unbanButton"
-                        android:layout_width="92dp"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/md_theme_tertiaryContainer"
-                        android:textColor="@color/md_theme_error"
-                        android:layout_margin="10dp"
-                        android:text="Unban"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toTopOf="@+id/saveButton"
-                        app:strokeColor="@color/md_theme_tertiaryContainer"
-                        app:strokeWidth="2dp"
-                        style="?android:attr/buttonBarButtonStyle" />
-
-                    <Button
-                        android:id="@+id/timeOutButton"
-                        android:layout_width="92dp"
+                        android:id="@+id/warnButton"
+                        android:layout_width="142dp"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/yellow"
                         android:textColor="@color/md_theme_onPrimary"
                         android:layout_margin="10dp"
-                        android:text="Time out"
+                        android:text="Warn"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toTopOf="@+id/saveButton"
                         app:strokeColor="@color/yellow"

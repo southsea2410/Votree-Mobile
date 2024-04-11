@@ -23,7 +23,7 @@ class TipsViewModel : ViewModel() {
     fun queryAllTips() {
         val collection = firestore.collection("ProductTip2")
         collection
-//            .orderBy("createdAt", Query.Direction.ASCENDING)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { documents ->
                 _tipList.value = documents.toObjects(ProductTip::class.java)

@@ -3,6 +3,7 @@ package com.example.votree.admin.fragments
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +12,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import com.bumptech.glide.Glide
 import com.example.votree.R
+import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.models.Report
+import com.example.votree.models.Tip
+import com.example.votree.models.User
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Locale
@@ -24,6 +30,7 @@ class ReportDetailFragment : Fragment() {
 
     private val db = Firebase.firestore
     private var report: Report? = null
+    private var previousBackStackEntryCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,15 +38,109 @@ class ReportDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_report_detail, container, false)
-        val deleteButton = view?.findViewById<Button>(R.id.deleteButton)
-        val unbanButton = view?.findViewById<Button>(R.id.unbanButton)
-        val timeOutButton = view?.findViewById<Button>(R.id.timeOutButton)
+        val viewDetailButton = view?.findViewById<Button>(R.id.viewDetailButton)
+        val viewReporterButton = view?.findViewById<Button>(R.id.viewReporterButton)
+        val viewUserButton = view?.findViewById<Button>(R.id.viewUserButton)
+        val unresolveButton = view?.findViewById<Button>(R.id.unresolveButton)
+        val warnButton = view?.findViewById<Button>(R.id.warnButton)
 
-        deleteButton?.setOnClickListener {
-            db.collection("reports").document(report!!.id).delete()
-                .addOnSuccessListener {
-                    activity?.supportFragmentManager?.popBackStack("report_list_fragment", POP_BACK_STACK_INCLUSIVE)
+        viewDetailButton?.setOnClickListener {
+            if (report?.tipId != null && report?.tipId != "") {
+                val fragment = ReportTipDetailFragment()
+                db.collection("ProductTip2").document(report!!.tipId!!).get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            val tip = document.toObject(Tip::class.java)
+                            fragment.arguments = Bundle().apply {
+                                putParcelable("tip", tip)
+                            }
+                            val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+                            (activity as AdminMainActivity).setCurrentFragment(ReportTipDetailFragment())
+                            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
+                        }
+                    }
+            } else {
+                // for different type of report
+                val fragment = ReportTipDetailFragment()
+            }
+        }
+
+        viewReporterButton?.setOnClickListener {
+            val fragment = ReportReporterDetailFragment()
+            db.collection("users").document(report!!.reporterId).get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val user = document.toObject(User::class.java)
+                        fragment.arguments = Bundle().apply {
+                            putParcelable("account", user)
+                        }
+                        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+                        (activity as AdminMainActivity).setCurrentFragment(ReportReporterDetailFragment())
+                        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
+                    }
                 }
+        }
+
+        viewUserButton?.setOnClickListener {
+            val fragment = ReportReporterDetailFragment()
+            db.collection("users").document(report!!.userId).get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val user = document.toObject(User::class.java)
+                        fragment.arguments = Bundle().apply {
+                            putParcelable("account", user)
+                        }
+                        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+                        (activity as AdminMainActivity).setCurrentFragment(ReportReporterDetailFragment())
+                        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
+                    }
+                }
+        }
+
+        unresolveButton?.setOnClickListener {
+            context?.let { it1 ->
+                MaterialAlertDialogBuilder(it1)
+                    .setTitle("Unresolve Report")
+                    .setMessage("This article is not violating the platform's rules?")
+                    .setNegativeButton("Cancel") { _, _ -> }
+                    .setPositiveButton("Accept") { _, _ ->
+                        db.collection("reports").document(report!!.id).update("processingMethod", "Unresolved")
+                            .addOnSuccessListener {
+                                activity?.supportFragmentManager?.popBackStack("report_list_fragment", POP_BACK_STACK_INCLUSIVE)
+                            }
+                    }
+                    .show()
+            }
+        }
+
+        warnButton?.setOnClickListener {
+            context?.let { it1 ->
+                MaterialAlertDialogBuilder(it1)
+                    .setTitle("Warn User")
+                    .setMessage("This article violates the platform's rules?")
+                    .setNegativeButton("Cancel") { _, _ -> }
+                    .setPositiveButton("Accept") { _, _ ->
+                        db.collection("reports").document(report!!.id).update("processingMethod", "Warned")
+                            .addOnSuccessListener {
+                                activity?.supportFragmentManager?.popBackStack("report_list_fragment", POP_BACK_STACK_INCLUSIVE)
+                            }
+                    }
+                    .show()
+            }
+        }
+
+        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+
+        fragmentManager.addOnBackStackChangedListener {
+
+            val currentBackStackEntryCount = fragmentManager.backStackEntryCount
+
+            if (currentBackStackEntryCount < previousBackStackEntryCount) {
+                Log.d("ReportDetailFragment", "Backstack count: $currentBackStackEntryCount")
+//                (activity as AdminMainActivity).setupNormalActionBar()
+            }
+
+            previousBackStackEntryCount = currentBackStackEntryCount
         }
 
         return view
@@ -76,11 +177,21 @@ class ReportDetailFragment : Fragment() {
 
             view?.findViewById<TextView>(R.id.reportDescription)?.text = nonNullTip.content
 
-            val reportedByText = java.lang.String.format(resources.getString(R.string.reported_by), nonNullTip.reporterId)
-            view?.findViewById<TextView>(R.id.reportedBy)?.text = reportedByText
+            db.collection("users").document(nonNullTip.reporterId).get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val reportedByText = java.lang.String.format(resources.getString(R.string.reported_by), document.data?.get("username").toString())
+                        view?.findViewById<TextView>(R.id.reportedBy)?.text = reportedByText
+                    }
+                }
 
-            val beingReportedText = java.lang.String.format(resources.getString(R.string.being_reported), nonNullTip.userId)
-            view?.findViewById<TextView>(R.id.beingReported)?.text = beingReportedText
+            db.collection("users").document(nonNullTip.userId).get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        val beingReportedText = java.lang.String.format(resources.getString(R.string.being_reported), document.data?.get("username").toString())
+                        view?.findViewById<TextView>(R.id.beingReported)?.text = beingReportedText
+                    }
+                }
 
             val reportedDate = dateFormat(nonNullTip.createdAt.toString())
             val reportedDateText = java.lang.String.format(resources.getString(R.string.reported_date), reportedDate)
@@ -95,5 +206,9 @@ class ReportDetailFragment : Fragment() {
         val outputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
 
         return outputFormat.format(inputDate)
+    }
+
+    fun getReporterId(): String? {
+        return report?.reporterId
     }
 }

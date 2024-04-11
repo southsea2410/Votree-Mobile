@@ -63,7 +63,7 @@
                 android:layout_gravity="center_vertical"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="@string/user_name"
+                android:text=" "
                 android:textAppearance="?attr/textAppearanceBody2"
                 android:textColor="@color/md_theme_onSurface"
                 android:paddingBottom="16dp"
