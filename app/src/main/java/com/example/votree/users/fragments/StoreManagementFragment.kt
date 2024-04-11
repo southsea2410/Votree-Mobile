@@ -34,9 +34,6 @@ class StoreManagementFragment : Fragment() {
             navigateToAddNewProductFragment()
         }
 
-//        setupRecyclerView()
-//        loadProducts()
-
         return binding.root
     }
 

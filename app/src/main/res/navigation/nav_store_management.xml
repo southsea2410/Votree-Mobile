@@ -31,34 +31,34 @@
             app:destination="@id/storeManagement2" />
     </fragment>
     <fragment
-        android:id="@+id/productDetail2"
-        android:name="com.example.votree.products.fragments.ProductDetail"
-        android:label="fragment_product_detail"
-        tools:layout="@layout/fragment_product_detail">
-        <action
-            android:id="@+id/action_productDetail2_to_storeManagement2"
-            app:destination="@id/storeManagement2" />
-        <argument
-            android:name="role"
-            android:defaultValue="store"
-            app:argType="string" />
-        <argument
-            android:name="currentProduct"
-            app:argType="com.example.votree.products.models.Product" />
-        <action
-            android:id="@+id/action_productDetail2_to_updateProduct"
-            app:destination="@id/updateProduct" />
-    </fragment>
-    <fragment
         android:id="@+id/updateProduct"
         android:name="com.example.votree.products.fragments.UpdateProduct"
         android:label="fragment_update_product"
         tools:layout="@layout/fragment_update_product">
-        <action
-            android:id="@+id/action_updateProduct_to_productDetail2"
-            app:destination="@id/productDetail2" />
         <argument
             android:name="currentProduct"
             app:argType="com.example.votree.products.models.Product" />
+        <action
+            android:id="@+id/action_updateProduct_to_productDetail2"
+            app:destination="@id/productDetail2" />
+    </fragment>
+    <fragment
+        android:id="@+id/productDetail2"
+        android:name="com.example.votree.products.fragments.ProductDetailFragment"
+        android:label="fragment_product_detail"
+        tools:layout="@layout/fragment_product_detail">
+        <argument
+            android:name="currentProduct"
+            app:argType="com.example.votree.products.models.Product" />
+        <argument
+            android:name="role"
+            android:defaultValue="store"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_productDetail2_to_updateProduct"
+            app:destination="@id/updateProduct" />
+        <action
+            android:id="@+id/action_productDetail2_to_storeManagement2"
+            app:destination="@id/storeManagement2" />
     </fragment>
 </navigation>

@@ -55,7 +55,7 @@
     </fragment>
     <fragment
         android:id="@+id/productDetail"
-        android:name="com.example.votree.products.fragments.ProductDetail"
+        android:name="com.example.votree.products.fragments.ProductDetailFragment"
         android:label="Details"
         tools:layout="@layout/fragment_product_detail">
         <action

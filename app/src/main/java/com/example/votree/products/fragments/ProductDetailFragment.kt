@@ -16,9 +16,9 @@ import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.view_models.CartViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 
-class ProductDetail : Fragment() {
+class ProductDetailFragment : Fragment() {
 
-    private val args by navArgs<ProductDetailArgs>()
+    private val args: ProductDetailFragmentArgs by navArgs()
     private lateinit var binding: FragmentProductDetailBinding
     private val cartViewModel = CartViewModel()
     private val firestore = FirebaseFirestore.getInstance()
@@ -36,7 +36,6 @@ class ProductDetail : Fragment() {
         val isSeller = args.role == "store"
         updateUIForUserRole(isSeller)
 
-
         return binding.root
     }
 
@@ -47,9 +46,8 @@ class ProductDetail : Fragment() {
 
             binding.updateBtn.visibility = View.VISIBLE
             binding.updateBtn.setOnClickListener {
-                // Navigate to UpdateProductFragment
                 val action =
-                    ProductDetailDirections.actionProductDetail2ToUpdateProduct(args.currentProduct)
+                    ProductDetailFragmentDirections.actionProductDetail2ToUpdateProduct(args.currentProduct)
                 findNavController().navigate(action)
             }
 
@@ -78,7 +76,7 @@ class ProductDetail : Fragment() {
         binding.buyNowBtn.visibility = if (!isSeller) View.VISIBLE else View.GONE
     }
 
-    private fun setUpProductView(args: ProductDetailArgs) {
+    private fun setUpProductView(args: ProductDetailFragmentArgs) {
         args.currentProduct.let { product ->
             binding.productPrice.text = context?.getString(R.string.price_format, product.price)
             binding.description.text = product.description
