@@ -5,7 +5,7 @@
         android:icon="@drawable/home"
         android:title="Home"/>
     <item
-        android:id="@+id/seller_store_fragment"
+        android:id="@+id/storeManagement2"
         android:enabled="true"
         android:icon="@drawable/potted_plant_24px"
         android:title="Your Store"
