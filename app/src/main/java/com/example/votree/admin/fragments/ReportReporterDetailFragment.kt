@@ -28,7 +28,7 @@ class ReportReporterDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_reporter_detail_report, container, false)
+        val view = inflater.inflate(R.layout.fragment_account_detail, container, false)
         val banButton = view.findViewById<Button>(R.id.banButton)
         val viewTransactionListButton = view.findViewById<Button>(R.id.viewTransactionButton)
         val viewReportListButton = view.findViewById<Button>(R.id.viewReportListButton)
@@ -40,6 +40,8 @@ class ReportReporterDetailFragment : Fragment() {
 //                dialogFragment.show(parentFragmentManager, "TransactionListDialogFragment")
 //            }
 //        }
+
+
 
         banButton?.setOnClickListener {
             val reporterId = account?.id

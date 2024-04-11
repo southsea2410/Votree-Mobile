@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.example.votree.R
 import com.example.votree.models.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.Date
 import java.util.Locale
 
 class AccountDetailFragment : Fragment() {
@@ -28,15 +30,24 @@ class AccountDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_account_detail, container, false)
-        val deleteButton = view?.findViewById<Button>(R.id.deleteButton)
-        val unbanButton = view?.findViewById<Button>(R.id.unbanButton)
-        val timeOutButton = view?.findViewById<Button>(R.id.timeOutButton)
+        val banButton = view.findViewById<Button>(R.id.banButton)
+        val viewTransactionListButton = view.findViewById<Button>(R.id.viewTransactionButton)
+        val viewReportListButton = view.findViewById<Button>(R.id.viewReportListButton)
 
-        deleteButton?.setOnClickListener {
-            db.collection("users").document(account!!.id).delete()
-                .addOnSuccessListener {
-                    activity?.supportFragmentManager?.popBackStack("account_list_fragment", POP_BACK_STACK_INCLUSIVE)
-                }
+//        viewTransactionListButton.setOnClickListener {
+//            val reporterId = account?.id
+//            reporterId?.let { id ->
+//                val dialogFragment = TransactionListDialogFragment.newInstance(id)
+//                dialogFragment.show(parentFragmentManager, "TransactionListDialogFragment")
+//            }
+//        }
+
+        banButton?.setOnClickListener {
+            val reporterId = account?.id
+            reporterId?.let { id ->
+                val dialogFragment = ChooseDateDialogFragment.newInstance(id)
+                dialogFragment.show(parentFragmentManager, "ChooseDateDialogFragment")
+            }
         }
 
         return view
@@ -66,6 +77,14 @@ class AccountDetailFragment : Fragment() {
             view?.findViewById<TextView>(R.id.account_accumulate_point)?.text = nonNullTip.accumulatePoint.toString()
             view?.findViewById<TextView>(R.id.account_created_date)?.text = dateFormat(nonNullTip.createdAt.toString())
             view?.findViewById<TextView>(R.id.account_updated_date)?.text = dateFormat(nonNullTip.updatedAt.toString())
+
+            if (nonNullTip.expireBanDate.after(Date())) {
+                view?.findViewById<ImageView>(R.id.account_banned)?.setImageResource(R.drawable.baseline_check_box_24)
+            } else {
+                view?.findViewById<ImageView>(R.id.account_banned)?.setImageResource(R.drawable.baseline_check_box_outline_blank_24)
+            }
+
+            view?.findViewById<TextView>(R.id.account_time_out_date)?.text = dateFormat(nonNullTip.expireBanDate.toString())
         }
     }
 

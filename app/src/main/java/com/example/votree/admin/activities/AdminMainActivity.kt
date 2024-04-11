@@ -34,9 +34,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 @Suppress("DEPRECATION")
 class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQueryTextListener, NavigationView.OnNavigationItemSelectedListener, DialogFragmentListener {
@@ -51,8 +49,12 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
     private val accountList = mutableListOf<User>()
     private val reportList = mutableListOf<Report>()
     private val SharedPrefs = "sharedPrefs"
-//    private var currentFragment: Fragment? = null
     private var currentFlag: Int = 0
+    private val searchableFragments = listOf(
+        TipDetailFragment::class.java.simpleName,
+        AccountDetailFragment::class.java.simpleName,
+        ReportDetailFragment::class.java.simpleName
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -164,6 +166,7 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
         val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
         topAppBar.menu.clear()
         topAppBar.setNavigationIcon(R.drawable.icon_back)
+//        setSupportActionBar(topAppBar)
         topAppBar.setNavigationOnClickListener {
             setupNormalActionBar()
             supportFragmentManager.popBackStack()
@@ -203,10 +206,16 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
 
         menuInflater.inflate(R.menu.top_app_bar, menu)
 
+//        val currentFragmentName = extractFragmentName(getCurrentFragment().toString())
+//
         val search = menu?.findItem(R.id.search)
-        val searchView = search?.actionView as SearchView
-        searchView.isSubmitButtonEnabled = true
-        searchView.setOnQueryTextListener(this)
+//        if (searchableFragments.contains(currentFragmentName)) {
+            val searchView = search?.actionView as SearchView
+            searchView.isSubmitButtonEnabled = true
+            searchView.setOnQueryTextListener(this)
+//        } else {
+//            search?.isVisible = false
+//        }
 
         return true
     }
@@ -392,8 +401,9 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
     }
 
     fun setupNormalActionBar() {
-        Log.d("AdminMainActivity", "Current fragment: ${getCurrentFragment()}")
-        if (extractFragmentName(getCurrentFragment().toString()) == extractFragmentName(TipDetailFragment().toString()) || extractFragmentName(getCurrentFragment().toString()) == extractFragmentName(AccountDetailFragment().toString()) || extractFragmentName(getCurrentFragment().toString()) == extractFragmentName(ReportDetailFragment().toString())) {
+        val currentFragmentName = extractFragmentName(getCurrentFragment().toString())
+        if (searchableFragments.contains(currentFragmentName)) {
+            topAppBar.setTitleTextColor(resources.getColor(R.color.md_theme_primary))
             setSupportActionBar(topAppBar)
             val toggle = ActionBarDrawerToggle(
                 this,

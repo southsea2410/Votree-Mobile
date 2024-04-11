@@ -64,7 +64,7 @@
 
                             <ImageView
                                 android:id="@+id/accountRoleIcon"
-                                android:layout_width="5dp"
+                                android:layout_width="7dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginEnd="7dp"
                                 android:src="@drawable/icon_dot"
@@ -79,8 +79,7 @@
                                 android:text="@string/user_role"
                                 android:textSize="12sp"
                                 android:textColor="@color/md_theme_onPrimaryContainer"
-                                android:id="@+id/account_role"
-                                app:textAllCaps="true" />
+                                android:id="@+id/account_role"/>
 
                         </LinearLayout>
 
@@ -116,7 +115,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Phone:"
+                            android:text="@string/title_phone_number"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
@@ -146,7 +145,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Point:"
+                            android:text="@string/title_accumulate_point"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
@@ -156,7 +155,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Created On:"
+                            android:text="@string/title_created_date"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
@@ -166,7 +165,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Updated On:"
+                            android:text="@string/title_updated_date"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
@@ -306,7 +305,7 @@
                             style="?android:attr/buttonBarButtonStyle" />
 
                         <Button
-                            android:id="@+id/viewReportListButton"
+                            android:id="@+id/viewReportButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -379,7 +378,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_marginBottom="20dp"
-                            android:text="Ban Date Until:"
+                            android:text="Ban Date:"
                             android:textColor="@color/md_theme_error"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -404,7 +403,7 @@
                             android:id="@+id/account_time_out_date"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="Jan 1, 2021"
+                            android:text="Jan 1, 2021 - Jan 1, 2021"
                             android:textColor="@color/md_theme_scrim_mediumContrast"
                             android:textSize="16sp"
                             android:layout_marginBottom="20dp"/>
