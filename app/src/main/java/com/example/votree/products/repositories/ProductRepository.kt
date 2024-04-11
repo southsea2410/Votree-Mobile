@@ -7,10 +7,10 @@ import android.util.Log
 import com.example.votree.products.models.Product
 import com.google.firebase.storage.FirebaseStorage
 
-class ProductRepository(private val db: FirebaseFirestore) {
+class ProductRepository(private val firestore: FirebaseFirestore) {
     suspend fun updateProductInventory(productId: String, quantityPurchased: Int) {
-        val productRef = db.collection("products").document(productId)
-        db.runTransaction { transaction ->
+        val productRef = firestore.collection("products").document(productId)
+        firestore.runTransaction { transaction ->
             val snapshot = transaction.get(productRef)
             val newInventory = snapshot.getLong("inventory")!! - quantityPurchased
             transaction.update(productRef, "inventory", newInventory)
