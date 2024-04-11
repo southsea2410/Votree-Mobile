@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.votree.R
 import com.example.votree.databinding.ActivityWriteTipBinding
 import com.example.votree.tips.models.ProductTip
+import com.example.votree.utils.AuthHandler
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -50,7 +51,7 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
                 content=binding.tipContentInputEditText.text.toString(),
                 shortDescription=binding.tipShortDescriptionInputEditText.text.toString(),
                 title=binding.tipTitleInputEditText.text.toString(),
-                userId = "1",
+                userId = AuthHandler.firebaseAuth.currentUser?.uid ?: "",
                 vote=0)
             pushTiptoDatabase(tip)
         }
@@ -71,7 +72,7 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
                     fireStoreInstance.collection("ProductTip2").add(tip)
                         .addOnSuccessListener { documentReference ->
                             val documentId = documentReference.id
-                            fireStoreInstance.collection("products").document(documentId)
+                            fireStoreInstance.collection("ProductTip2").document(documentId)
                                 .update("id", documentId)
                             Toast.makeText(
                                 this,

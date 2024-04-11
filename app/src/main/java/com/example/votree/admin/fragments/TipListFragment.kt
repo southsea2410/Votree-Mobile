@@ -73,12 +73,11 @@ class TipListFragment : Fragment(), OnItemClickListener {
         TODO("Not yet implemented")
     }
 
-    override fun onReportItemClicked(view: View?, position: Int) {
-        TODO("Not yet implemented")
-    }
+    override fun onReportItemClicked(view: View?, position: Int, processStatus: Boolean) {}
 
     private fun fetchDataFromFirestore() {
         db.collection("ProductTip2")
+            .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("TipListActivity", "listen:error", e)

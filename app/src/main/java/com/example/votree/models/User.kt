@@ -24,7 +24,8 @@ data class User (
     var totalRevenue: Int,
     var transactionIdList: List<String>,
     var createdAt: Date = Date(),
-    var updatedAt: Date = Date()
+    var updatedAt: Date = Date(),
+    var expireBanDate: Date = Date()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -43,10 +44,11 @@ data class User (
         parcel.readInt(),
         parcel.createStringArrayList()!!,
         Date(parcel.readLong()),
+        Date(parcel.readLong()),
         Date(parcel.readLong())
     )
 
-    constructor() : this("", "", "", "", "", "", "", "", false, "", "", Date(), 0, 0, emptyList(), Date(), Date())
+    constructor() : this("", "", "", "", "", "", "", "", false, "", "", Date(), 0, 0, emptyList(), Date(), Date(), Date())
 
     companion object : Parceler<User> {
 
@@ -68,6 +70,7 @@ data class User (
             parcel.writeStringList(transactionIdList)
             parcel.writeLong(createdAt.time)
             parcel.writeLong(updatedAt.time)
+            parcel.writeLong(expireBanDate.time)
         }
 
         override fun create(parcel: Parcel): User {
