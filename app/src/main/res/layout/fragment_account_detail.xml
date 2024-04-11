@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/md_theme_onPrimary"
-    android:id="@+id/accountTipDetail">
+    android:id="@+id/reporterDetail">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -12,7 +12,7 @@
         android:layout_gravity="center">
 
         <ScrollView
-            android:id="@+id/accountScrollView"
+            android:id="@+id/reporterScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -64,7 +64,7 @@
 
                             <ImageView
                                 android:id="@+id/accountRoleIcon"
-                                android:layout_width="7dp"
+                                android:layout_width="5dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginEnd="7dp"
                                 android:src="@drawable/icon_dot"
@@ -79,7 +79,8 @@
                                 android:text="@string/user_role"
                                 android:textSize="12sp"
                                 android:textColor="@color/md_theme_onPrimaryContainer"
-                                android:id="@+id/account_role"/>
+                                android:id="@+id/account_role"
+                                app:textAllCaps="true" />
 
                         </LinearLayout>
 
@@ -115,7 +116,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/title_phone_number"
+                            android:text="Phone:"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
@@ -145,7 +146,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/title_accumulate_point"
+                            android:text="Point:"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
@@ -155,7 +156,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/title_created_date"
+                            android:text="Created On:"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
@@ -165,7 +166,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/title_updated_date"
+                            android:text="Updated On:"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
@@ -251,29 +252,76 @@
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
                     android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center_vertical">
 
-                    <TextView
-                        android:id="@+id/account_transactionList"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:soundEffectsEnabled="true"
-                        android:text="@string/link_text"
-                        android:textColor="@color/md_theme_primary"
-                        android:textStyle="bold"
-                        android:textColorLink="@color/md_theme_primary"/>
+                        android:layout_marginEnd="30dp"
+                        android:orientation="vertical" >
 
-                    <ImageButton
+                        <TextView
+                            android:id="@+id/account_transactionList"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:soundEffectsEnabled="true"
+                            android:text="@string/link_text"
+                            android:textColor="@color/md_theme_primary"
+                            android:textStyle="bold"
+                            android:textColorLink="@color/md_theme_primary"
+                            android:layout_marginBottom="25dp" />
+
+                        <TextView
+                            android:id="@+id/account_reportList"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:soundEffectsEnabled="true"
+                            android:text="Report List"
+                            android:textColor="@color/md_theme_onTertiaryContainer"
+                            android:textStyle="bold"
+                            android:textColorLink="@color/md_theme_onTertiaryContainer"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/icon_arrow"
-                        android:background="@null"
-                        android:contentDescription="@string/this_is_icon_for_illustration"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:onClick="onTransactionListClick"
-                        app:tint="@color/md_theme_primary" />
-                    
+                        android:layout_marginRight="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:orientation="vertical" >
+
+                        <Button
+                            android:id="@+id/viewTransactionButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="View"
+                            android:textColor="@color/md_theme_primary"
+                            android:textSize="15sp"
+                            android:textStyle="normal"
+                            android:drawablePadding="8dp"
+                            app:backgroundTint="@color/transparent"
+                            app:strokeColor="@color/md_theme_primary"
+                            app:strokeWidth="2dp"
+                            style="?android:attr/buttonBarButtonStyle" />
+
+                        <Button
+                            android:id="@+id/viewReportListButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="View"
+                            android:textColor="@color/md_theme_onTertiaryContainer"
+                            android:textSize="15sp"
+                            android:textStyle="normal"
+                            android:drawablePadding="8dp"
+                            app:backgroundTint="@color/transparent"
+                            app:strokeColor="@color/md_theme_onTertiaryContainer"
+                            app:strokeWidth="2dp"
+                            style="?android:attr/buttonBarButtonStyle" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -287,47 +335,16 @@
                     android:layout_gravity="center_horizontal">
 
                     <Button
-                        android:id="@+id/deleteButton"
-                        android:layout_width="92dp"
+                        android:id="@+id/banButton"
+                        android:layout_width="192dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_marginBottom="10dp"
                         android:backgroundTint="@color/md_theme_error"
-                        android:text="Delete"
                         android:textColor="@color/md_theme_onPrimary"
+                        android:layout_margin="10dp"
+                        android:text="Ban"
                         android:textSize="14sp"
-                        android:textStyle="normal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/option2_2"
+                        app:layout_constraintBottom_toTopOf="@+id/saveButton"
                         app:strokeColor="@color/md_theme_error"
-                        app:strokeWidth="2dp"
-                        style="?android:attr/buttonBarButtonStyle" />
-
-                    <Button
-                        android:id="@+id/unbanButton"
-                        android:layout_width="92dp"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/md_theme_tertiaryContainer"
-                        android:textColor="@color/md_theme_error"
-                        android:layout_margin="10dp"
-                        android:text="Unban"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toTopOf="@+id/saveButton"
-                        app:strokeColor="@color/md_theme_tertiaryContainer"
-                        app:strokeWidth="2dp"
-                        style="?android:attr/buttonBarButtonStyle" />
-
-                    <Button
-                        android:id="@+id/timeOutButton"
-                        android:layout_width="92dp"
-                        android:layout_height="wrap_content"
-                        android:backgroundTint="@color/yellow"
-                        android:textColor="@color/md_theme_onPrimary"
-                        android:layout_margin="10dp"
-                        android:text="Time out"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toTopOf="@+id/saveButton"
-                        app:strokeColor="@color/yellow"
                         app:strokeWidth="2dp"
                         style="?android:attr/buttonBarButtonStyle" />
 
@@ -350,8 +367,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Banned"
-                            android:textColor="@color/md_theme_primary"
+                            android:text="Banned:"
+                            android:textColor="@color/md_theme_error"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:layout_marginEnd="10dp"
@@ -362,8 +379,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
                             android:layout_marginBottom="20dp"
-                            android:text="Time Out Date:"
-                            android:textColor="@color/md_theme_primary"
+                            android:text="Ban Date Until:"
+                            android:textColor="@color/md_theme_error"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -374,20 +391,20 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <TextView
+                        <ImageView
                             android:id="@+id/account_banned"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:text="Yes"
-                            android:textColor="@color/md_theme_scrim_mediumContrast"
-                            android:textSize="16sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/baseline_check_box_24"
+                            app:tint="@color/md_theme_error"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="20dp"/>
 
                         <TextView
                             android:id="@+id/account_time_out_date"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="Jan 1, 2021 - Jan 1, 2021"
+                            android:text="Jan 1, 2021"
                             android:textColor="@color/md_theme_scrim_mediumContrast"
                             android:textSize="16sp"
                             android:layout_marginBottom="20dp"/>
