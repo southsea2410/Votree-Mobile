@@ -1,7 +1,10 @@
 package com.example.votree.tips
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -19,15 +22,9 @@ class TipDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityTipDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupToolbar(binding)
 
-        setSupportActionBar(binding.tipDetailToolbar)
-        binding.tipDetailToolbar.setNavigationOnClickListener {
-            finish()
-        }
-        val tipData = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            intent.getParcelableExtra("tipData", ProductTip::class.java)
-        else
-            intent.getParcelableExtra("tipData")
+        val tipData = getTipData()
 
         if (tipData !== null){
             enableEdgeToEdge()
@@ -52,5 +49,44 @@ class TipDetailActivity : AppCompatActivity() {
             binding.tipDetailTitleTextView.text = "No data"
         }
 
+    }
+
+    private fun setupToolbar(binding: ActivityTipDetailBinding){
+        setSupportActionBar(binding.tipDetailToolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.tipDetailToolbar.setNavigationOnClickListener {
+            finish()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.tip_detail_overflow, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Start Report tip activity
+        return when (item.itemId) {
+            R.id.tip_detail_action_report -> {
+                val newIntent = Intent(this, TipReportActivity::class.java)
+
+                val tipData = getTipData()
+                newIntent.putExtra("tipData", tipData)
+
+                startActivity(newIntent)
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun getTipData() : ProductTip?{
+        val tipData = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            intent.getParcelableExtra("tipData", ProductTip::class.java)
+        else
+            intent.getParcelableExtra("tipData")
+
+        return tipData
     }
 }

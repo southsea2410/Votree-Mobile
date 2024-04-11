@@ -1,5 +1,6 @@
 package com.example.votree.products.repositories
 
+import android.util.Log
 import com.example.votree.products.models.Cart
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -90,5 +91,13 @@ class CartRepository {
     private suspend fun fetchProductPrice(productId: String): Double? {
         return db.collection("products").document(productId).get().await()
             .getDouble("price")
+    }
+
+    suspend fun clearCartAfterCheckout(userId: String) {
+        val cartRef = db.collection("carts").document(userId)
+        // Clear the cart
+        cartRef.update("productsMap", mapOf<String, Any>()).await()
+        cartRef.update("totalPrice", 0.0).await()
+        Log.d("CartRepository", "Cart cleared successfully")
     }
 }
