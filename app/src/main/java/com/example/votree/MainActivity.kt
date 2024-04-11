@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -16,6 +17,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.votree.databinding.ActivityMainBinding
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.users.activities.SignInActivity
+import com.example.votree.users.activities.StoreManagement
 import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
@@ -101,6 +103,7 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.btnCart.setOnClickListener {
             navigateToCart()
         }
+        gotoAccountManagement()
     }
 
     private fun setupLogoutButton() {
@@ -118,6 +121,22 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         navController.navigate(R.id.cartList)
+    }
+
+    private fun gotoAccountManagement() {
+        binding.toolbar.btnAvatar.setOnClickListener {
+            RoleManagement.checkUserRole(firebaseAuth = authHandler.firebaseAuth, onSuccess = {
+                if (it == "user") {
+                    Log.d("MainActivity", "User")
+                } else if (it == "store") {
+                    Log.d("MainActivity", "Store")
+                    // Start Activity StoreManagement
+                    val intent = Intent(this, StoreManagement::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            })
+        }
     }
 
     private fun setupRegisterToSellerButton() {

@@ -5,16 +5,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
-import com.example.votree.products.fragments.ProductListDirections
 import com.example.votree.products.models.Product
 
 class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
+    interface OnProductClickListener {
+        fun onProductClick(product: Product)
+    }
+
     private var productList = emptyList<Product>()
+    private var listener: OnProductClickListener? = null
+
+    fun setOnProductClickListener(listener: OnProductClickListener) {
+        this.listener = listener
+    }
 
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var productName = itemView.findViewById<TextView>(R.id.productName_tv)
@@ -46,14 +53,13 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
             holder.quantityOfSold.text = currentItem.quantitySold.toString()
             Glide.with(this)
                 .load(currentItem.imageUrl)
-//                .placeholder(R.drawable.placeholder_image)
+                .placeholder(R.drawable.img_placeholder)
 //                .error(R.drawable.error_image)
                 .into(holder.productImage)
         }
 
         holder.productListLayout.setOnClickListener {
-            val action = ProductListDirections.actionProductListToProductDetail(currentItem)
-            holder.itemView.findNavController().navigate(action)
+            listener?.onProductClick(currentItem)
         }
     }
 

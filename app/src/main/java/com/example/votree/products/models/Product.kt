@@ -10,6 +10,7 @@ import java.util.Date
 @Parcelize
 data class Product(
     var id: String = "", // Change id to String if you're using Firestore's auto-generated document ID
+    val storeId: String = "",
     var imageUrl: String = "",
     val productName: String = "",
     val shortDescription: String = "",

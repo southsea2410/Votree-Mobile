@@ -269,5 +269,26 @@
             android:layout_weight="0.6"
             android:text="Buy Now"
             app:cornerRadius="5dp" />
+
+        <Button
+            android:id="@+id/delete_btn"
+            style="@style/Widget.Material3.Button.IconButton.Outlined"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:padding="15dp"
+            android:text="Delete"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/update_btn"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="15dp"
+            android:text="Update"
+            android:visibility="gone" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
