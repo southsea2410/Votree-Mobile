@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/productDetail"
-        android:name="com.example.votree.products.fragments.ProductDetail"
+        android:name="com.example.votree.products.fragments.ProductDetailFragment"
         android:label="Details"
         tools:layout="@layout/fragment_product_detail">
         <action
@@ -61,6 +61,10 @@
         <action
             android:id="@+id/action_productDetail_to_cartList"
             app:destination="@id/cartList" />
+        <argument
+            android:name="role"
+            android:defaultValue="user"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/cartList"
