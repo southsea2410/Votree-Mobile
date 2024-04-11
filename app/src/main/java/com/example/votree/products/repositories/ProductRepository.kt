@@ -115,4 +115,10 @@ class ProductRepository(private val firestore: FirebaseFirestore) {
                 }
         }
     }
+
+    suspend fun getProduct(productId: String?): Product {
+        val productRef = firestore.collection("products").document(productId!!)
+        val snapshot = productRef.get().await()
+        return snapshot.toObject(Product::class.java)!!
+    }
 }

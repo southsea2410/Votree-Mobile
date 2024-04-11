@@ -37,6 +37,18 @@
             android:name=".tips.TipReportActivity"
             android:exported="false" />
         <activity
+            android:name=".products.adapters.UserReviewAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".products.activities.ProductReviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".users.adapters.OrderItemAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".users.activities.OrderHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -61,15 +73,12 @@
             android:exported="false" />
         <activity
             android:name=".users.activities.SignUpActivity"
-            android:exported="false" />
-
-        <!--        <meta-data-->
-        <!--            android:name="com.facebook.sdk.ApplicationId"-->
-        <!--            android:value="@string/facebook_app_id" />-->
-        <!--        <meta-data-->
-        <!--            android:name="com.facebook.sdk.ClientToken"-->
-        <!--            android:value="@string/facebook_client_token" />-->
-
+            android:exported="false" /> <!-- <meta-data -->
+        <!-- android:name="com.facebook.sdk.ApplicationId" -->
+        <!-- android:value="@string/facebook_app_id" /> -->
+        <!-- <meta-data -->
+        <!-- android:name="com.facebook.sdk.ClientToken" -->
+        <!-- android:value="@string/facebook_client_token" /> -->
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
