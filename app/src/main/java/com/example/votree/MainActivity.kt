@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -93,6 +94,14 @@ class MainActivity : AppCompatActivity() {
         } else {
             navController.setGraph(R.navigation.nav_user_graph)
             bottomNavigation.inflateMenu(R.menu.nav_user)
+        }
+
+        navController.addOnDestinationChangedListener { _ , destination, _  ->
+            if(destination.id == R.id.productDetail2) {
+                bottomNavigation.visibility = View.GONE
+            } else {
+                bottomNavigation.visibility = View.VISIBLE
+            }
         }
 
         bottomNavigation.setupWithNavController(navController)
