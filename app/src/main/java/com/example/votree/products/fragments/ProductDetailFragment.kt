@@ -9,6 +9,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentProductDetailBinding
@@ -28,6 +30,7 @@ class ProductDetailFragment : Fragment() {
     private val firestore = FirebaseFirestore.getInstance()
     private val productRepository = ProductRepository(firestore)
     private lateinit var userReviewAdapter: UserReviewAdapter
+    private lateinit var reviewRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -106,8 +109,8 @@ class ProductDetailFragment : Fragment() {
     }
 
     private fun setupReviewAdapter() {
-        userReviewAdapter = UserReviewAdapter(emptyList(), CoroutineScope(Dispatchers.Main))
-        binding.reviewRecyclerView.adapter = userReviewAdapter
+        reviewRecyclerView = binding.reviewRecyclerView
+        reviewRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
 
@@ -121,7 +124,8 @@ class ProductDetailFragment : Fragment() {
                     val review = reviewDocument.toObject(ProductReview::class.java)
                     review?.let { reviews.add(it) }
                 }
-                setupReviewAdapter()
+                userReviewAdapter = UserReviewAdapter(reviews, CoroutineScope(Dispatchers.Main))
+                reviewRecyclerView.adapter = userReviewAdapter
             }
             .addOnFailureListener { e ->
                 Log.e("ProductDetail", "Error fetching reviews", e)
