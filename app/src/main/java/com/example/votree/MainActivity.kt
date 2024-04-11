@@ -95,9 +95,9 @@ class MainActivity : AppCompatActivity() {
             navController.setGraph(R.navigation.nav_user_graph)
             bottomNavigation.inflateMenu(R.menu.nav_user)
         }
-
+        val hiddenDestinations = setOf(R.id.productDetail2, R.id.productDetail)
         navController.addOnDestinationChangedListener { _ , destination, _  ->
-            if(destination.id == R.id.productDetail2) {
+            if(destination.id in hiddenDestinations) {
                 bottomNavigation.visibility = View.GONE
             } else {
                 bottomNavigation.visibility = View.VISIBLE
