@@ -15,11 +15,11 @@ data class User(
     val phoneNumber: String = "",
     val address: String = "",
     val role: String = "",
-//    val storeId: Store = null,
+    val storeId: String = "",
     var expirePremium: Date = Date(),
     var accumulatePoint: Int = 0,
     var totalRevenue: Double = 0.0,
-//    var transactionIdList = mutableListOf<String>(),
+    val transactionIdList: MutableList<String> = mutableListOf(),
     var active: Boolean = true,
     val createdAt: Date = Date(),
     var updatedAt: Date = Date()

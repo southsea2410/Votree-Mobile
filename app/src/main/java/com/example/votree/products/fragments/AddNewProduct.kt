@@ -110,16 +110,11 @@ class AddNewProduct : Fragment() {
         val suitClimateAdapter =
             ArrayAdapter(requireContext(), R.layout.simple_dropdown_item_1line, suitClimate)
 
-//        suitEnvironmentAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//        suitClimateAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         (binding.suitClimateSpinner as? MaterialAutoCompleteTextView)?.setAdapter(suitClimateAdapter)
         (binding.suitEnvironmentSpinner as? MaterialAutoCompleteTextView)?.setAdapter(
             suitEnvironmentAdapter
         )
         (binding.typeSpinner as? MaterialAutoCompleteTextView)?.setAdapter(plantTypeAdapter)
-//        binding.typeSpinner.adapter = plantTypeAdapter
-//        binding.suitEnvironmentSpinner.adapter = suitEnvironmentAdapter
-//        binding.suitClimateSpinner.adapter = suitClimateAdapter
     }
 
     private fun setupSaveButton() {

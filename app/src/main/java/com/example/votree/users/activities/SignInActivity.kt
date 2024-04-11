@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.votree.MainActivity
 import com.example.votree.R
+import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.databinding.ActivitySignInBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -16,11 +17,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
-    private lateinit var firebaseAuth: FirebaseAuth
+    private  var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,10 +50,26 @@ class SignInActivity : AppCompatActivity() {
             if (email.isNotEmpty() && pass.isNotEmpty()) {
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        val intent = Intent(this, MainActivity::class.java)
-                        intent.putExtra("email", email)
-                        intent.putExtra("name", "User using email")
-                        startActivity(intent)
+                        firebaseAuth.currentUser?.uid?.let { uid ->
+                            val db = FirebaseFirestore.getInstance()
+                            db.collection("users").document(uid).get().addOnSuccessListener { document ->
+                                if (document.exists()) {
+                                    val intent = Intent(this, MainActivity::class.java)
+                                    intent.putExtra("email", email)
+                                    intent.putExtra("name", "User using email")
+                                    startActivity(intent)
+                                } else {
+                                    db.collection("admins").document(uid).get().addOnSuccessListener { document ->
+                                        if (document.exists()) {
+                                            val intent = Intent(this, AdminMainActivity::class.java)
+                                            intent.putExtra("email", email)
+                                            intent.putExtra("name", "Admin using email")
+                                            startActivity(intent)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     } else {
                         Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
                     }
@@ -114,8 +132,23 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    private fun signOut() {
-        firebaseAuth.signOut()
-        googleSignInClient.signOut()
+    fun signOut() {
+        firebaseAuth = FirebaseAuth.getInstance()
+        // googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+
+        if (firebaseAuth.currentUser != null) {
+            firebaseAuth.signOut()
+        }
+        // if (googleSignInClient != null) {
+        //     googleSignInClient.signOut()
+        // }
+
+        // Check if shared preferences have any keys, then clear it if it does
+//        val sharedPreferences = getSharedPreferences("user_info", MODE_PRIVATE)
+//        if (sharedPreferences.all.isNotEmpty()) {
+//            val editor = sharedPreferences.edit()
+//            editor.clear()
+//            editor.apply() // or editor.commit() if you need synchronous operation
+//        }
     }
 }

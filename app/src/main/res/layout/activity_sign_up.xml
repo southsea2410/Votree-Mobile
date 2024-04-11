@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".SignUpActivity">
 
-
     <ImageView
         android:id="@+id/votree_logo"
         android:layout_width="207dp"
