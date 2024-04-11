@@ -71,7 +71,7 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
                     fireStoreInstance.collection("ProductTip2").add(tip)
                         .addOnSuccessListener { documentReference ->
                             val documentId = documentReference.id
-                            fireStoreInstance.collection("products").document(documentId)
+                            fireStoreInstance.collection("ProductTip2").document(documentId)
                                 .update("id", documentId)
                             Toast.makeText(
                                 this,
