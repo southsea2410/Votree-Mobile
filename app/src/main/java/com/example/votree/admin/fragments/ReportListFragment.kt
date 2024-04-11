@@ -39,19 +39,19 @@ class ReportListFragment : Fragment(), OnItemClickListener {
 
         fetchDataFromFirestore()
 
-        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-
-        fragmentManager.addOnBackStackChangedListener {
-
-            val currentBackStackEntryCount = fragmentManager.backStackEntryCount
-
-            if (currentBackStackEntryCount < previousBackStackEntryCount) {
-                fetchDataFromFirestore()
+//        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+//
+//        fragmentManager.addOnBackStackChangedListener {
+//
+//            val currentBackStackEntryCount = fragmentManager.backStackEntryCount
+//
+//            if (currentBackStackEntryCount < previousBackStackEntryCount) {
+//                fetchDataFromFirestore()
                 (activity as AdminMainActivity).setupNormalActionBar()
-            }
+//            }
 
-            previousBackStackEntryCount = currentBackStackEntryCount
-        }
+//            previousBackStackEntryCount = currentBackStackEntryCount
+//        }
 
         return view
     }
@@ -60,8 +60,8 @@ class ReportListFragment : Fragment(), OnItemClickListener {
 
     override fun onAccountItemClicked(view: View?, position: Int) {}
 
-    override fun onReportItemClicked(view: View?, position: Int) {
-        (activity as AdminMainActivity).onReportItemClicked(view, position)
+    override fun onReportItemClicked(view: View?, position: Int, processStatus: Boolean) {
+        (activity as AdminMainActivity).onReportItemClicked(view, position, processStatus)
 
         val fragment = ReportDetailFragment()
         val bundle = Bundle().apply {

@@ -1,10 +1,12 @@
 package com.example.votree.admin.activities
 
+import DialogFragmentListener
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -16,8 +18,12 @@ import com.example.votree.R
 import com.example.votree.admin.adapters.AccountListAdapter
 import com.example.votree.admin.adapters.ReportListAdapter
 import com.example.votree.admin.adapters.TipListAdapter
+import com.example.votree.admin.fragments.AccountDetailFragment
 import com.example.votree.admin.fragments.AccountListFragment
+import com.example.votree.admin.fragments.ReportDetailFragment
 import com.example.votree.admin.fragments.ReportListFragment
+import com.example.votree.admin.fragments.ReportTipDetailFragment
+import com.example.votree.admin.fragments.TipDetailFragment
 import com.example.votree.admin.fragments.TipListFragment
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Report
@@ -25,11 +31,15 @@ import com.example.votree.models.Tip
 import com.example.votree.models.User
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Suppress("DEPRECATION")
-class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQueryTextListener, NavigationView.OnNavigationItemSelectedListener {
+class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQueryTextListener, NavigationView.OnNavigationItemSelectedListener, DialogFragmentListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var topAppBar: MaterialToolbar
@@ -41,7 +51,7 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
     private val accountList = mutableListOf<User>()
     private val reportList = mutableListOf<Report>()
     private val SharedPrefs = "sharedPrefs"
-    private var currentFragment: Fragment? = null
+//    private var currentFragment: Fragment? = null
     private var currentFlag: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,17 +89,25 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
                     }
                 }
 
-                currentFragment = when (getCurrentFlag()) {
-                    0 -> TipListFragment()
-                    1 -> AccountListFragment()
-                    2 -> ReportListFragment()
-                    else -> TipListFragment()
+                when (getCurrentFlag()) {
+                    0 -> setCurrentFragment(TipListFragment())
+                    1 -> setCurrentFragment(AccountListFragment())
+                    2 -> setCurrentFragment(ReportListFragment())
+                    else -> setCurrentFragment(TipListFragment())
                 }
 
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, currentFragment!!)
-                    .addToBackStack(null)
-                    .commit()
+//                if (backStop == 1) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, getCurrentFragment())
+                        .addToBackStack(null)
+                        .commit()
+//                } else {
+//                    supportFragmentManager.popBackStack()
+//                    supportFragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, currentFragment!!)
+//                        .addToBackStack(null)
+//                        .commit()
+//                }
 
             }
 
@@ -106,6 +124,25 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
             2 -> ReportListFragment()
             else -> TipListFragment()
         }
+        when (getCurrentFlag()) {
+            0 -> {
+                topAppBar.title = "Tips"
+                setCurrentFragment(TipListFragment())
+            }
+            1 -> {
+                topAppBar.title = "Accounts"
+                setCurrentFragment(AccountListFragment())
+            }
+            2 -> {
+                topAppBar.title = "Reports"
+                setCurrentFragment(ReportListFragment())
+            }
+            else -> {
+                topAppBar.title = "Tips"
+                setCurrentFragment(TipListFragment())
+            }
+        }
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, defaultFragment)
             .addToBackStack(null)
@@ -123,7 +160,7 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
     }
 
     override fun onTipItemClicked(view: View?, position: Int) {
-
+        setCurrentFragment(TipDetailFragment())
         val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
         topAppBar.menu.clear()
         topAppBar.setNavigationIcon(R.drawable.icon_back)
@@ -134,7 +171,7 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
     }
 
     override fun onAccountItemClicked(view: View?, position: Int) {
-
+        setCurrentFragment(AccountDetailFragment())
         val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
         topAppBar.menu.clear()
         topAppBar.setNavigationIcon(R.drawable.icon_back)
@@ -144,11 +181,16 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
         }
     }
 
-    override fun onReportItemClicked(view: View?, position: Int) {
-
+    override fun onReportItemClicked(view: View?, position: Int, processStatus: Boolean) {
+        setCurrentFragment(ReportDetailFragment())
         val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
         topAppBar.menu.clear()
         topAppBar.setNavigationIcon(R.drawable.icon_back)
+        topAppBar.title = view?.findViewById<TextView>(R.id.report_list_item_short_description)?.text
+        when (processStatus) {
+            true -> topAppBar.setTitleTextColor(resources.getColor(R.color.md_theme_primary))
+            false -> topAppBar.setTitleTextColor(resources.getColor(R.color.md_theme_error))
+        }
         topAppBar.setNavigationOnClickListener {
             setupNormalActionBar()
             supportFragmentManager.popBackStack()
@@ -199,6 +241,7 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
         when (p0.itemId) {
             R.id.nav_tips -> {
                 currentFlag = 0
+                setCurrentFragment(TipListFragment())
                 drawerLayout.closeDrawer(GravityCompat.START)
                 topAppBar.title = "Tips"
 
@@ -206,6 +249,7 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
             }
             R.id.nav_accounts -> {
                 currentFlag = 1
+                setCurrentFragment(AccountListFragment())
                 drawerLayout.closeDrawer(GravityCompat.START)
                 topAppBar.title = "Accounts"
 
@@ -213,6 +257,7 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
             }
             R.id.nav_reports -> {
                 currentFlag = 2
+                setCurrentFragment(ReportListFragment())
                 drawerLayout.closeDrawer(GravityCompat.START)
                 topAppBar.title = "Reports"
 
@@ -240,10 +285,32 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
         return sharedPreferences.getInt("currentFlag", 0)
     }
 
+    private fun getCurrentFragment() : Fragment {
+        val sharedPreferences = getSharedPreferences(SharedPrefs, MODE_PRIVATE)
+        val fragmentName = sharedPreferences.getString("currentFragment", null)
+        return when (fragmentName) {
+            "TipListFragment" -> TipListFragment()
+            "AccountListFragment" -> AccountListFragment()
+            "ReportListFragment" -> ReportListFragment()
+            "TipDetailFragment" -> TipDetailFragment()
+            "AccountDetailFragment" -> AccountDetailFragment()
+            "ReportDetailFragment" -> ReportDetailFragment()
+            "ReportTipDetailFragment" -> ReportTipDetailFragment()
+            else -> TipListFragment()
+        }
+    }
+
     private fun setCurrentFlag(currentFlag: Int) {
         val sharedPreferences = getSharedPreferences(SharedPrefs, MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("currentFlag", currentFlag)
+        editor.apply()
+    }
+
+    fun setCurrentFragment(currentFragment: Fragment) {
+        val sharedPreferences = getSharedPreferences(SharedPrefs, MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("currentFragment", extractFragmentName(currentFragment.toString()))
         editor.apply()
     }
 
@@ -317,24 +384,63 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
     }
 
     private val backStackListener = FragmentManager.OnBackStackChangedListener {
+
         if (supportFragmentManager.backStackEntryCount == 0) {
             setupNormalActionBar()
         }
+
     }
 
     fun setupNormalActionBar() {
-        setSupportActionBar(topAppBar)
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, topAppBar, R.string.open_nav, R.string.close_nav)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        topAppBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.more -> {
-                    Log.d("ListActivity", "More clicked")
-                    true
+        Log.d("AdminMainActivity", "Current fragment: ${getCurrentFragment()}")
+        if (extractFragmentName(getCurrentFragment().toString()) == extractFragmentName(TipDetailFragment().toString()) || extractFragmentName(getCurrentFragment().toString()) == extractFragmentName(AccountDetailFragment().toString()) || extractFragmentName(getCurrentFragment().toString()) == extractFragmentName(ReportDetailFragment().toString())) {
+            setSupportActionBar(topAppBar)
+            val toggle = ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                topAppBar,
+                R.string.open_nav,
+                R.string.close_nav
+            )
+            drawerLayout.addDrawerListener(toggle)
+            toggle.syncState()
+            topAppBar.title = when (getCurrentFlag()) {
+                0 -> "Tips"
+                1 -> "Accounts"
+                2 -> "Reports"
+                else -> "Tips"
+            }
+            topAppBar.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.more -> {
+                        Log.d("ListActivity", "More clicked")
+                        true
+                    }
+
+                    else -> false
                 }
-                else -> false
+            }
+        } else {
+            val backStackCount = supportFragmentManager.backStackEntryCount ?: 0
+            if (backStackCount > 0) {
+                val topBackStackEntry = supportFragmentManager.getBackStackEntryAt(backStackCount - 1)
+                val topFragmentTag = topBackStackEntry.name
+                if (topFragmentTag == "report_list_fragment") {
+                    Log.d("AdminMainActivity", "Report list fragment")
+                    setCurrentFragment(ReportDetailFragment())
+                }
             }
         }
+    }
+
+    fun extractFragmentName(fragmentString: String): String {
+        val endIndex = fragmentString.indexOf('{')
+        return fragmentString.substring(0, endIndex)
+    }
+
+    override fun updateExpireBanDateToFirestore(daysToAdd: Int, userId: String) {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, daysToAdd)
+        db.collection("users").document(userId).update("expireBanDate", Timestamp(calendar.time))
     }
 }

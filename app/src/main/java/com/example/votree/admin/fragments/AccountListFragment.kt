@@ -72,9 +72,7 @@ class AccountListFragment : Fragment(), OnItemClickListener {
         fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("account_list_fragment").commit()
     }
 
-    override fun onReportItemClicked(view: View?, position: Int) {
-        TODO("Not yet implemented")
-    }
+    override fun onReportItemClicked(view: View?, position: Int, processStatus: Boolean) { }
 
     private fun fetchDataFromFirestore() {
         db.collection("users")
