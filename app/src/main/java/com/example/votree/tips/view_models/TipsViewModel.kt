@@ -23,6 +23,7 @@ class TipsViewModel : ViewModel() {
     fun queryAllTips() {
         val collection = firestore.collection("ProductTip2")
         collection
+            .whereEqualTo("approvalStatus", 1)
             .orderBy("createdAt", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { documents ->
@@ -37,6 +38,7 @@ class TipsViewModel : ViewModel() {
     fun queryTopTips() {
         val collection = firestore.collection("ProductTip2")
         collection
+            .whereEqualTo("approvalStatus", 1)
             .orderBy("vote", Query.Direction.DESCENDING)
             .limit(5)
             .get()
