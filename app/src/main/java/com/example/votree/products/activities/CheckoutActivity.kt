@@ -4,23 +4,39 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.votree.R
+import com.example.votree.products.models.Cart
+import com.example.votree.products.models.Transaction
+import com.example.votree.products.repositories.CartRepository
+import com.example.votree.products.repositories.ProductRepository
+import com.example.votree.products.repositories.TransactionRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
+import java.util.Date
 
 class CheckoutActivity : AppCompatActivity() {
     private lateinit var paymentSheet: PaymentSheet
     private var paymentIntentClientSecret: String? = null
     private lateinit var functions: FirebaseFunctions
-    var customerId = "" // Replace with your actual Stripe customer ID
+    var customerId = ""
+
+    private val cartRepository = CartRepository()
+    private val productRepository = ProductRepository(FirebaseFirestore.getInstance())
+    private val transactionRepository = TransactionRepository(FirebaseFirestore.getInstance())
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_checkout)
+
+        userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
         // Initialize Firebase Functions
         functions = FirebaseFunctions.getInstance()
@@ -111,18 +127,61 @@ class CheckoutActivity : AppCompatActivity() {
         }
     }
 
+    private fun createTransactionFromCart(cart: Cart) {
+        val currentDate = Date()
+        // Get storeId base on userId
+        FirebaseFirestore.getInstance().collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                val storeId = document.getString("storeId") ?: ""
+                val transaction = Transaction(
+                    id = "",
+                    customerId = userId,
+                    storeId = storeId,
+                    productsMap = cart.productsMap,
+                    remainPrice = 0.0,
+                    status = "pending",
+                    name = "John Doe",
+                    address = "123 Main St, San Francisco, CA",
+                    phoneNumber = "123-456-7890",
+                    createdAt = currentDate
+                )
+                Log.d("CheckoutActivity", "Transaction: $transaction")
+                transactionRepository.createAndUpdateTransaction(transaction)
+            }
+
+    }
+
     private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
         when (paymentSheetResult) {
             is PaymentSheetResult.Completed -> {
                 // Handle payment success
                 Toast.makeText(this, "Payment succeeded", Toast.LENGTH_LONG).show()
-            }
 
+                // Launch a coroutine to perform suspend functions
+                lifecycleScope.launch {
+                    // Retrieve the cart once and use it for all operations
+                    val cart = cartRepository.getCart(userId).firstOrNull()
+                    cart?.let {
+                        // Update inventory for each product in the cart
+                        it.productsMap.forEach { (productId, quantity) ->
+                            productRepository.updateProductInventory(productId, quantity)
+                        }
+                        Log.d("CheckoutActivity", "Cart: $cart")
+                        // Clear the cart after successful checkout
+                        cartRepository.clearCartAfterCheckout(userId)
+                        Log.d("CheckoutActivity", "Cart cleared")
+                        // Create a transaction record for the purchase
+                        createTransactionFromCart(it)
+                        Log.d("CheckoutActivity", "Transaction created")
+                    }
+                    // Redirect to the order history page
+                    finish()
+                }
+            }
             is PaymentSheetResult.Canceled -> {
                 // Handle payment cancellation
                 Toast.makeText(this, "Payment canceled", Toast.LENGTH_LONG).show()
             }
-
             is PaymentSheetResult.Failed -> {
                 // Handle payment failure
                 Toast.makeText(
@@ -132,5 +191,6 @@ class CheckoutActivity : AppCompatActivity() {
                 ).show()
             }
         }
+
     }
 }
