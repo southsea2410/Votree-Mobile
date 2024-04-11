@@ -1,12 +1,10 @@
 package com.example.votree
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -14,11 +12,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.votree.admin.activities.AdminMainActivity
 import androidx.navigation.ui.setupWithNavController
+import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.databinding.ActivityMainBinding
 import com.example.votree.users.activities.RegisterToSeller
-import com.example.votree.users.activities.SignInActivity
 import com.example.votree.users.activities.StoreManagement
 import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.PermissionManager
@@ -119,7 +116,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun gotoAccountManagement() {
         binding.toolbar.btnAvatar.setOnClickListener {
-            RoleManagement.checkUserRole(firebaseAuth = authHandler.firebaseAuth, onSuccess = {
+            RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
                 if (it == "user") {
                     Log.d("MainActivity", "User")
                 } else if (it == "store") {
