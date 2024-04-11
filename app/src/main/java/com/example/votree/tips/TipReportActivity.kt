@@ -75,23 +75,25 @@ class TipReportActivity : AppCompatActivity() {
         if (imageUri !== null){
             storageRef.putFile(imageUri)
                 .addOnSuccessListener {
-                    tipReport.imageList[0]  = it.toString()
-                    fireStoreInstance.collection("reports").add(tipReport)
-                        .addOnSuccessListener { documentReference ->
-                            val documentId = documentReference.id
-                            fireStoreInstance.collection("reports").document(documentId)
-                                .update("id", documentId)
-                            Toast.makeText(
-                                this,
-                                "Thank you for your contribution",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            finish()
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(this, "Tip report Error: ${it.message}", Toast.LENGTH_SHORT)
-                                .show()
-                        }
+                    storageRef.downloadUrl.addOnSuccessListener {
+                        tipReport.imageList[0]  = it.toString()
+                        fireStoreInstance.collection("reports").add(tipReport)
+                            .addOnSuccessListener { documentReference ->
+                                val documentId = documentReference.id
+                                fireStoreInstance.collection("reports").document(documentId)
+                                    .update("id", documentId)
+                                Toast.makeText(
+                                    this,
+                                    "Thank you for your contribution",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Tip report Error: ${it.message}", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                    }
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "Image upload Error: ${it.message}", Toast.LENGTH_SHORT).show()
