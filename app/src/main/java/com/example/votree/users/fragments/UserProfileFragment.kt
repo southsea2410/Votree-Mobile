@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.votree.databinding.FragmentUserProfileBinding
+import com.example.votree.users.activities.OrderHistoryActivity
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.users.activities.SignInActivity
 import com.example.votree.utils.AuthHandler
@@ -20,6 +21,7 @@ class UserProfileFragment : Fragment() {
         val binding = FragmentUserProfileBinding.inflate(inflater, container, false)
 
         setupLogoutButton(binding)
+        setupOrderHistoryButton(binding)
 
         RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
             if (it == "user") setupRegisterToSellerButton(binding)
@@ -42,6 +44,14 @@ class UserProfileFragment : Fragment() {
         binding.logoutButton.setOnClickListener {
             SignInActivity().signOut()
             val intent = Intent(this.context, SignInActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun setupOrderHistoryButton(binding: FragmentUserProfileBinding) {
+        // Call function userProfile of SignInActivity
+        binding.orderHistoryBtn.setOnClickListener {
+            val intent = Intent(this.context, OrderHistoryActivity::class.java)
             startActivity(intent)
         }
     }
