@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/productList"
-    android:id="@+id/nav_user_graph">
+    android:id="@+id/nav_seller_graph">
 
     <fragment
         android:id="@+id/main_tip_fragment"
@@ -26,6 +26,12 @@
             android:id="@+id/action_productList_to_cartList"
             app:destination="@id/cartList" />
     </fragment>
+    <fragment
+        android:id="@+id/seller_store_fragment"
+        android:name="com.example.votree.users.fragments.SellerStoreFragment"
+        android:label="Seller Store"
+        tools:layout="@layout/fragment_seller_store"
+        />
     <fragment
         android:id="@+id/notifications_fragment"
         android:name="com.example.votree.notifications.fragments.NotificationFragment"
@@ -61,10 +67,6 @@
         <action
             android:id="@+id/action_productDetail_to_cartList"
             app:destination="@id/cartList" />
-        <argument
-            android:name="role"
-            android:defaultValue="user"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/cartList"

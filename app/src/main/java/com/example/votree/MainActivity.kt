@@ -1,6 +1,7 @@
 package com.example.votree
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.votree.admin.activities.AdminMainActivity
 import androidx.navigation.ui.setupWithNavController
 import com.example.votree.databinding.ActivityMainBinding
 import com.example.votree.users.activities.RegisterToSeller
@@ -29,14 +31,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var permissionManager: PermissionManager
     private val bottomNavigation by lazy { findViewById<BottomNavigationView>(R.id.bottom_navigation_view) }
-    private lateinit var authHandler: AuthHandler
+    private var role = ""
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        authHandler = AuthHandler(this)
         checkUserAuthentication()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -45,27 +46,23 @@ class MainActivity : AppCompatActivity() {
         permissionManager = PermissionManager(this)
         permissionManager.checkPermissions()
 
-        setupToolbar()
         setupPermissions()
-        setupNavigation()
-        setupLogoutButton()
-        setupRegisterToSellerButton()
 
-        RoleManagement.checkUserRole(firebaseAuth = authHandler.firebaseAuth, onSuccess = {
-            if (it == "user") {
-                Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
-            } else if (it == "store") {
-                Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
+        RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
+            role = it ?: ""
+            setupToolbar()
+            setupNavigation()
+
+            when (it) {
+                "user" -> Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
+                "store" -> Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
+                "admin" -> {
+                    val intent = Intent(this, AdminMainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
             }
         })
-
-//        val navHostFragment =
-//        supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
-//        val navController = navHostFragment.navController
-//        navController.setGraph(R.navigation.nav_user_graph)
-//        bottomNavigation.setupWithNavController(navController)
-//        bottomNavigation.inflateMenu(R.menu.nav_user)
-//    }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -74,11 +71,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkUserAuthentication() {
-        if (!authHandler.isUserAuthenticated) {
-            authHandler.redirectToSignIn()
+        if (!AuthHandler.isUserAuthenticated) {
+            AuthHandler.redirectToSignIn(this)
             finish()
         } else {
-            authHandler.storeUserIdInSharedPreferences()
+            AuthHandler.storeUserIdInSharedPreferences(this)
         }
     }
 
@@ -92,9 +89,16 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        navController.setGraph(R.navigation.nav_user_graph)
+
+        if (role == "store") {
+            navController.setGraph(R.navigation.nav_seller_graph)
+            bottomNavigation.inflateMenu(R.menu.nav_seller)
+        } else {
+            navController.setGraph(R.navigation.nav_user_graph)
+            bottomNavigation.inflateMenu(R.menu.nav_user)
+        }
+
         bottomNavigation.setupWithNavController(navController)
-        bottomNavigation.inflateMenu(R.menu.nav_user)
         setupActionBarWithNavController(navController, AppBarConfiguration(navController.graph))
     }
 
@@ -104,16 +108,6 @@ class MainActivity : AppCompatActivity() {
             navigateToCart()
         }
         gotoAccountManagement()
-    }
-
-    private fun setupLogoutButton() {
-        // Call function logout of SignInActivity
-        findViewById<Button>(R.id.logoutButton).setOnClickListener {
-            SignInActivity().signOut()
-            val intent = Intent(this, SignInActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
     }
 
     private fun navigateToCart() {
@@ -149,7 +143,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUserToSeller(role: String){
         // If RegisterToSeller activity is successful, and return the role as store, then update the user role to store
-        RoleManagement.updateUserRole(authHandler.firebaseAuth, role)
+        RoleManagement.updateUserRole(AuthHandler.firebaseAuth, role)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
