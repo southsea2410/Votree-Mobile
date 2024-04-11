@@ -157,4 +157,10 @@
     <string name="being_reported">Being reported: %s</string>
     <string name="by_user">By</string>
     <string name="reported_date">Reported date: %s</string>
+    <string-array name="tips_report_reasons">
+        <item>Spam</item>
+        <item>Offensive</item>
+        <item>Irrelevant</item>
+        <item>Other</item>
+    </string-array>
 </resources>

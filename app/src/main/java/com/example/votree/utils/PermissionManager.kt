@@ -154,7 +154,7 @@ class PermissionManager(private val activity: FragmentActivity) {
         }
 
 
-    private fun allPermissionsGranted(): Boolean {
+    fun allPermissionsGranted(): Boolean {
         return isStorageImagePermitted && isStorageVideoPermitted && isStorageAudioPermitted
     }
 
