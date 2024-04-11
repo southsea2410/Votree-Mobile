@@ -39,6 +39,7 @@ class TransactionRepository(private val db: FirebaseFirestore) {
 
     suspend fun fetchShopName(storeId: String): String? {
         val db = FirebaseFirestore.getInstance()
+        Log.d("TransactionRepository", "Fetching shop name for storeId: $storeId")
         val storeDoc = db.collection("stores").document(storeId).get().await()
         return storeDoc.getString("storeName") // Assuming the field containing the shop name is called "shopName"
     }

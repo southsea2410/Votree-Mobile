@@ -129,26 +129,33 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun createTransactionFromCart(cart: Cart) {
         val currentDate = Date()
-        // Get storeId base on userId
-        FirebaseFirestore.getInstance().collection("users").document(userId).get()
+        val storeId = ""
+        FirebaseFirestore.getInstance().collection("carts").document(userId).get()
             .addOnSuccessListener { document ->
-                val storeId = document.getString("storeId") ?: ""
-                val transaction = Transaction(
-                    id = "",
-                    customerId = userId,
-                    storeId = storeId,
-                    productsMap = cart.productsMap,
-                    remainPrice = 0.0,
-                    status = "pending",
-                    name = "John Doe",
-                    address = "123 Main St, San Francisco, CA",
-                    phoneNumber = "123-456-7890",
-                    createdAt = currentDate
-                )
-                Log.d("CheckoutActivity", "Transaction: $transaction")
-                transactionRepository.createAndUpdateTransaction(transaction)
-            }
+                // Get the first product in the cart
 
+                val firstProduct = cart.productsMap.entries.firstOrNull()
+                val productId = firstProduct?.key ?: ""
+
+                FirebaseFirestore.getInstance().collection("products").document(productId).get()
+                    .addOnSuccessListener { productDocument ->
+                        val storeId = productDocument.getString("storeId") ?: ""
+                        val transaction = Transaction(
+                            id = "",
+                            customerId = userId,
+                            storeId = storeId,
+                            productsMap = cart.productsMap,
+                            remainPrice = 0.0,
+                            status = "pending",
+                            name = "John Doe",
+                            address = "123 Main St, San Francisco, CA",
+                            phoneNumber = "123-456-7890",
+                            createdAt = currentDate
+                        )
+                        Log.d("CheckoutActivity", "Transaction: $transaction")
+                        transactionRepository.createAndUpdateTransaction(transaction)
+                    }
+            }
     }
 
     private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {

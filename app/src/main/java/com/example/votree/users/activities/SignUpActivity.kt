@@ -72,7 +72,7 @@ class SignUpActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             .addOnFailureListener { exception ->
-                Toast.makeText(this, "Failed to create user: ${exception.message}", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "Failed to create user: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -83,10 +83,10 @@ class SignUpActivity : AppCompatActivity() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val result = task.result?.data as String
-                    Toast.makeText(this, "Stripe customer created successfully", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Stripe customer created successfully", Toast.LENGTH_SHORT).show()
                 } else {
                     val exception = task.exception
-                    Toast.makeText(this, "Failed to create Stripe customer: ${exception?.message}", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Failed to create Stripe customer: ${exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
