@@ -50,10 +50,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
                     android:text="Product Name"
                     android:textAppearance="?attr/textAppearanceTitleMedium"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:maxLines="1" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/productPrice_tv"

@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     tools:context=".products.adapters.UserReviewAdapter"
     android:orientation="horizontal"
+    android:layout_gravity="center"
     android:padding="8dp">
 
     <androidx.cardview.widget.CardView
@@ -43,7 +44,7 @@
             <RatingBar
                 android:id="@+id/ratingBar"
                 android:layout_width="wrap_content"
-                android:layout_weight="0"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:numStars="5"
