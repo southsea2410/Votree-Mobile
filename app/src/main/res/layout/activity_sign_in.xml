@@ -103,11 +103,11 @@
 
     <ImageView
         android:id="@+id/divider"
-        android:layout_width="374dp"
-        android:layout_height="37dp"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:src="@drawable/divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -129,13 +129,13 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnGoogle"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/btn_bg"
-        android:backgroundTint="#FFDFDB"
         android:drawableLeft="@drawable/ic_google"
-        android:drawablePadding="10dp"
+        android:drawablePadding="20dp"
         android:paddingLeft="20dp"
         android:text="Google"
         android:textAlignment="textStart"
@@ -144,7 +144,9 @@
         app:layout_constraintEnd_toStartOf="@+id/btnFacebook"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/continue_with_social_account" />
+        app:layout_constraintTop_toBottomOf="@+id/continue_with_social_account"
+        app:layout_constraintVertical_bias="0.571"
+        tools:ignore="NotSibling" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnFacebook"
@@ -167,20 +169,44 @@
         app:layout_constraintStart_toEndOf="@+id/btnGoogle"
         app:layout_constraintTop_toTopOf="@+id/btnGoogle" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnGoogle"
+        app:layout_constraintBottom_toBottomOf="parent" >
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
-        android:text="Didn't have an account? Sign Up"
+        android:text="Didn't have an account? "
         android:textColor="@color/black"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/continue_with_social_account"
-        app:layout_constraintVertical_bias="0.705" />
+        app:layout_constraintVertical_bias="0.765" />
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:text="Sign Up"
+        android:textColor="@color/md_theme_primary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.526"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/continue_with_social_account"
+        app:layout_constraintVertical_bias="0.765" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

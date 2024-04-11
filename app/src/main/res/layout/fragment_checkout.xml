@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/md_theme_primaryContainer"
+                android:background="@color/md_theme_inversePrimary_mediumContrast"
                 android:padding="14dp"
                 android:text="Shipping Address"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -117,7 +117,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_theme_primaryContainer"
+                    android:background="@color/md_theme_inversePrimary_mediumContrast"
                     android:padding="14dp"
                     android:text="Delivery Options"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -156,7 +156,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/md_theme_primaryContainer"
+                android:background="@color/md_theme_inversePrimary_mediumContrast"
                 android:padding="14dp"
                 android:paddingBottom="0dp"
                 android:text="Products List"
@@ -180,7 +180,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_theme_primaryContainer"
+                    android:background="@color/md_theme_inversePrimary_mediumContrast"
                     android:padding="14dp"
                     android:text="Payment Options"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -229,7 +229,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_theme_primaryContainer"
+                    android:background="@color/md_theme_inversePrimary_mediumContrast"
                     android:padding="14dp"
                     android:text="Transaction Details"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -350,7 +350,7 @@
             android:paddingEnd="0dp"
             android:text="Total: "
             android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="@color/white"
+            android:textColor="@color/md_theme_scrim"
             android:textStyle="bold" />
 
         <TextView
@@ -362,7 +362,7 @@
             android:paddingStart="2dp"
             android:text="$ 210"
             android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="@color/white"
+            android:textColor="@color/md_theme_primary"
             android:textStyle="bold" />
 
         <Button

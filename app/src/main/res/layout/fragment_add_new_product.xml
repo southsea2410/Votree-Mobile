@@ -95,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.5"
                     android:hint="Price">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -109,7 +109,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="24dp"
                     android:layout_weight="0.65"
                     android:hint="Quantity">
@@ -230,9 +230,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
                 android:text="Add Image"
                 app:cornerRadius="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.541"
                 app:layout_constraintStart_toEndOf="@+id/productImage_iv"
                 app:layout_constraintTop_toTopOf="@+id/productImage_iv" />
 

@@ -40,17 +40,17 @@
             </androidx.cardview.widget.CardView>
 
             <Button
-                style="@style/Widget.Material3.Button.IconButton.Filled"
                 android:id="@+id/addImageButton"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:text="Add Image"
-                android:textSize="10sp"
+                android:textSize="14sp"
+                app:cornerRadius="5dp"
                 app:icon="@drawable/ic_add"
                 app:iconPadding="3dp"
-                app:iconSize="16dp"
-                app:cornerRadius="5dp" />
+                app:iconSize="16dp" />
         </LinearLayout>
 
         <EditText
@@ -81,7 +81,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="0">
         <Button
-            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
             android:id="@+id/submitReviewButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
