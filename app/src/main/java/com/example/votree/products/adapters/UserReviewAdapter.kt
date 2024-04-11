@@ -62,6 +62,6 @@ class UserReviewAdapter(
     private suspend fun fetchUserName(userId: String): String? {
         val db = FirebaseFirestore.getInstance()
         val docSnapshot = db.collection("users").document(userId).get().await()
-        return docSnapshot.getString("name") // Assuming the field containing the user's name is "name"
+        return docSnapshot.getString("fullname") // Assuming the field containing the user's name is "name"
     }
 }
