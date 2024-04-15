@@ -55,7 +55,7 @@
             android:name="currentProduct"
             app:argType="com.example.votree.products.models.Product" />
         <action
-            android:id="@+id/action_updateProduct_to_productDetail2"
+            android:id="@+id/action_updateProduct_to_productDetail22"
             app:destination="@id/productDetail2" />
     </fragment>
     <fragment
@@ -68,13 +68,12 @@
             app:argType="com.example.votree.products.models.Product" />
         <argument
             android:name="role"
-            android:defaultValue="store"
             app:argType="string" />
         <action
             android:id="@+id/action_productDetail2_to_storeManagement2"
             app:destination="@id/storeManagement2" />
         <action
-            android:id="@+id/action_productDetail2_to_updateProduct"
+            android:id="@+id/action_productDetail2_to_updateProduct2"
             app:destination="@id/updateProduct" />
     </fragment>
     <fragment
