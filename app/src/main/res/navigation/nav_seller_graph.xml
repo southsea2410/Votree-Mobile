@@ -25,38 +25,7 @@
         <action
             android:id="@+id/action_productList_to_cartList"
             app:destination="@id/cartList" />
-    </fragment>
-    <fragment
-        android:id="@+id/storeManagement2"
-        android:name="com.example.votree.users.fragments.StoreManagementFragment"
-        android:label="StoreManagement">
-        <action
-            android:id="@+id/action_storeManagement2_to_addNewProduct2"
-            app:destination="@id/addNewProduct2" />
-        <action
-            android:id="@+id/action_storeManagement2_to_productDetail2"
-            app:destination="@id/productDetail2" />
-    </fragment>
-    <fragment
-        android:id="@+id/addNewProduct2"
-        android:name="com.example.votree.products.fragments.AddNewProduct"
-        android:label="fragment_add_new_product"
-        tools:layout="@layout/fragment_add_new_product">
-        <action
-            android:id="@+id/action_addNewProduct2_to_storeManagement2"
-            app:destination="@id/storeManagement2" />
-    </fragment>
-    <fragment
-        android:id="@+id/updateProduct"
-        android:name="com.example.votree.products.fragments.UpdateProduct"
-        android:label="fragment_update_product"
-        tools:layout="@layout/fragment_update_product">
-        <argument
-            android:name="currentProduct"
-            app:argType="com.example.votree.products.models.Product" />
-        <action
-            android:id="@+id/action_updateProduct_to_productDetail22"
-            app:destination="@id/productDetail2" />
+
     </fragment>
     <fragment
         android:id="@+id/productDetail2"
@@ -70,11 +39,8 @@
             android:name="role"
             app:argType="string" />
         <action
-            android:id="@+id/action_productDetail2_to_storeManagement2"
-            app:destination="@id/storeManagement2" />
-        <action
-            android:id="@+id/action_productDetail2_to_updateProduct2"
-            app:destination="@id/updateProduct" />
+            android:id="@+id/action_productDetail2_to_checkout"
+            app:destination="@id/checkout" />
     </fragment>
     <fragment
         android:id="@+id/notifications_fragment"
@@ -123,5 +89,58 @@
         <action
             android:id="@+id/action_shippingAddressFragment_to_checkout"
             app:destination="@id/checkout" />
+    </fragment>
+
+
+    <activity
+        android:id="@+id/storeManagement"
+        android:name="com.example.votree.users.activities.StoreManagement"
+        android:label="activity_store_management"
+        tools:layout="@layout/activity_store_management" />
+    <fragment
+        android:id="@+id/storeManagement2"
+        android:name="com.example.votree.users.fragments.StoreManagementFragment"
+        android:label="StoreManagement">
+        <action
+            android:id="@+id/action_storeManagement2_to_addNewProduct2"
+            app:destination="@id/addNewProduct2" />
+        <action
+            android:id="@+id/action_storeManagement2_to_productDetailFragmentForStore"
+            app:destination="@id/productDetailFragmentForStore" />
+    </fragment>
+    <fragment
+        android:id="@+id/addNewProduct2"
+        android:name="com.example.votree.products.fragments.AddNewProduct"
+        android:label="fragment_add_new_product"
+        tools:layout="@layout/fragment_add_new_product">
+        <action
+            android:id="@+id/action_addNewProduct2_to_storeManagement2"
+            app:destination="@id/storeManagement2" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateProduct"
+        android:name="com.example.votree.products.fragments.UpdateProduct"
+        android:label="fragment_update_product"
+        tools:layout="@layout/fragment_update_product">
+        <argument
+            android:name="currentProduct"
+            app:argType="com.example.votree.products.models.Product" />
+        <action
+            android:id="@+id/action_updateProduct_to_productDetailFragmentForStore"
+            app:destination="@id/productDetailFragmentForStore" />
+    </fragment>
+    <fragment
+        android:id="@+id/productDetailFragmentForStore"
+        android:name="com.example.votree.products.fragments.ProductDetailFragmentForStore"
+        android:label="ProductDetailFragmentForStore">
+        <action
+            android:id="@+id/action_productDetailFragmentForStore_to_updateProduct"
+            app:destination="@id/updateProduct" />
+        <action
+            android:id="@+id/action_productDetailFragmentForStore_to_storeManagement2"
+            app:destination="@id/storeManagement2" />
+        <argument
+            android:name="currentProduct"
+            app:argType="com.example.votree.products.models.Product" />
     </fragment>
 </navigation>

@@ -63,8 +63,10 @@
             app:destination="@id/cartList" />
         <argument
             android:name="role"
-            android:defaultValue="user"
             app:argType="string" />
+        <action
+            android:id="@+id/action_productDetail_to_checkout"
+            app:destination="@id/checkout" />
     </fragment>
     <fragment
         android:id="@+id/cartList"
