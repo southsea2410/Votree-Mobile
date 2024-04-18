@@ -15,7 +15,6 @@ import com.example.votree.databinding.ActivityProductReviewAcitivityBinding
 import com.example.votree.products.models.ProductReview
 import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.repositories.ProductReviewRepository
-import com.example.votree.utils.PermissionManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 

@@ -15,7 +15,6 @@ import com.example.votree.R
 import com.example.votree.databinding.FragmentProductDetailBinding
 import com.example.votree.products.adapters.UserReviewAdapter
 import com.example.votree.products.models.ProductReview
-import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.view_models.CartViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +26,6 @@ class ProductDetailFragment : Fragment() {
     private val args: ProductDetailFragmentArgs by navArgs()
     private val cartViewModel = CartViewModel()
     private val firestore = FirebaseFirestore.getInstance()
-    private val productRepository = ProductRepository(firestore)
     private lateinit var userReviewAdapter: UserReviewAdapter
     private lateinit var reviewRecyclerView: RecyclerView
 
@@ -83,10 +81,8 @@ class ProductDetailFragment : Fragment() {
         reviewRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
-
     private fun fetchAndDisplayReviews() {
         val reviews = mutableListOf<ProductReview>()
-        // Go to the products/productId/reviews collection in Firestore
         firestore.collection("products").document(args.currentProduct.id).collection("reviews")
             .get()
             .addOnSuccessListener { reviewsSnapshot ->
@@ -103,9 +99,8 @@ class ProductDetailFragment : Fragment() {
     }
 
     private fun gotoCheckout() {
-        binding.buyNowBtn.setOnClickListener {
-            val action = ProductDetailFragmentDirections.actionProductDetailToCheckout()
-            findNavController().navigate(action)
-        }
+        val action =
+            ProductDetailFragmentDirections.actionProductDetail2ToCheckout(args.currentProduct)
+        findNavController().navigate(action)
     }
 }

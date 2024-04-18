@@ -17,10 +17,10 @@ import com.google.firebase.functions.FirebaseFunctions
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.util.Date
 
+@Suppress("DEPRECATION")
 class CheckoutActivity : AppCompatActivity() {
     private lateinit var paymentSheet: PaymentSheet
     private var paymentIntentClientSecret: String? = null
@@ -59,9 +59,10 @@ class CheckoutActivity : AppCompatActivity() {
                     Log.d("CheckoutActivity", "DocumentSnapshot data: ${document.data}")
                     customerId = document.getString("customer_id") ?: ""
 
-                    val amount = 1099L
+                    // Get amount from the intent totalAmount and convert to Long,
+                    val amount = intent.getStringExtra("totalAmount")?.toFloat()?.times(100) ?: 0
                     val currency = "usd"
-                    fetchPaymentIntentClientSecret(amount, currency, customerId)
+                    fetchPaymentIntentClientSecret(amount.toLong(), currency, customerId)
                 }
                 .addOnFailureListener { exception ->
                     // If not exists, create a new customer
@@ -129,33 +130,29 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun createTransactionFromCart(cart: Cart) {
         val currentDate = Date()
-        val storeId = ""
-        FirebaseFirestore.getInstance().collection("carts").document(userId).get()
-            .addOnSuccessListener { document ->
-                // Get the first product in the cart
 
-                val firstProduct = cart.productsMap.entries.firstOrNull()
-                val productId = firstProduct?.key ?: ""
+        val firstProduct = cart.productsMap.entries.firstOrNull()
+        val productId = firstProduct?.key ?: ""
 
-                FirebaseFirestore.getInstance().collection("products").document(productId).get()
-                    .addOnSuccessListener { productDocument ->
-                        val storeId = productDocument.getString("storeId") ?: ""
-                        val transaction = Transaction(
-                            id = "",
-                            customerId = userId,
-                            storeId = storeId,
-                            productsMap = cart.productsMap,
-                            remainPrice = 0.0,
-                            status = "pending",
-                            name = "John Doe",
-                            address = "123 Main St, San Francisco, CA",
-                            phoneNumber = "123-456-7890",
-                            createdAt = currentDate
-                        )
-                        Log.d("CheckoutActivity", "Transaction: $transaction")
-                        transactionRepository.createAndUpdateTransaction(transaction)
-                    }
+        FirebaseFirestore.getInstance().collection("products").document(productId).get()
+            .addOnSuccessListener { productDocument ->
+                val storeId = productDocument.getString("storeId") ?: ""
+                val transaction = Transaction(
+                    id = "",
+                    customerId = userId,
+                    storeId = storeId,
+                    productsMap = cart.productsMap,
+                    remainPrice = 0.0,
+                    status = "pending",
+                    name = "John Doe",
+                    address = "123 Main St, San Francisco, CA",
+                    phoneNumber = "123-456-7890",
+                    createdAt = currentDate
+                )
+                Log.d("CheckoutActivity", "Transaction: $transaction")
+                transactionRepository.createAndUpdateTransaction(transaction)
             }
+
     }
 
     private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
@@ -166,23 +163,23 @@ class CheckoutActivity : AppCompatActivity() {
 
                 // Launch a coroutine to perform suspend functions
                 lifecycleScope.launch {
-                    // Retrieve the cart once and use it for all operations
-                    val cart = cartRepository.getCart(userId).firstOrNull()
+                    val cart = intent.getParcelableExtra<Cart>("cart")
                     cart?.let {
-                        // Update inventory for each product in the cart
                         it.productsMap.forEach { (productId, quantity) ->
                             productRepository.updateProductInventory(productId, quantity)
                         }
-                        Log.d("CheckoutActivity", "Cart: $cart")
-                        // Clear the cart after successful checkout
-                        cartRepository.clearCartAfterCheckout(userId)
-                        Log.d("CheckoutActivity", "Cart cleared")
+//                        Log.d("CheckoutActivity", "Cart: $cart")
                         // Create a transaction record for the purchase
-                        createTransactionFromCart(it)
-                        Log.d("CheckoutActivity", "Transaction created")
+                        createTransactionFromCart(cart)
+//                        Log.d("CheckoutActivity", "Transaction created")
+
+                        if (cart.id != "")
+                            cartRepository.clearCartAfterCheckout(userId, cart)
+                        else
+                            cart.removeCart()
+//                        Log.d("CheckoutActivity", "Cart cleared")
+                        finish()
                     }
-                    // Redirect to the order history page
-                    finish()
                 }
             }
             is PaymentSheetResult.Canceled -> {
@@ -198,6 +195,5 @@ class CheckoutActivity : AppCompatActivity() {
                 ).show()
             }
         }
-
     }
 }

@@ -12,7 +12,6 @@ import com.example.votree.products.view_models.ShippingAddressViewModel
 import com.google.android.material.snackbar.Snackbar
 
 class ShippingAddressFragment : Fragment() {
-
     private lateinit var binding: FragmentShippingAddressBinding // View Binding
     private lateinit var viewModel: ShippingAddressViewModel
 
@@ -72,6 +71,6 @@ class ShippingAddressFragment : Fragment() {
         // Handle Success or Failure (e.g. show messages, navigate if needed)
         Snackbar.make(binding.root, "Address saved successfully", Snackbar.LENGTH_SHORT).show()
         // Navigate back to the previous screen
-//        requireActivity().onBackPressed()
+        requireActivity().onBackPressed()
     }
 }
