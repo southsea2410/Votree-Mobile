@@ -22,3 +22,15 @@ data class ProductTip(
         return "ProductTip(approvalStatus=$approvalStatus, content='$content', createdAt=$createdAt, updatedAt=$updatedAt, imageList=$imageList, shortDescription='$shortDescription', title='$title', userId='$userId', vote=$vote, id='$id')"
     }
 }
+
+@Parcelize
+data class Vote(
+    val userId: String? = null,
+    var isUpvote: Boolean? = null,
+    @ServerTimestamp var updatedAt: Date? = null,
+) : Parcelable {
+    override fun toString(): String {
+        val isUpvote = isUpvote
+        return "Vote(userId='$userId', ${if (isUpvote !== null && isUpvote) "Upvote" else "Downvote"}, userId='$userId')"
+    }
+}
