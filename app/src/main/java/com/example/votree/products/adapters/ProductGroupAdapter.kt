@@ -1,5 +1,6 @@
 package com.example.votree.products.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -58,16 +59,35 @@ class ProductGroupAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    class HeaderViewHolder(private val binding: GroupShopItemsBinding) :
+    inner class HeaderViewHolder(private val binding: GroupShopItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ProductItem.ProductHeader) {
             binding.shopNameTv.text = item.shopName
+            binding.shopGroupRb.isChecked = item.isChecked
+            binding.shopGroupRb.setOnClickListener {
+                item.isChecked = !item.isChecked
+                binding.shopGroupRb.isChecked = item.isChecked
+                checkAllProductsUnderShop(item.storeId, item.isChecked)
+            }
+        }
+
+        // Implement a function that if the user clicks the checkbox, all the products under that shop will be checked
+        // If the user unchecks the checkbox, all the products under that shop will be unchecked
+        @SuppressLint("NotifyDataSetChanged")
+        private fun checkAllProductsUnderShop(shopId: String, isChecked: Boolean) {
+            items.forEach {
+                if (it is ProductItem.ProductData && it.product.storeId == shopId) {
+                    it.isChecked = isChecked
+                }
+            }
+            notifyDataSetChanged()
         }
     }
 
     inner class ProductViewHolder(private val binding: CartAdapterBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ProductItem.ProductData) {
+            binding.pickUpRb.isChecked = item.isChecked
             binding.productNameTv.text = item.product.productName
             binding.productPriceTv.text =
                 binding.root.context.getString(R.string.price_format, item.product.price)
@@ -77,21 +97,23 @@ class ProductGroupAdapter(
                 .placeholder(R.drawable.img_placeholder)
                 .into(binding.productImageIv)
 
-            // Set click listener for remove button
             binding.removeBtn.setOnClickListener {
                 cartViewModel.removeCartItem(item.product.id)
             }
 
-            // Set click listener for add button
             binding.addBtn.setOnClickListener {
                 cartViewModel.updateCartItem(item.product.id, 1)
                 binding.quantityEt.setText((item.quantity + 1).toString())
             }
 
-            // Set click listener for subtract button
             binding.subBtn.setOnClickListener {
                 cartViewModel.updateCartItem(item.product.id, -1)
                 binding.quantityEt.setText((item.quantity - 1).toString())
+            }
+
+            binding.pickUpRb.setOnClickListener {
+                item.isChecked = !item.isChecked
+                binding.pickUpRb.isChecked = item.isChecked
             }
         }
     }

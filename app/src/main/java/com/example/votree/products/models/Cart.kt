@@ -9,7 +9,7 @@ data class Cart(
     var id: String = "",
     val userId: String = "",
     val productsMap: MutableMap<String, Int> = mutableMapOf(),
-    val totalPrice: Double = 0.0
+    var totalPrice: Double = 0.0
 ) : Parcelable {
     fun addProduct(productId: String, quantity: Int) {
         productsMap[productId] = quantity

@@ -1,5 +1,6 @@
 package com.example.votree.products.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,12 +12,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.votree.databinding.FragmentCartListBinding
 import com.example.votree.products.adapters.ProductGroupAdapter
+import com.example.votree.products.models.Cart
+import com.example.votree.products.models.ProductItem
 import com.example.votree.products.view_models.CartViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class CartList : Fragment() {
     private lateinit var viewModel: CartViewModel
     private lateinit var binding: FragmentCartListBinding
     private lateinit var adapter: ProductGroupAdapter
+    private lateinit var currentUser: FirebaseUser
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,6 +31,7 @@ class CartList : Fragment() {
     ): View {
         binding = FragmentCartListBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(CartViewModel::class.java)
+        currentUser = FirebaseAuth.getInstance().currentUser!!
 
         return binding.root
     }
@@ -42,6 +49,7 @@ class CartList : Fragment() {
         binding.cartListRv.adapter = adapter
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeCart() {
         viewModel.groupedProducts.observe(viewLifecycleOwner) { groupedItems ->
             if (!groupedItems.isNullOrEmpty()) {
@@ -49,6 +57,7 @@ class CartList : Fragment() {
                 adapter.notifyDataSetChanged()
                 Log.d("CartList", "Items in cart: $groupedItems")
             } else {
+                adapter.notifyDataSetChanged()
                 Log.d("CartList", "No items in cart")
             }
         }
@@ -61,7 +70,19 @@ class CartList : Fragment() {
 
     private fun gotoCheckout() {
         binding.buyNowBtn.setOnClickListener {
-            val action = CartListDirections.actionCartListToCheckout(null)
+            val cartWithSelectedProduct = Cart(
+                id = "",
+                userId = currentUser.uid,
+                productsMap = adapter.items
+                    .filterIsInstance<ProductItem.ProductData>()
+                    .filter { it.isChecked }
+                    .associate { it.product.id to it.quantity }
+                    .toMutableMap(),
+                totalPrice = 0.0
+            )
+
+            Log.d("CartList", "Selected products: ${cartWithSelectedProduct.productsMap}")
+            val action = CartListDirections.actionCartListToCheckout(cartWithSelectedProduct)
             findNavController().navigate(action)
         }
     }

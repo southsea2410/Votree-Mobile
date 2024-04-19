@@ -2,6 +2,7 @@ package com.example.votree.products.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,6 @@ import com.example.votree.products.view_models.CartViewModel
 import com.example.votree.products.view_models.ProductViewModel
 import com.example.votree.products.view_models.ShippingAddressViewModel
 import com.google.android.material.materialswitch.MaterialSwitch
-import com.google.firebase.auth.FirebaseAuth
 
 const val DELIVERY_FEE = 10.0
 
@@ -36,8 +36,8 @@ class Checkout : Fragment() {
     private lateinit var productViewModel: ProductViewModel
     private lateinit var cartViewModel: CartViewModel
     private var cart = Cart()
+    private var shippingAddress: ShippingAddress? = null
     private lateinit var adapter: CheckoutProductAdapter
-    private val userId = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,10 +56,11 @@ class Checkout : Fragment() {
         return binding.root
     }
 
-    private fun proceedToPayment(cart: Cart) {
+    private fun proceedToPayment(cart: Cart, shippingAddress: ShippingAddress?) {
         val intent = Intent(activity, CheckoutActivity::class.java)
         intent.putExtra("totalAmount", binding.totalAmountTv.text.toString())
         intent.putExtra("cart", cart)
+        intent.putExtra("receiver", shippingAddress)
         startActivity(intent)
     }
 
@@ -73,15 +74,36 @@ class Checkout : Fragment() {
 
         placeOrderButton.setOnClickListener {
             if (payBeforeDeliverySwitch.isChecked) {
-                proceedToPayment(cart)
+                proceedToPayment(cart, shippingAddress)
             } else {
                 placeOrderWithoutPayment()
             }
         }
 
+        // Observe the shippingAddresses LiveData
+        shippingAddressViewModel.shippingAddresses.observe(viewLifecycleOwner) { addresses ->
+            if (addresses != null) {
+                Log.d("Checkout", "Shipping addresses: $addresses")
+                // Select the address that has the default field set to true
+                val defaultAddress = addresses.find { it.default }
+                if (defaultAddress != null) {
+                    shippingAddress = defaultAddress
+                    updateAddressUI(defaultAddress)
+                } else {
+                    // If no default address is found, select the first address in the list
+                    shippingAddress = addresses.firstOrNull()
+                    updateAddressUI(shippingAddress)
+                }
+            }
+        }
+
         // Observe the selectedShippingAddress LiveData
         shippingAddressViewModel.selectedShippingAddress.observe(viewLifecycleOwner) { address ->
-            updateAddressUI(address)
+            if (address != null) {
+                Log.d("Checkout", "Selected address: $address")
+                shippingAddress = address
+                updateAddressUI(address)
+            }
         }
 
         binding.addressView.setOnClickListener {
@@ -90,50 +112,16 @@ class Checkout : Fragment() {
         }
     }
 
-    // Set up Checkout from cart
-    private fun setupCheckoutFromCart() {
+    private fun setupCheckoutWithCart() {
+        cart = args.cart?.copy() ?: Cart()
+        Log.d("Checkout", "cart: $cart")
+
         cartViewModel.cart.observe(viewLifecycleOwner) {
-            adapter = CheckoutProductAdapter(requireContext(), it!!, productViewModel)
+            adapter = CheckoutProductAdapter(requireContext(), cart!!, productViewModel)
             binding.productsRv.adapter = adapter
             if (it != null) {
                 cart = it
             }
-        }
-
-
-        // Observe the cart to calculate totals
-        cartViewModel.cart.observe(viewLifecycleOwner) { cart ->
-            cart?.let {
-                cartViewModel.calculateTotalProductsPrice(it)
-                    .observe(viewLifecycleOwner) { totalPrice ->
-                        val delivery = 10.0
-                        val totalAmount = totalPrice + delivery
-
-                        binding.totalProductsPriceTv.text =
-                            getString(R.string.price_format, totalPrice)
-                        binding.totalAmountTv.text = totalAmount.toString()
-                        binding.deliveryFeeTv.text = getString(R.string.price_format, delivery)
-                        binding.totalAmountTv.text = getString(R.string.price_format, totalAmount)
-                        binding.totalAmountBottomTv.text =
-                            getString(R.string.price_format, totalAmount)
-                    }
-            }
-        }
-    }
-
-    private fun setupCheckoutFromBuyNow() {
-        val product = args.currentProduct
-
-        cart = Cart(
-            "",
-            userId = userId,
-            productsMap = mutableMapOf((product?.id ?: "") to 1),
-            totalPrice = (product?.price ?: 0) as Double
-        )
-
-        cartViewModel.cart.observe(viewLifecycleOwner) {
-            adapter = CheckoutProductAdapter(requireContext(), cart, productViewModel)
-            binding.productsRv.adapter = adapter
 
             cartViewModel.calculateTotalProductsPrice(cart)
                 .observe(viewLifecycleOwner) { totalPrice ->
@@ -149,10 +137,9 @@ class Checkout : Fragment() {
     }
 
     private fun setupCheckout() {
-        if (args.currentProduct == null) {
-            setupCheckoutFromCart()
-        } else {
-            setupCheckoutFromBuyNow()
+        if (args.cart != null) {
+            Log.d("Checkout", "Setting up checkout with cart")
+            setupCheckoutWithCart()
         }
     }
 
@@ -164,12 +151,10 @@ class Checkout : Fragment() {
 
     private fun updateAddressUI(address: ShippingAddress?) {
         if (address != null) {
+            Log.d("Checkout", "Updating address UI")
             binding.userNameTv.text = address.recipientName
             binding.userPhoneNumberTv.text = address.recipientPhoneNumber
             binding.userAddressTv.text = address.recipientAddress
-        } else {
-            Toast.makeText(requireContext(), "Please select a shipping address", Toast.LENGTH_SHORT)
-                .show()
         }
     }
 

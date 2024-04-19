@@ -1,5 +1,6 @@
 package com.example.votree.products.view_models
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,14 +10,18 @@ import com.example.votree.products.repositories.ShippingAddressRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class ShippingAddressViewModel : ViewModel() {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
     private val repository = ShippingAddressRepository(db, auth)
 
-    private val _shippingAddresses = MutableLiveData<List<ShippingAddress>?>()
+    val _shippingAddresses = MutableLiveData<List<ShippingAddress>?>()
     val shippingAddresses: LiveData<List<ShippingAddress>?> = _shippingAddresses
+
+    val _isSaveAddressSuccessful = MutableLiveData<Boolean>()
+    val isSaveAddressSuccessful: LiveData<Boolean> = _isSaveAddressSuccessful
 
     // LiveData for holding the default shipping address
     private val _selectedShippingAddress = MutableLiveData<ShippingAddress?>()
@@ -26,21 +31,38 @@ class ShippingAddressViewModel : ViewModel() {
         fetchShippingAddresses()
     }
 
-    fun fetchShippingAddresses() {
+    private fun fetchShippingAddresses() {
         viewModelScope.launch {
-            _shippingAddresses.value = repository.getShippingAddresses()
-            _selectedShippingAddress.value = _shippingAddresses.value?.find { it.default }
+            try {
+                runBlocking {
+                    val addresses = repository.getShippingAddresses(
+                        _shippingAddresses,
+                        _selectedShippingAddress
+                    )
+                }
+                _isSaveAddressSuccessful.postValue(true)
+                Log.d("ShippingAddressViewModel", "Fetched shipping addresses")
+            } catch (e: Exception) {
+                Log.e("ShippingAddressViewModel", "Error fetching shipping addresses: $e")
+            }
         }
     }
 
-    fun saveShippingAddress(address: ShippingAddress) {
+    suspend fun saveShippingAddress(address: ShippingAddress) {
         viewModelScope.launch {
-            repository.saveShippingAddress(address)
-            fetchShippingAddresses()
+            try {
+                runBlocking {
+                    repository.saveShippingAddress(address)
+                }
+                fetchShippingAddresses()
+            } catch (e: Exception) {
+                Log.e("ShippingAddressViewModel", "Error saving shipping address: $e")
+                _isSaveAddressSuccessful.postValue(false)
+            }
         }
     }
 
-    private fun prefillForm(address: ShippingAddress) {
+    fun prefillForm(address: ShippingAddress) {
         val _recipientName = MutableLiveData(address.recipientName)
         val _recipientPhoneNumber = MutableLiveData(address.recipientPhoneNumber)
         val _recipientAddress = MutableLiveData(address.recipientAddress)

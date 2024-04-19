@@ -85,13 +85,13 @@
         <action
             android:id="@+id/action_checkout_to_shippingAddressFragment"
             app:destination="@id/shippingAddressFragment" />
-        <argument
-            android:name="currentProduct"
-            app:argType="com.example.votree.products.models.Product"
-            app:nullable="true" />
         <action
             android:id="@+id/action_checkout_to_productDetail"
             app:destination="@id/productDetail" />
+        <argument
+            android:name="cart"
+            app:argType="com.example.votree.products.models.Cart"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/shippingAddressFragment"

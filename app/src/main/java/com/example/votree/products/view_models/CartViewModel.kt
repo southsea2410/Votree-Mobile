@@ -49,10 +49,7 @@ class CartViewModel : ViewModel() {
         _cart.observeForever { cart ->
             cart?.let {
                 viewModelScope.launch {
-                    val groupedItems = groupProductsByShopId(cart)
-//                    groupedProducts.value = groupedItems
-                    groupedProducts.postValue(groupedItems)
-                    _isLoading.value = false
+                    groupProductsByShopId(cart)
                 }
             }
         }
@@ -94,7 +91,7 @@ class CartViewModel : ViewModel() {
     }
 
     // Make sure this function is a suspending function
-    suspend fun groupProductsByShopId(cart: Cart): List<ProductItem> {
+    suspend fun groupProductsByShopId(cart: Cart) {
         _isLoading.postValue(true)
 
         val firestore = FirebaseFirestore.getInstance()
@@ -109,7 +106,7 @@ class CartViewModel : ViewModel() {
 
             productsGroupedByShopId.forEach { (storeId, products) ->
                 val store = storeRepository.fetchStoreById(storeId, {
-                    groupedItems.add(ProductItem.ProductHeader(it.storeName))
+                    groupedItems.add(ProductItem.ProductHeader(storeId, it.storeName))
                     products.forEach { product ->
                         groupedItems.add(
                             ProductItem.ProductData(
@@ -118,14 +115,14 @@ class CartViewModel : ViewModel() {
                             )
                         )
                     }
+
+                    _isLoading.postValue(false)
+                    // Return the grouped items
+                    groupedProducts.postValue(groupedItems)
                 }, {
                     Log.d("CartViewModel", "Failed to fetch store with id $storeId")
                 })
             }
-
-            _isLoading.postValue(false)
-            // Return the grouped items
-            groupedItems
         }
     }
 }

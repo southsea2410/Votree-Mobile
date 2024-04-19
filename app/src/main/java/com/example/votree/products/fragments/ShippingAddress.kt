@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.votree.databinding.FragmentShippingAddressBinding
 import com.example.votree.products.models.ShippingAddress
 import com.example.votree.products.view_models.ShippingAddressViewModel
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class ShippingAddressFragment : Fragment() {
     private lateinit var binding: FragmentShippingAddressBinding // View Binding
@@ -24,7 +27,9 @@ class ShippingAddressFragment : Fragment() {
 
         // Set up data observation and button listener
         setUpObservers()
-        binding.confirmBtn.setOnClickListener { onSaveAddress() }
+        binding.confirmBtn.setOnClickListener {
+            onSaveAddress()
+        }
 
         return binding.root
     }
@@ -32,18 +37,17 @@ class ShippingAddressFragment : Fragment() {
     private fun setUpObservers() {
         // Observe the selectedShippingAddress LiveData
         viewModel.selectedShippingAddress.observe(viewLifecycleOwner) { address ->
-            // Update the form fields with the selected address details
             if (address != null) {
-                prefillForm(address)
+                viewModel.prefillForm(address)
+                fillForm(address)
             }
         }
     }
 
-    private fun prefillForm(address: ShippingAddress) {
+    private fun fillForm(address: ShippingAddress) {
         binding.recipientNameEt.setText(address.recipientName)
-        binding.recipientPhoneNumberEt.setText(address.recipientPhoneNumber)
         binding.recipentAddressEt.setText(address.recipientAddress)
-        binding.setAsDefaultSwitch.isChecked = address.default
+        binding.recipientPhoneNumberEt.setText(address.recipientPhoneNumber)
     }
 
     private fun onSaveAddress() {
@@ -66,11 +70,26 @@ class ShippingAddressFragment : Fragment() {
             default = isDefault
         )
 
-        viewModel.saveShippingAddress(shippingAddress)
-
-        // Handle Success or Failure (e.g. show messages, navigate if needed)
-        Snackbar.make(binding.root, "Address saved successfully", Snackbar.LENGTH_SHORT).show()
-        // Navigate back to the previous screen
-        requireActivity().onBackPressed()
+        lifecycleScope.launch {
+            try {
+                viewModel.saveShippingAddress(shippingAddress)
+                viewModel._isSaveAddressSuccessful.observe(viewLifecycleOwner) { isSuccessful ->
+                    if (isSuccessful) {
+                        Snackbar.make(
+                            binding.root,
+                            "Address saved successfully",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                        // Navigate back to the previous fragment
+                        findNavController().popBackStack()
+                    } else {
+                        Snackbar.make(binding.root, "Error saving address", Snackbar.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            } catch (e: Exception) {
+                Snackbar.make(binding.root, "Error saving address", Snackbar.LENGTH_SHORT).show()
+            }
+        }
     }
 }

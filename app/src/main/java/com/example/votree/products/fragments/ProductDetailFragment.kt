@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentProductDetailBinding
 import com.example.votree.products.adapters.UserReviewAdapter
+import com.example.votree.products.models.Cart
 import com.example.votree.products.models.ProductReview
 import com.example.votree.products.view_models.CartViewModel
 import com.google.firebase.firestore.FirebaseFirestore
@@ -99,8 +100,15 @@ class ProductDetailFragment : Fragment() {
     }
 
     private fun gotoCheckout() {
+        val cartWithSelectedProduct = Cart(
+            id = "",
+            userId = "",
+            productsMap = mutableMapOf(args.currentProduct.id to 1),
+            totalPrice = 0.0
+        )
+
         val action =
-            ProductDetailFragmentDirections.actionProductDetail2ToCheckout(args.currentProduct)
+            ProductDetailFragmentDirections.actionProductDetailToCheckout(cartWithSelectedProduct)
         findNavController().navigate(action)
     }
 }
