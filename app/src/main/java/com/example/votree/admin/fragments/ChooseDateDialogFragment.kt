@@ -4,17 +4,19 @@ import DialogFragmentListener
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.R
-import com.example.votree.admin.adapters.DateAdapter
+import com.example.votree.admin.adapters.DialogDateListAdapter
+import com.example.votree.admin.interfaces.OnItemClickListener
 
-class ChooseDateDialogFragment : DialogFragment() {
+class ChooseDateDialogFragment : DialogFragment(), OnItemClickListener {
 
     private var listener: DialogFragmentListener? = null
+    private lateinit var adapter: DialogDateListAdapter
 
     companion object {
         private const val REPORTER_ID = "reporter_id"
@@ -34,7 +36,8 @@ class ChooseDateDialogFragment : DialogFragment() {
         val rvDates = inflater.inflate(R.layout.fragment_recycleview_date, null)
         val reporterId = arguments?.getString(REPORTER_ID)
 
-        val adapter: DateAdapter = DateAdapter(dates)
+        adapter = DialogDateListAdapter(dates, this)
+        adapter.setData(dates)
 
         rvDates.findViewById<RecyclerView>(R.id.dateRecyclerViewFragment).adapter = adapter
         rvDates.findViewById<RecyclerView>(R.id.dateRecyclerViewFragment).layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
@@ -70,4 +73,16 @@ class ChooseDateDialogFragment : DialogFragment() {
         super.onDetach()
         listener = null
     }
+
+    override fun onItemClicked(view: View?, position: Int) {
+        adapter.setSelectedPosition(position)
+    }
+
+    override fun onTipItemClicked(view: View?, position: Int) {}
+
+    override fun onAccountItemClicked(view: View?, position: Int) {}
+
+    override fun onReportItemClicked(view: View?, position: Int, processStatus: Boolean) {}
+
+    override fun searchItem(query: String) {}
 }
