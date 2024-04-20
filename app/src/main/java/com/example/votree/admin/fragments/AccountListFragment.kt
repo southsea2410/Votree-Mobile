@@ -1,69 +1,74 @@
 package com.example.votree.admin.fragments
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.R
 import com.example.votree.admin.activities.AdminMainActivity
+import com.example.votree.admin.adapters.BaseListAdapter
 import com.example.votree.admin.adapters.AccountListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.User
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class AccountListFragment : Fragment(), OnItemClickListener {
+class AccountListFragment : BaseListFragment<User>() {
 
-    private val db = Firebase.firestore
-    private val adapter: AccountListAdapter by lazy { AccountListAdapter(this) }
-    private val accountList = mutableListOf<User>()
-    private var previousBackStackEntryCount = 0
+    override val adapter: BaseListAdapter<User> by lazy { AccountListAdapter(this) }
+    override val itemList = mutableListOf<User>()
+    override val collectionName = "users"
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_account_list, container, false)
+    override fun getLayoutId(): Int = R.layout.fragment_list
 
-        val recyclerViewAccountList: RecyclerView? = view?.findViewById(R.id.accountListRecycleView)
-        recyclerViewAccountList?.adapter = adapter
-        recyclerViewAccountList?.layoutManager = LinearLayoutManager(context)
+    override fun fetchDataFromFirestore() {
+        db.collection(collectionName)
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.w("AccountListFragment", "listen:error", e)
+                    return@addSnapshotListener
+                }
 
-        fetchDataFromFirestore()
-
-        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-
-        fragmentManager.addOnBackStackChangedListener {
-
-            val currentBackStackEntryCount = fragmentManager.backStackEntryCount
-
-            if (currentBackStackEntryCount < previousBackStackEntryCount) {
-                fetchDataFromFirestore()
-                (activity as AdminMainActivity).setupNormalActionBar()
+                itemList.clear()
+                for (doc in snapshots!!) {
+                    val account = doc.toObject(User::class.java)
+                    account.id = doc.id
+                    itemList.add(account)
+                }
+                adapter.setData(itemList)
             }
-
-            previousBackStackEntryCount = currentBackStackEntryCount
-        }
-
-        return view
-    }
-
-    override fun onTipItemClicked(view: View?, position: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onAccountItemClicked(view: View?, position: Int) {
         (activity as AdminMainActivity).onAccountItemClicked(view, position)
+        val topAppBar: MaterialToolbar = (activity as AdminMainActivity).findViewById(R.id.topAppBar)
+        topAppBar.menu.findItem(R.id.more).title = "Delete"
+        topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.more -> {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Delete Account")
+                        .setMessage("Are you sure you want to delete this account?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            db.collection(collectionName).document(adapter.getItem(position).id).delete()
+                                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+
+                            (activity as FragmentActivity).supportFragmentManager.popBackStack()
+                        }
+                        .setNegativeButton("No") { _, _ -> }
+                        .show()
+                    true
+                }
+
+                else -> false
+            }
+        }
 
         val fragment = AccountDetailFragment()
         val bundle = Bundle().apply {
-            putParcelable("account", adapter.getAccount(position))
+            putParcelable("account", adapter.getItem(position))
         }
         fragment.arguments = bundle
 
@@ -72,31 +77,9 @@ class AccountListFragment : Fragment(), OnItemClickListener {
         fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("account_list_fragment").commit()
     }
 
-    override fun onReportItemClicked(view: View?, position: Int, processStatus: Boolean) { }
-
-    private fun fetchDataFromFirestore() {
-        db.collection("users")
-            .addSnapshotListener { snapshots, e ->
-                if (e != null) {
-                    Log.w("AccountListActivity", "listen:error", e)
-                    return@addSnapshotListener
-                }
-
-                accountList.clear()
-
-                for (doc in snapshots!!) {
-                    val account = doc.toObject(User::class.java)
-                    account.id = doc.id
-                    accountList.add(account)
-                }
-
-                adapter.setData(accountList)
-            }
-    }
-
     override fun searchItem(query: String) {
-        val searchResult = accountList.filter {
-            it.userName.contains(query, ignoreCase = true) || it.role.contains(query, ignoreCase = true)
+        val searchResult = itemList.filter {
+            it.username.contains(query, ignoreCase = true) || it.role.contains(query, ignoreCase = true)
         }
 
         adapter.setData(searchResult)

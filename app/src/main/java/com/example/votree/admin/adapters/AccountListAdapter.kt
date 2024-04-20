@@ -1,51 +1,37 @@
 package com.example.votree.admin.adapters
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.User
 
 class AccountListAdapter(private var listener: OnItemClickListener) :
-    RecyclerView.Adapter<AccountListAdapter.ViewHolder>() {
+    BaseListAdapter<User>(listener) {
 
-    private var accountList = emptyList<User>()
+    override var singleitem_selection_position = 0 // no use
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    override fun getLayoutId(): Int = R.layout.item_account
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val accountView = LayoutInflater.from(parent.context).inflate(R.layout.item_account, parent, false)
-        return ViewHolder(accountView)
+    override fun createViewHolder(itemView: View): BaseViewHolder {
+        return ViewHolder(itemView)
     }
 
-    override fun getItemCount(): Int {
-        return accountList.size
-    }
+    inner class ViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val currentAccount = accountList[position]
+        override fun bind(item: User) {
+            super.bind(item)
 
-        Glide.with(viewHolder.itemView.context)
-            .load(currentAccount.avatar)
-            .into(viewHolder.itemView.findViewById(R.id.account_list_item_avatar))
+            Glide.with(itemView.context)
+                .load(item.avatar)
+                .into(itemView.findViewById(R.id.account_list_item_avatar))
 
-        viewHolder.itemView.findViewById<TextView>(R.id.account_list_item_name).text = currentAccount.userName
-        viewHolder.itemView.findViewById<TextView>(R.id.account_list_item_role).text = currentAccount.role
-        viewHolder.itemView.setOnClickListener {
-            listener.onAccountItemClicked(viewHolder.itemView, position)
+            itemView.findViewById<TextView>(R.id.account_list_item_name).text = item.username
+            itemView.findViewById<TextView>(R.id.account_list_item_role).text = item.role
+            itemView.setOnClickListener {
+                listener.onAccountItemClicked(itemView, absoluteAdapterPosition)
+            }
         }
-    }
-
-    fun setData(accountList: List<User>) {
-        this.accountList = accountList
-        notifyDataSetChanged()
-    }
-
-    fun getAccount(position: Int): User {
-        return accountList[position]
     }
 }

@@ -1,71 +1,71 @@
 package com.example.votree.admin.adapters
 
-import android.os.Parcelable
-import android.view.LayoutInflater
+import android.annotation.SuppressLint
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Tip
 
-class TipListAdapter(private var listener: OnItemClickListener) :
-    RecyclerView.Adapter<TipListAdapter.ViewHolder>() {
+class TipListAdapter(private val listener: OnItemClickListener, private val isDialog: Boolean = false) :
+    BaseListAdapter<Tip>(listener) {
 
-    private var tipList = emptyList<Tip>()
+    override var singleitem_selection_position = 0
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    override fun getLayoutId(): Int = R.layout.item_tip
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val tipView = LayoutInflater.from(parent.context).inflate(R.layout.item_tip, parent, false)
-        return ViewHolder(tipView)
+    override fun createViewHolder(itemView: View): BaseViewHolder {
+        return ViewHolder(itemView)
     }
 
-    override fun getItemCount(): Int {
-        return tipList.size
-    }
+    inner class ViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val currentTip = tipList[position]
-        val firstImageUrl = currentTip.imageList.firstOrNull()
+        override fun bind(item: Tip) {
+            super.bind(item)
+            val firstImageUrl = item.imageList.firstOrNull()
 
-        Glide.with(viewHolder.itemView.context)
-            .load(firstImageUrl)
-            .into(viewHolder.itemView.findViewById(R.id.tip_list_item_avatar))
+            Glide.with(itemView.context)
+                .load(firstImageUrl)
+                .into(itemView.findViewById(R.id.tip_list_item_avatar))
 
-
-        when (currentTip.approvalStatus) {
-            -1 -> {
-                viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background = ContextCompat.getDrawable(viewHolder.itemView.context, R.color.md_theme_tertiaryContainer)
-                viewHolder.itemView.findViewById<ImageView>(R.id.tip_item_icon).setImageResource(R.drawable.red_tick)
+            when (item.approvalStatus) {
+                -1 -> {
+                    itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background =
+                        ContextCompat.getDrawable(itemView.context, R.color.md_theme_tertiaryContainer)
+                    itemView.findViewById<ImageView>(R.id.tip_item_icon)
+                        .setImageResource(R.drawable.red_tick)
+                }
+                1 -> {
+                    itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background =
+                        ContextCompat.getDrawable(itemView.context, R.color.md_theme_primaryContainer)
+                    itemView.findViewById<ImageView>(R.id.tip_item_icon)
+                        .setImageResource(R.drawable.green_tick)
+                }
+                else -> {
+                    itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background =
+                        ContextCompat.getDrawable(itemView.context, R.color.md_theme_onPrimary)
+                    itemView.findViewById<ImageView>(R.id.tip_item_icon)
+                        .setImageResource(R.drawable.baseline_arrow_right_24)
+                }
             }
-            1 -> {
-                viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background = ContextCompat.getDrawable(viewHolder.itemView.context, R.color.md_theme_primaryContainer)
-                viewHolder.itemView.findViewById<ImageView>(R.id.tip_item_icon).setImageResource(R.drawable.green_tick)
-            }
-            else -> {
-                viewHolder.itemView.findViewById<LinearLayout>(R.id.tip_row_layout).background = ContextCompat.getDrawable(viewHolder.itemView.context, R.color.md_theme_onPrimary)
-                viewHolder.itemView.findViewById<ImageView>(R.id.tip_item_icon).setImageResource(R.drawable.baseline_arrow_right_24)
+            itemView.findViewById<TextView>(R.id.tip_list_item_title).text = item.title
+            itemView.findViewById<TextView>(R.id.tip_list_item_short_description).text = item.shortDescription
+
+            if (isDialog) {
+                if (absoluteAdapterPosition == singleitem_selection_position) {
+                    itemView.setBackgroundResource(android.R.color.holo_blue_bright)
+                } else {
+                    itemView.setBackgroundResource(android.R.color.transparent)
+                }
+            } else {
+                itemView.setOnClickListener {
+                    listener.onTipItemClicked(itemView, absoluteAdapterPosition)
+                }
             }
         }
-        viewHolder.itemView.findViewById<TextView>(R.id.tip_list_item_title).text = currentTip.title
-        viewHolder.itemView.findViewById<TextView>(R.id.tip_list_item_short_description).text = currentTip.shortDescription
-        viewHolder.itemView.setOnClickListener {
-            listener.onTipItemClicked(viewHolder.itemView, position)
-        }
-    }
-
-    fun setData(tips: List<Tip>) {
-        this.tipList = tips
-        notifyDataSetChanged()
-    }
-
-    fun getTip(position: Int): Parcelable {
-        return tipList[position]
     }
 }
