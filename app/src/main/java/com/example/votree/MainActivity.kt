@@ -22,8 +22,8 @@ import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             navController.setGraph(R.navigation.nav_user_graph)
             bottomNavigation.inflateMenu(R.menu.nav_user)
         }
-        val hiddenDestinations = setOf(R.id.productDetail2, R.id.productDetail)
+        val hiddenDestinations = setOf(R.id.productDetail, R.id.productDetail)
         navController.addOnDestinationChangedListener { _ , destination, _  ->
             if(destination.id in hiddenDestinations) {
                 bottomNavigation.visibility = View.GONE
@@ -136,14 +136,6 @@ class MainActivity : AppCompatActivity() {
                     finish()
                 }
             })
-        }
-    }
-
-    private fun setupRegisterToSellerButton() {
-        // Call function registerToSeller of SignInActivity
-        findViewById<FloatingActionButton>(R.id.registerToSeller_btn).setOnClickListener {
-            val intent = Intent(this, RegisterToSeller::class.java)
-            startActivityForResult(intent, RegisterToSeller.REGISTER_TO_SELLER_CODE)
         }
     }
 

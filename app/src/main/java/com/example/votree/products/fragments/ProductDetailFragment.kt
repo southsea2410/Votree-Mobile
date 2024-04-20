@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -15,10 +14,9 @@ import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentProductDetailBinding
 import com.example.votree.products.adapters.UserReviewAdapter
+import com.example.votree.products.models.Cart
 import com.example.votree.products.models.ProductReview
-import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.view_models.CartViewModel
-import com.example.votree.utils.AuthHandler
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +27,6 @@ class ProductDetailFragment : Fragment() {
     private val args: ProductDetailFragmentArgs by navArgs()
     private val cartViewModel = CartViewModel()
     private val firestore = FirebaseFirestore.getInstance()
-    private val productRepository = ProductRepository(firestore)
     private lateinit var userReviewAdapter: UserReviewAdapter
     private lateinit var reviewRecyclerView: RecyclerView
 
@@ -71,54 +68,13 @@ class ProductDetailFragment : Fragment() {
 
     private fun setupButtons() {
         with(binding) {
-//            val isSeller = args.role == "store"
-//            Log.d("ProductDetail", "Role: $isSeller")
-            val userId = AuthHandler.firebaseAuth.currentUser?.uid
-            firestore.collection("users").document(userId!!).get()
-                .addOnSuccessListener { userDocument ->
-                    val user = userDocument.data
-                    val isSeller = user?.get("role") == "store"
-                    if (isSeller) {
-                        addToCartBtn.visibility = View.GONE
-                        buyNowBtn.visibility = View.GONE
-                        updateBtn.visibility = View.VISIBLE
-                        deleteBtn.visibility = View.VISIBLE
-
-                        updateBtn.setOnClickListener { navigateToUpdateProduct() }
-                        deleteBtn.setOnClickListener { confirmProductDeletion() }
-                    } else {
-                        updateBtn.visibility = View.GONE
-                        deleteBtn.visibility = View.GONE
-                        addToCartBtn.visibility = View.VISIBLE
-                        buyNowBtn.visibility = View.VISIBLE
-                        addToCartBtn.setOnClickListener {
-                            cartViewModel.addProductToCart(args.currentProduct.id, 1)
-                        }
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Log.e("ProductDetail", "Error fetching user", e)
-                }
-        }
-    }
-
-    private fun navigateToUpdateProduct() {
-        val action = ProductDetailFragmentDirections.actionProductDetail2ToUpdateProduct(args.currentProduct)
-        findNavController().navigate(action)
-    }
-
-    private fun confirmProductDeletion() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Delete Product")
-            .setMessage("Are you sure you want to delete this product?")
-            .setPositiveButton("Accept") { _, _ ->
-                productRepository.deleteProduct(args.currentProduct) { success ->
-                    if (success) findNavController().popBackStack()
-                    else Log.e("ProductDetail", "Error deleting product")
-                }
+            buyNowBtn.setOnClickListener {
+                gotoCheckout()
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+            addToCartBtn.setOnClickListener {
+                cartViewModel.addProductToCart(args.currentProduct.id, 1)
+            }
+        }
     }
 
     private fun setupReviewAdapter() {
@@ -126,10 +82,8 @@ class ProductDetailFragment : Fragment() {
         reviewRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
-
     private fun fetchAndDisplayReviews() {
         val reviews = mutableListOf<ProductReview>()
-        // Go to the products/productId/reviews collection in Firestore
         firestore.collection("products").document(args.currentProduct.id).collection("reviews")
             .get()
             .addOnSuccessListener { reviewsSnapshot ->
@@ -143,5 +97,18 @@ class ProductDetailFragment : Fragment() {
             .addOnFailureListener { e ->
                 Log.e("ProductDetail", "Error fetching reviews", e)
             }
+    }
+
+    private fun gotoCheckout() {
+        val cartWithSelectedProduct = Cart(
+            id = "",
+            userId = "",
+            productsMap = mutableMapOf(args.currentProduct.id to 1),
+            totalPrice = 0.0
+        )
+
+        val action =
+            ProductDetailFragmentDirections.actionProductDetailToCheckout(cartWithSelectedProduct)
+        findNavController().navigate(action)
     }
 }

@@ -83,10 +83,11 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.multidex:multidex:2.0.1")
 
-    val nav_version = "2.8.0-alpha06"
+    val nav_version = "2.7.7"
     // Kotlin
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
@@ -123,5 +124,8 @@ dependencies {
     //
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // OTP View
+    implementation("io.github.chaosleung:pinview:1.4.4")
 }
 

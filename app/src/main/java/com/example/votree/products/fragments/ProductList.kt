@@ -44,7 +44,7 @@ class ProductList : Fragment() {
 
         productAdapter.setOnProductClickListener(object : ProductAdapter.OnProductClickListener {
             override fun onProductClick(product: Product) {
-                val action = ProductListDirections.actionProductListToProductDetail(product)
+                val action = ProductListDirections.actionProductListToProductDetail(product, "user")
                 findNavController().navigate(action)
             }
         })

@@ -1,6 +1,7 @@
 package com.example.votree.products.repositories
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.example.votree.products.models.ShippingAddress
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,21 +30,20 @@ class ShippingAddressRepository @Inject constructor(
             // Check if the query returned any documents
             if (duplicateQuery.documents.isNotEmpty()) {
                 Log.d("ShippingAddressRepo", "Duplicate address found. Aborting save.")
-                // Handle the duplicate case, e.g., by notifying the user or aborting the save operation
-                // You might want to throw an exception or return a specific result indicating a duplicate was found.
                 return
             }
 
-            // Proceed with saving the address if no duplicates were found
+            // If the new address is set as the default, update all other default addresses to non-default
             if (address.default) {
                 val defaultAddresses =
-                    addressesCollection.whereEqualTo("isDefault", true).get().await().documents
+                    addressesCollection.whereEqualTo("default", true).get().await().documents
                 for (doc in defaultAddresses) {
-                    doc.reference.update("isDefault", false).await()
-                    Log.d("ShippingAddressRepo", "Updated address ${doc.id} to not be default.")
+                    doc.reference.update("default", false).await()
+                    Log.d("ShippingAddressRepo", "Updated address ${doc.id} to not be the default.")
                 }
             }
 
+            // Save the new address or update the existing one
             if (address.id.isNullOrEmpty()) {
                 val newDocRef = addressesCollection.document()
                 address.id = newDocRef.id
@@ -55,12 +55,25 @@ class ShippingAddressRepository @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e("ShippingAddressRepo", "Error saving/updating address: ${e.message}", e)
-            throw e // Optionally re-throw the exception if you want calling code to handle it
+            throw e
         }
     }
 
-    suspend fun getShippingAddresses(): List<ShippingAddress> {
-        return addressesCollection.get().await()
+    suspend fun getShippingAddresses(
+        shippingAddress: MutableLiveData<List<ShippingAddress>?>,
+        selectedShippingAddress: MutableLiveData<ShippingAddress?>
+    ): List<ShippingAddress> {
+        val addresses = addressesCollection.get().await()
             .documents.mapNotNull { it.toObject(ShippingAddress::class.java) }
+        Log.d("ShippingAddressRepo", "Fetched shipping addresses: $addresses")
+//        shippingAddress.postValue(addresses)
+        selectedShippingAddress.postValue(addresses.find { it.default })
+        selectedShippingAddress.value = addresses.find { it.default }
+        return addresses
+    }
+
+    suspend fun fetchAddresses(): List<ShippingAddress> {
+        return addressesCollection.get()
+            .await().documents.mapNotNull { it.toObject(ShippingAddress::class.java) }
     }
 }

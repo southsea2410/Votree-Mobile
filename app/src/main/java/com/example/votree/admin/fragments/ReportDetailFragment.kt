@@ -30,7 +30,6 @@ class ReportDetailFragment : Fragment() {
 
     private val db = Firebase.firestore
     private var report: Report? = null
-    private var previousBackStackEntryCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,7 +65,7 @@ class ReportDetailFragment : Fragment() {
         }
 
         viewReporterButton?.setOnClickListener {
-            val fragment = ReportReporterDetailFragment()
+            val fragment = AccountDetailFragment()
             db.collection("users").document(report!!.reporterId).get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
@@ -75,14 +74,14 @@ class ReportDetailFragment : Fragment() {
                             putParcelable("account", user)
                         }
                         val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-                        (activity as AdminMainActivity).setCurrentFragment(ReportReporterDetailFragment())
+                        (activity as AdminMainActivity).setCurrentFragment(AccountDetailFragment())
                         fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
                     }
                 }
         }
 
         viewUserButton?.setOnClickListener {
-            val fragment = ReportReporterDetailFragment()
+            val fragment = AccountDetailFragment()
             db.collection("users").document(report!!.userId).get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
@@ -91,7 +90,7 @@ class ReportDetailFragment : Fragment() {
                             putParcelable("account", user)
                         }
                         val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-                        (activity as AdminMainActivity).setCurrentFragment(ReportReporterDetailFragment())
+                        (activity as AdminMainActivity).setCurrentFragment(AccountDetailFragment())
                         fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
                     }
                 }
@@ -127,20 +126,6 @@ class ReportDetailFragment : Fragment() {
                     }
                     .show()
             }
-        }
-
-        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-
-        fragmentManager.addOnBackStackChangedListener {
-
-            val currentBackStackEntryCount = fragmentManager.backStackEntryCount
-
-            if (currentBackStackEntryCount < previousBackStackEntryCount) {
-                Log.d("ReportDetailFragment", "Backstack count: $currentBackStackEntryCount")
-//                (activity as AdminMainActivity).setupNormalActionBar()
-            }
-
-            previousBackStackEntryCount = currentBackStackEntryCount
         }
 
         return view

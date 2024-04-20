@@ -9,7 +9,7 @@ import java.util.Date
 @Parcelize
 data class User (
     var id: String,
-    var userName: String,
+    var username: String,
     var fullName: String,
     var password: String,
     var phoneNumber: String,
@@ -54,7 +54,7 @@ data class User (
 
         override fun User.write(parcel: Parcel, flags: Int) {
             parcel.writeString(id)
-            parcel.writeString(userName)
+            parcel.writeString(username)
             parcel.writeString(fullName)
             parcel.writeString(password)
             parcel.writeString(phoneNumber)
