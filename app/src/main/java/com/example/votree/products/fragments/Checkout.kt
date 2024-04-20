@@ -49,11 +49,15 @@ class Checkout : Fragment() {
         productViewModel = ViewModelProvider(requireActivity()).get(ProductViewModel::class.java)
         cartViewModel = ViewModelProvider(requireActivity()).get(CartViewModel::class.java)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         setupCheckout()
         setupObservers()
         setupRecyclerView()
-
-        return binding.root
     }
 
     private fun proceedToPayment(cart: Cart, shippingAddress: ShippingAddress?) {
@@ -117,7 +121,7 @@ class Checkout : Fragment() {
         Log.d("Checkout", "cart: $cart")
 
         cartViewModel.cart.observe(viewLifecycleOwner) {
-            adapter = CheckoutProductAdapter(requireContext(), cart!!, productViewModel)
+            adapter = CheckoutProductAdapter(requireContext(), cart, productViewModel)
             binding.productsRv.adapter = adapter
             if (it != null) {
                 cart = it
@@ -156,6 +160,11 @@ class Checkout : Fragment() {
             binding.userPhoneNumberTv.text = address.recipientPhoneNumber
             binding.userAddressTv.text = address.recipientAddress
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        shippingAddressViewModel.updateAddresses()
     }
 
     override fun onDestroyView() {

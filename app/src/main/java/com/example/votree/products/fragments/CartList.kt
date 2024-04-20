@@ -86,6 +86,12 @@ class CartList : Fragment() {
             findNavController().navigate(action)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.fetchCart()
+    }
 }
 
 

@@ -1,6 +1,7 @@
 package com.example.votree.products.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,8 +74,12 @@ class ShippingAddressFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 viewModel.saveShippingAddress(shippingAddress)
-                viewModel._isSaveAddressSuccessful.observe(viewLifecycleOwner) { isSuccessful ->
+                viewModel.isSaveAddressSuccessful.observe(viewLifecycleOwner) { isSuccessful ->
                     if (isSuccessful) {
+                        Log.d(
+                            "ShippingAddressFragment",
+                            "Address saved successfully ${viewModel.selectedShippingAddress.value}"
+                        )
                         Snackbar.make(
                             binding.root,
                             "Address saved successfully",

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.votree.products.models.ShippingAddress
 import com.example.votree.products.repositories.ShippingAddressRepository
+import com.example.votree.utils.SingleLiveEvent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
@@ -17,14 +18,14 @@ class ShippingAddressViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val repository = ShippingAddressRepository(db, auth)
 
-    val _shippingAddresses = MutableLiveData<List<ShippingAddress>?>()
+    private val _shippingAddresses = SingleLiveEvent<List<ShippingAddress>?>()
     val shippingAddresses: LiveData<List<ShippingAddress>?> = _shippingAddresses
 
-    val _isSaveAddressSuccessful = MutableLiveData<Boolean>()
+    private val _isSaveAddressSuccessful = SingleLiveEvent<Boolean>()
     val isSaveAddressSuccessful: LiveData<Boolean> = _isSaveAddressSuccessful
 
     // LiveData for holding the default shipping address
-    private val _selectedShippingAddress = MutableLiveData<ShippingAddress?>()
+    private val _selectedShippingAddress = SingleLiveEvent<ShippingAddress?>()
     val selectedShippingAddress: LiveData<ShippingAddress?> = _selectedShippingAddress
 
     init {
@@ -35,13 +36,12 @@ class ShippingAddressViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 runBlocking {
-                    val addresses = repository.getShippingAddresses(
+                    repository.getShippingAddresses(
                         _shippingAddresses,
                         _selectedShippingAddress
                     )
                 }
                 _isSaveAddressSuccessful.postValue(true)
-                Log.d("ShippingAddressViewModel", "Fetched shipping addresses")
             } catch (e: Exception) {
                 Log.e("ShippingAddressViewModel", "Error fetching shipping addresses: $e")
             }
@@ -73,5 +73,12 @@ class ShippingAddressViewModel : ViewModel() {
         _recipientPhoneNumber.value = address.recipientPhoneNumber
         _recipientAddress.value = address.recipientAddress
         _isDefault.value = address.default
+    }
+
+    fun updateAddresses() {
+        viewModelScope.launch {
+            val updatedAddresses = repository.fetchAddresses()
+            _shippingAddresses.postValue(updatedAddresses)
+        }
     }
 }

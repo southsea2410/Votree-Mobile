@@ -3,6 +3,8 @@ package com.example.votree.products.adapters
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -103,12 +105,18 @@ class ProductGroupAdapter(
 
             binding.addBtn.setOnClickListener {
                 cartViewModel.updateCartItem(item.product.id, 1)
-                binding.quantityEt.setText((item.quantity + 1).toString())
+                cartViewModel.toastMessage.observe(binding.root.context as LifecycleOwner) {
+                    Toast.makeText(binding.root.context, it, Toast.LENGTH_SHORT).show()
+                    binding.quantityEt.setText((item.quantity + 1).toString())
+                }
             }
 
             binding.subBtn.setOnClickListener {
                 cartViewModel.updateCartItem(item.product.id, -1)
-                binding.quantityEt.setText((item.quantity - 1).toString())
+                cartViewModel.toastMessage.observe(binding.root.context as LifecycleOwner) {
+                    Toast.makeText(binding.root.context, it, Toast.LENGTH_SHORT).show()
+                    binding.quantityEt.setText((item.quantity - 1).toString())
+                }
             }
 
             binding.pickUpRb.setOnClickListener {
@@ -128,7 +136,6 @@ class ProductGroupAdapter(
         override fun getNewListSize(): Int = newList.size
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-//            return oldList[oldItemPosition].id == newList[newItemPosition].id
             return oldList[oldItemPosition] == newList[newItemPosition]
         }
 

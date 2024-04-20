@@ -30,8 +30,6 @@ class ShippingAddressRepository @Inject constructor(
             // Check if the query returned any documents
             if (duplicateQuery.documents.isNotEmpty()) {
                 Log.d("ShippingAddressRepo", "Duplicate address found. Aborting save.")
-                // Handle the duplicate case, e.g., by notifying the user or aborting the save operation
-                // You might want to throw an exception or return a specific result indicating a duplicate was found.
                 return
             }
 
@@ -70,7 +68,12 @@ class ShippingAddressRepository @Inject constructor(
         Log.d("ShippingAddressRepo", "Fetched shipping addresses: $addresses")
 //        shippingAddress.postValue(addresses)
         selectedShippingAddress.postValue(addresses.find { it.default })
-
+        selectedShippingAddress.value = addresses.find { it.default }
         return addresses
+    }
+
+    suspend fun fetchAddresses(): List<ShippingAddress> {
+        return addressesCollection.get()
+            .await().documents.mapNotNull { it.toObject(ShippingAddress::class.java) }
     }
 }
