@@ -82,7 +82,10 @@ class StoreManagementFragment : Fragment() {
 
         productAdapter.setOnProductClickListener(object : ProductAdapter.OnProductClickListener {
             override fun onProductClick(product: Product) {
-                val action = StoreManagementFragmentDirections.actionStoreManagement2ToProductDetail2(product)
+                val action =
+                    StoreManagementFragmentDirections.actionStoreManagement2ToProductDetailFragmentForStore(
+                        product
+                    )
                 findNavController().navigate(action)
             }
         })

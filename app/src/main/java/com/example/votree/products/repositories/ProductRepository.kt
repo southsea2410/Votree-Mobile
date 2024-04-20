@@ -1,11 +1,11 @@
 package com.example.votree.products.repositories
 
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
 import android.net.Uri
 import android.util.Log
 import com.example.votree.products.models.Product
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.tasks.await
 
 class ProductRepository(private val firestore: FirebaseFirestore) {
     suspend fun updateProductInventory(productId: String, quantityPurchased: Int) {

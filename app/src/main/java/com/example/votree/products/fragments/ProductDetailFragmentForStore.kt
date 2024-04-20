@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -12,21 +13,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
-import com.example.votree.databinding.FragmentProductDetailBinding
+import com.example.votree.databinding.FragmentProductDetailForStoreBinding
 import com.example.votree.products.adapters.UserReviewAdapter
-import com.example.votree.products.models.Cart
 import com.example.votree.products.models.ProductReview
-import com.example.votree.products.view_models.CartViewModel
+import com.example.votree.products.repositories.ProductRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class ProductDetailFragment : Fragment() {
+class ProductDetailFragmentForStore : Fragment() {
 
-    private lateinit var binding: FragmentProductDetailBinding
-    private val args: ProductDetailFragmentArgs by navArgs()
-    private val cartViewModel = CartViewModel()
+    private lateinit var binding: FragmentProductDetailForStoreBinding
+    private val args: ProductDetailFragmentForStoreArgs by navArgs()
     private val firestore = FirebaseFirestore.getInstance()
+    private val productRepository = ProductRepository(firestore)
     private lateinit var userReviewAdapter: UserReviewAdapter
     private lateinit var reviewRecyclerView: RecyclerView
 
@@ -34,7 +34,7 @@ class ProductDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentProductDetailBinding.inflate(inflater, container, false)
+        binding = FragmentProductDetailForStoreBinding.inflate(inflater, container, false)
         setupUI()
         return binding.root
     }
@@ -57,7 +57,7 @@ class ProductDetailFragment : Fragment() {
                 productRating.text = product.averageRate.toString()
                 productSoldQuantity.text = product.quantitySold.toString()
 
-                Glide.with(this@ProductDetailFragment)
+                Glide.with(this@ProductDetailFragmentForStore)
                     .load(product.imageUrl)
                     .centerCrop()
                     .placeholder(R.drawable.img_placeholder)
@@ -68,13 +68,31 @@ class ProductDetailFragment : Fragment() {
 
     private fun setupButtons() {
         with(binding) {
-            buyNowBtn.setOnClickListener {
-                gotoCheckout()
-            }
-            addToCartBtn.setOnClickListener {
-                cartViewModel.addProductToCart(args.currentProduct.id, 1)
-            }
+            updateBtn.setOnClickListener { navigateToUpdateProduct() }
+            deleteBtn.setOnClickListener { confirmProductDeletion() }
         }
+    }
+
+    private fun navigateToUpdateProduct() {
+        val action =
+            ProductDetailFragmentForStoreDirections.actionProductDetailFragmentForStoreToUpdateProduct(
+                args.currentProduct
+            )
+        findNavController().navigate(action)
+    }
+
+    private fun confirmProductDeletion() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Product")
+            .setMessage("Are you sure you want to delete this product?")
+            .setPositiveButton("Accept") { _, _ ->
+                productRepository.deleteProduct(args.currentProduct) { success ->
+                    if (success) findNavController().popBackStack()
+                    else Log.e("ProductDetail", "Error deleting product")
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun setupReviewAdapter() {
@@ -82,8 +100,10 @@ class ProductDetailFragment : Fragment() {
         reviewRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
+
     private fun fetchAndDisplayReviews() {
         val reviews = mutableListOf<ProductReview>()
+        // Go to the products/productId/reviews collection in Firestore
         firestore.collection("products").document(args.currentProduct.id).collection("reviews")
             .get()
             .addOnSuccessListener { reviewsSnapshot ->
@@ -97,18 +117,5 @@ class ProductDetailFragment : Fragment() {
             .addOnFailureListener { e ->
                 Log.e("ProductDetail", "Error fetching reviews", e)
             }
-    }
-
-    private fun gotoCheckout() {
-        val cartWithSelectedProduct = Cart(
-            id = "",
-            userId = "",
-            productsMap = mutableMapOf(args.currentProduct.id to 1),
-            totalPrice = 0.0
-        )
-
-        val action =
-            ProductDetailFragmentDirections.actionProductDetailToCheckout(cartWithSelectedProduct)
-        findNavController().navigate(action)
     }
 }

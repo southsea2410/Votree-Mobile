@@ -19,5 +19,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_store_management" />
+        app:navGraph="@navigation/nav_seller_graph" />
 </LinearLayout>
