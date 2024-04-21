@@ -168,6 +168,7 @@ class CheckoutActivity : AppCompatActivity() {
                 receiver?.let {
                     updateProductInventory(cart)
                     createTransactionFromCart(cart, receiver)
+                    updateProductSoldQuantity(cart)
                     clearCartAfterCheckout(cart)
                     finish()
                 }
@@ -178,6 +179,12 @@ class CheckoutActivity : AppCompatActivity() {
     private suspend fun updateProductInventory(cart: Cart) {
         cart.productsMap.forEach { (productId, quantity) ->
             productRepository.updateProductInventory(productId, quantity)
+        }
+    }
+
+    private suspend fun updateProductSoldQuantity(cart: Cart) {
+        cart.productsMap.forEach { (productId, quantity) ->
+            productRepository.updateProductSoldQuantity(productId, quantity)
         }
     }
 

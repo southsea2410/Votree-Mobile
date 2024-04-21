@@ -126,13 +126,16 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // Search Algorithm
-    annotationProcessor("info.debatty:java-string-similarity:2.0.0")
+//    annotationProcessor("info.debatty:java-string-similarity:2.0.0")
+////    implementation("info.debatty:java-string-similarity:2.0.0"){
+////        exclude(group = "com.github.stephenc.jcip", module = "jcip-annotations")
+////    }
 //    implementation("info.debatty:java-string-similarity:2.0.0"){
-//        exclude(group = "com.github.stephenc.jcip", module = "jcip-annotations")
+//        exclude(module = "jsr305")
+//        exclude(module = "jcip-annotations")
 //    }
-    implementation("info.debatty:java-string-similarity:2.0.0"){
-        exclude(module = "jsr305")
-        exclude(module = "jcip-annotations")
-    }
+
+    // Tab for sort
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
 }
 

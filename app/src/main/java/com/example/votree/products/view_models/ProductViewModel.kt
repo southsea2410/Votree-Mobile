@@ -125,6 +125,21 @@ class ProductViewModel : ViewModel() {
         return liveData
     }
 
+    fun sortProductsByPrice(ascending: Boolean = true) {
+        if (ascending) {
+            _products.value = _products.value?.sortedBy { it.price }
+        } else {
+            _products.value = _products.value?.sortedByDescending { it.price }
+        }
+    }
+
+    fun sortProductsBySoldQuantity() {
+        _products.value = _products.value?.sortedByDescending { it.quantitySold }
+    }
+
+    fun sortProductsByCreationDate() {
+        _products.value = _products.value?.sortedByDescending { it.createdAt }
+    }
 
     companion object {
         private const val TAG = "ProductViewModel"

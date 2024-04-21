@@ -121,4 +121,13 @@ class ProductRepository(private val firestore: FirebaseFirestore) {
         val snapshot = productRef.get().await()
         return snapshot.toObject(Product::class.java)!!
     }
+
+    suspend fun updateProductSoldQuantity(productId: String, quantityPurchased: Int) {
+        val productRef = firestore.collection("products").document(productId)
+        firestore.runTransaction { transaction ->
+            val snapshot = transaction.get(productRef)
+            val newQuantitySold = snapshot.getLong("quantitySold")!! + quantityPurchased
+            transaction.update(productRef, "quantitySold", newQuantitySold)
+        }.await()
+    }
 }
