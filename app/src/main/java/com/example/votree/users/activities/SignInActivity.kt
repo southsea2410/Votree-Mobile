@@ -10,6 +10,8 @@ import com.example.votree.MainActivity
 import com.example.votree.R
 import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.databinding.ActivitySignInBinding
+import com.example.votree.tips.AdManager
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -33,6 +35,9 @@ class SignInActivity : AppCompatActivity() {
         setupFirebaseAuth()
         setupGoogleSignIn()
         setupUIListeners()
+
+        val adView = findViewById<AdView>(R.id.adView)
+        AdManager.loadBannerAd(adView)
     }
 
     private fun setupFirebaseAuth() {

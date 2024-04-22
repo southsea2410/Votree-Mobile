@@ -4,8 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.votree.R
 import com.example.votree.databinding.ActivitySignUpBinding
+import com.example.votree.tips.AdManager
 import com.example.votree.users.models.User
+import com.google.android.gms.ads.AdView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
@@ -21,6 +24,9 @@ class SignUpActivity : AppCompatActivity() {
 
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val adView = findViewById<AdView>(R.id.adView)
+        AdManager.loadBannerAd(adView)
 
         firebaseAuth = FirebaseAuth.getInstance()
 

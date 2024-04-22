@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.ActivityTipDetailBinding
 import com.example.votree.tips.models.ProductTip
+import com.google.android.gms.ads.AdView
 import java.text.SimpleDateFormat
 import java.util.Locale
 
