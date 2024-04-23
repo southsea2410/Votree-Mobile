@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -14,26 +15,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:text="PUT HEADER HERE"
-        android:textSize="25sp" />
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/image_border">
-
-        <ImageView
-            android:id="@+id/Avatar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"/>
-
-    </FrameLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="Full name" />
 
@@ -42,7 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Full name"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:text="@={viewModel.user.fullName}" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,7 +37,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Phone number"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:text="@={viewModel.user.phoneNumber}" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -68,7 +51,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Address"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:text="@={viewModel.user.address}" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -81,7 +65,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email address"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:text="@={viewModel.user.email}" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -102,7 +87,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Leave blank to leave unchanged"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:inputType="textPassword" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -115,7 +101,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Leave blank to leave unchanged"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:inputType="textPassword" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -128,21 +115,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Leave blank to leave unchanged"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:text="Confirm new password" />
 
     <Button
         android:id="@+id/SubmitBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Save changes" />
-
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Logout" />
+        android:text="Save changes"
+        android:onClick="@{() -> viewModel.saveChanges()}" />
 
 </LinearLayout>
 </ScrollView>

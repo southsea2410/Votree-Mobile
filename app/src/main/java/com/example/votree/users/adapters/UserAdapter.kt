@@ -1,34 +1,41 @@
 package com.example.votree.users.adapters
 
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.example.votree.R
 import com.example.votree.users.models.User
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.android.material.textview.MaterialTextView
 
-class  UserAdapter{
+class UserAdapter (private val user: User) : RecyclerView.Adapter<UserAdapter.ViewHolder>(){
 
-    private val db: FirebaseFirestore by lazy {
-        Firebase.firestore
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val nameView: MaterialTextView = itemView.findViewById(R.id.Name)
+        val phoneView: MaterialTextView = itemView.findViewById(R.id.Phone)
+        val addressView : MaterialTextView = itemView.findViewById(R.id.Address)
+        val emailView: MaterialTextView = itemView.findViewById(R.id.Email)
+
+        fun bind(context: Context, user: User) {
+            nameView.text = user.fullName
+            phoneView.text = user.phoneNumber
+            addressView.text = user.address
+            emailView.text = user.email
+        }
     }
 
-    fun addUser(user: User, callback: (Boolean) -> Unit) {
-        db.collection("users")
-            .document(user.id)
-            .set(user)
-            .addOnSuccessListener { callback(true) }
-            .addOnFailureListener { callback(false) }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.user_personal_account, parent, false)
+        return ViewHolder(view)
     }
 
-    fun getUser(email: String, callback: (List<User>) -> Unit) {
-        db.collection("users")
-            .whereEqualTo("email", email)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val users = querySnapshot.documents.mapNotNull { document ->
-                    document.toObject(User::class.java)
-                }
-                callback(users)
-            }
-            .addOnFailureListener { callback(emptyList()) }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val context = holder.itemView.context
+        holder.bind(context, user)
+    }
+
+    override fun getItemCount(): Int {
+        return 1
     }
 }
