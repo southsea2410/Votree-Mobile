@@ -1,27 +1,50 @@
 package com.example.votree.users.activities
 
 import android.os.Bundle
-import androidx.activity.viewModels
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.example.votree.databinding.ActivityUserProfileBinding
+import androidx.lifecycle.ViewModelProvider
+import com.example.votree.R
+import com.example.votree.users.viewmodels.UserProfileViewModel
 
 class ProfileActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityUserProfileBinding
-    private val viewModel: UserProfileViewModel by viewModels()
+    private lateinit var userProfileViewModel: UserProfileViewModel
 
-    override fun onCreate(savedname: Bundle?) {
-        super.onCreate(savedname)
-        binding = ActivityUserProfileBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.user_personal_account)
 
-        viewModel.user.observe(this, Observer { user ->
-            binding.user = user
+        userProfileViewModel = ViewModelProvider(this).get(UserProfileViewModel::class.java)
+
+        val nameEditText = findViewById<EditText>(R.id.Name)
+        val phoneEditText = findViewById<EditText>(R.id.Phone)
+        val addressEditText = findViewById<EditText>(R.id.Address)
+        val emailEditText = findViewById<EditText>(R.id.Email)
+
+        userProfileViewModel.userLiveData.observe(this, Observer { user ->
+            user?.let {
+                nameEditText.setText(it.fullName)
+                phoneEditText.setText(it.phoneNumber)
+                addressEditText.setText(it.address)
+                emailEditText.setText(it.email)
+            }
         })
 
-        binding.saveButton.setOnClickListener {
-            val updatedUser = binding.user!!
-            viewModel.updateUserProfile(updatedUser)
+        val submitButton = findViewById<Button>(R.id.SubmitBtn)
+        submitButton.setOnClickListener {
+            val updatedData = mapOf(
+                "fullName" to nameEditText.text.toString(),
+                "phoneNumber" to phoneEditText.text.toString(),
+                "address" to addressEditText.text.toString(),
+                "email" to emailEditText.text.toString()
+            )
+
+            userProfileViewModel.updateUser(updatedData)
+
+            Toast.makeText(this, "Updated successfully", Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -23,8 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Full name"
-        android:textSize="20sp"
-        android:text="@={viewModel.user.fullName}" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -37,8 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Phone number"
-        android:textSize="20sp"
-        android:text="@={viewModel.user.phoneNumber}" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,8 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Address"
-        android:textSize="20sp"
-        android:text="@={viewModel.user.address}" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -65,8 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email address"
-        android:textSize="20sp"
-        android:text="@={viewModel.user.email}" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -123,8 +119,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Save changes"
-        android:onClick="@{() -> viewModel.saveChanges()}" />
+        android:text="Save changes" />
 
 </LinearLayout>
 </ScrollView>
