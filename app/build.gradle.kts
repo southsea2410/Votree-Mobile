@@ -126,6 +126,9 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    // OTP View
+    implementation("io.github.chaosleung:pinview:1.4.4")
+
     // Search Algorithm
 //    annotationProcessor("info.debatty:java-string-similarity:2.0.0")
 ////    implementation("info.debatty:java-string-similarity:2.0.0"){
