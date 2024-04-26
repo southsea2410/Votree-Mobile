@@ -1,51 +1,72 @@
 package com.example.votree.admin.adapters
 
-import android.view.LayoutInflater
+import android.annotation.SuppressLint
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Report
 
-class ReportListAdapter(private var listener: OnItemClickListener) :
-    RecyclerView.Adapter<ReportListAdapter.ViewHolder>() {
+@Suppress("DEPRECATION")
+class ReportListAdapter(private val listener: OnItemClickListener, private val isDialog: Boolean = false) :
+    BaseListAdapter<Report>(listener) {
 
-    private var reportList = emptyList<Report>()
+    override var singleitem_selection_position = 0
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    override fun getLayoutId(): Int = R.layout.item_report
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val reportView = LayoutInflater.from(parent.context).inflate(R.layout.item_report, parent, false)
-        return ViewHolder(reportView)
+    override fun createViewHolder(itemView: View): BaseViewHolder {
+        return ViewHolder(itemView)
     }
 
-    override fun getItemCount(): Int {
-        return reportList.size
-    }
+    inner class ViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        val currentReport = reportList[position]
+        override fun bind(item: Report) {
+            super.bind(item)
 
-        Glide.with(viewHolder.itemView.context)
-            .load(currentReport.imageList[0])
-            .into(viewHolder.itemView.findViewById(R.id.report_list_item_image))
+            Glide.with(itemView.context)
+                .load(item.imageList[0])
+                .into(itemView.findViewById(R.id.report_list_item_image))
 
-        viewHolder.itemView.findViewById<TextView>(R.id.report_list_item_short_description).text = currentReport.shortDescription
-        viewHolder.itemView.findViewById<TextView>(R.id.report_list_item_reporter).text = currentReport.reporterId
-        viewHolder.itemView.setOnClickListener {
-            listener.onReportItemClicked(viewHolder.itemView, position)
+            itemView.findViewById<TextView>(R.id.report_list_item_short_description).text =
+                item.shortDescription
+
+            when (item.processStatus) {
+                true -> itemView.findViewById<TextView>(R.id.report_list_item_short_description)
+                    .setTextColor(
+                        itemView.resources.getColor(
+                            R.color.md_theme_primary
+                        )
+                    )
+
+                false -> itemView.findViewById<TextView>(R.id.report_list_item_short_description)
+                    .setTextColor(
+                        itemView.resources.getColor(
+                            R.color.md_theme_error
+                        )
+                    )
+            }
+
+            db.collection("users").document(item.reporterId).get()
+                .addOnSuccessListener { document ->
+                    if (document != null) {
+                        itemView.findViewById<TextView>(R.id.report_list_item_reporter).text =
+                            document.data?.get("username").toString()
+                    }
+                }
+
+            if (isDialog) {
+                if (absoluteAdapterPosition == singleitem_selection_position) {
+                    itemView.setBackgroundResource(android.R.color.holo_blue_bright)
+                } else {
+                    itemView.setBackgroundResource(android.R.color.transparent)
+                }
+            } else {
+                itemView.setOnClickListener {
+                    listener.onReportItemClicked(itemView, absoluteAdapterPosition, item.processStatus)
+                }
+            }
         }
-    }
-
-    fun setData(reportList: List<Report>) {
-        this.reportList = reportList
-        notifyDataSetChanged()
-    }
-
-    fun getReport(position: Int): Report {
-        return reportList[position]
     }
 }

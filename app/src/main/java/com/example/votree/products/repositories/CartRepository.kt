@@ -1,6 +1,8 @@
 package com.example.votree.products.repositories
 
 import com.example.votree.products.models.Cart
+import com.example.votree.utils.CartItemUpdateResult
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.channels.awaitClose
@@ -10,7 +12,9 @@ import kotlinx.coroutines.tasks.await
 
 class CartRepository {
     private val db = FirebaseFirestore.getInstance()
-    private val cartsCollection = db.collection("carts")
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    private val usersCollection = db.collection("users")
+    private val cartsCollection = usersCollection.document(userId).collection("carts")
 
     suspend fun addToCart(userId: String, productId: String, quantity: Int) {
         val documentSnapshot = cartsCollection.document(userId).get().await()
@@ -22,21 +26,30 @@ class CartRepository {
             updateTotalPrice(userId) // Update totalPrice
         } else {
             // Cart doesn't exist, create a new one
-            val newCart = Cart(userId = userId, productsMap = mutableMapOf(productId to quantity))
+            val newCart = Cart(
+                id = userId,
+                userId = userId,
+                productsMap = mutableMapOf(productId to quantity)
+            )
             cartsCollection.document(userId).set(newCart).await()
             updateTotalPrice(userId) // Update totalPrice
         }
     }
 
-    suspend fun updateCartItem(userId: String, productId: String, quantityChange: Int) {
+    suspend fun updateCartItem(
+        userId: String,
+        productId: String,
+        quantityChange: Int
+    ): CartItemUpdateResult {
         val currentCartQuantity = getCurrentCartQuantity(userId, productId)
         if (quantityChange == 1) {
-            val inventoryQuantity = fetchProductInventory(productId) ?: return
+            val inventoryQuantity =
+                fetchProductInventory(productId) ?: return CartItemUpdateResult.InventoryUnavailable
             if (currentCartQuantity + 1 > inventoryQuantity) {
-                return
+                return CartItemUpdateResult.InventoryExceeded
             }
         } else if (quantityChange == -1 && currentCartQuantity <= 1) {
-            return
+            return CartItemUpdateResult.MinimumQuantityReached
         }
 
         // Proceed to update item quantity in the cart
@@ -44,6 +57,8 @@ class CartRepository {
             .update("productsMap.$productId", FieldValue.increment(quantityChange.toLong()))
             .await()
         updateTotalPrice(userId)
+
+        return CartItemUpdateResult.Success
     }
 
     private suspend fun getCurrentCartQuantity(userId: String, productId: String): Int {
@@ -90,5 +105,17 @@ class CartRepository {
     private suspend fun fetchProductPrice(productId: String): Double? {
         return db.collection("products").document(productId).get().await()
             .getDouble("price")
+    }
+
+    suspend fun clearCartAfterCheckout(userId: String, cart: Cart) {
+        val cartRef = cartsCollection.document(userId)
+        // Clear the cart
+        cart.productsMap.forEach { (productId, quantity) ->
+            cartRef.update("productsMap.$productId", FieldValue.delete()).await()
+            cartRef.update(
+                "totalPrice",
+                FieldValue.increment(-fetchProductPrice(productId)!! * quantity)
+            ).await()
+        }
     }
 }

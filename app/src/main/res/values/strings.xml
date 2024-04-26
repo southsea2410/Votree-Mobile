@@ -70,7 +70,7 @@
     <string name="short_description">Short Description</string>
     <string name="long_description">Description</string>
 
-    <string name="price_format">$ %.2f</string>
+    <string name="price_format">%.2f</string>
     <string name="quantity_format">x%d</string>
 
     <string-array name="plant_types">
@@ -157,4 +157,10 @@
     <string name="being_reported">Being reported: %s</string>
     <string name="by_user">By</string>
     <string name="reported_date">Reported date: %s</string>
+    <string-array name="tips_report_reasons">
+        <item>Spam</item>
+        <item>Offensive</item>
+        <item>Irrelevant</item>
+        <item>Other</item>
+    </string-array>
 </resources>

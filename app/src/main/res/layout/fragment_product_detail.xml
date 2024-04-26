@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/productDetail_cl"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".products.fragments.ProductDetail">
+    tools:context=".products.fragments.ProductDetailFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/productDetail_sv"
@@ -30,8 +31,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -48,7 +50,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
                     android:layout_weight="0"
                     android:padding="4dp"
                     android:text="Price Before Sale"
@@ -59,14 +60,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginBottom="5dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -126,11 +128,12 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <Spinner
-                android:id="@+id/shopVoucher_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp" />
+<!--            <Spinner-->
+<!--                android:id="@+id/shopVoucher_spinner"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="20dp"-->
+<!--                android:layout_marginEnd="20dp" />-->
 
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
@@ -139,9 +142,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="DETAILS"
-                android:textSize="16sp" />
+                android:background="@color/md_theme_primaryContainer"
+                android:padding="14dp"
+                android:text="Product Details"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/md_theme_onSecondaryFixedVariant"
+                android:textStyle="bold" />
 
             <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:layout_width="match_parent"
@@ -152,60 +158,76 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginEnd="10dp" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    android:layout_marginStart="10dp"
                     android:text="Suit Environment: "
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/md_theme_primary"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/suitEnvironment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    android:textSize="15sp"
                     android:text="Suit Environment" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginEnd="10dp" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    android:layout_marginStart="10dp"
                     android:text="Suit Climate: "
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/md_theme_primary"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/suitClimate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    android:textSize="15sp"
                     android:text="Suit Environment" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginEnd="10dp" >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    android:layout_marginStart="10dp"
                     android:text="Type: "
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@color/md_theme_primary"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/productType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    android:textSize="15sp"
                     android:text="Type" />
             </LinearLayout>
 
@@ -213,15 +235,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
+                android:layout_marginStart="10dp"
                 android:text="Description: "
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="@color/md_theme_primary"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
-                android:text="Long Description" />
+                android:layout_marginStart="14dp"
+                android:text="Long Description"
+                android:textSize="15sp" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/md_theme_primaryContainer"
+                android:padding="14dp"
+                android:text="User Review"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/md_theme_onSecondaryFixedVariant"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reviewRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -234,13 +280,13 @@
 
         <Button
             android:id="@+id/chatting_btn"
-            style="@style/Widget.Material3.Button.TonalButton.Icon"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="20dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="0.3"
+            android:backgroundTint="@color/colorPrimaryDark"
             app:cornerRadius="5dp"
             app:icon="@drawable/ic_chat"
             app:iconGravity="textTop"
@@ -248,13 +294,13 @@
 
         <Button
             android:id="@+id/addToCart_btn"
-            style="@style/Widget.Material3.Button.TonalButton.Icon"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="0.3"
+            android:backgroundTint="@color/md_theme_primary"
             app:cornerRadius="5dp"
             app:icon="@drawable/ic_add_to_cart"
             app:iconGravity="textTop"
@@ -265,9 +311,41 @@
             style="@style/Widget.Material3.Button.IconButton.Filled"
             android:layout_width="90dp"
             android:layout_height="50dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginEnd="20dp"
             android:layout_weight="0.6"
             android:text="Buy Now"
             app:cornerRadius="5dp" />
+
+        <Button
+            android:id="@+id/delete_btn"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.6"
+            android:text="Delete"
+            android:backgroundTint="@color/transparent"
+            android:strokeColor="@color/md_theme_error"
+            app:cornerRadius="5dp"
+            android:textColor="@color/md_theme_primary"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            android:drawablePadding="8dp"
+            app:backgroundTint="@color/transparent"
+            app:strokeColor="@color/md_theme_primary"
+            app:strokeWidth="3dp"
+            android:visibility="gone" />
+
+
+        <Button
+            android:id="@+id/update_btn"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="0.6"
+            android:text="Update"
+            app:cornerRadius="5dp"
+            android:visibility="gone" />
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

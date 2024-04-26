@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/productDetail"
-        android:name="com.example.votree.products.fragments.ProductDetail"
+        android:name="com.example.votree.products.fragments.ProductDetailFragment"
         android:label="Details"
         tools:layout="@layout/fragment_product_detail">
         <action
@@ -61,6 +61,12 @@
         <action
             android:id="@+id/action_productDetail_to_cartList"
             app:destination="@id/cartList" />
+        <argument
+            android:name="role"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_productDetail_to_checkout"
+            app:destination="@id/checkout" />
     </fragment>
     <fragment
         android:id="@+id/cartList"
@@ -79,6 +85,13 @@
         <action
             android:id="@+id/action_checkout_to_shippingAddressFragment"
             app:destination="@id/shippingAddressFragment" />
+        <action
+            android:id="@+id/action_checkout_to_productDetail"
+            app:destination="@id/productDetail" />
+        <argument
+            android:name="cart"
+            app:argType="com.example.votree.products.models.Cart"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/shippingAddressFragment"

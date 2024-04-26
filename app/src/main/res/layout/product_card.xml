@@ -4,7 +4,12 @@
     style="?attr/materialCardViewFilledStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_marginTop="5dp"
+    android:layout_marginStart="7dp"
+    android:layout_marginEnd="7dp"
+    android:layout_marginBottom="5dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +20,7 @@
         <ImageView
             android:id="@+id/productImage_iv"
             android:layout_width="match_parent"
-            android:layout_height="194dp"
+            android:layout_height="100dp"
             android:contentDescription="Test"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/sample_plant" />
@@ -31,7 +36,11 @@
                 android:id="@+id/productName_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="17sp"
                 android:text="Product Name"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:textStyle="bold" />
 
@@ -39,15 +48,28 @@
                 android:id="@+id/shortDescription_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:textSize="14sp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:text="Short Description about the product"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="?android:attr/textColorSecondary" />
 
+            <!-- Spacer to push priceLayout to the bottom -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
             <LinearLayout
+                android:id="@+id/priceLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp">
 
                 <TextView
                     android:id="@+id/price_tv"
@@ -77,8 +99,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text=" / "
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="/"
                         android:textAppearance="?attr/textAppearanceBodyMedium"
                         android:textColor="?android:attr/textColorSecondary" />
 
@@ -93,7 +117,6 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

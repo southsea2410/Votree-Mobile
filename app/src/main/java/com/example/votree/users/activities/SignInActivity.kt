@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
-    private  var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,67 +30,106 @@ class SignInActivity : AppCompatActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupFirebaseAuth()
+        setupGoogleSignIn()
+        setupUIListeners()
+    }
+
+    private fun setupFirebaseAuth() {
         firebaseAuth = FirebaseAuth.getInstance()
+    }
+
+    private fun setupGoogleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-
         googleSignInClient = GoogleSignIn.getClient(this, gso)
+    }
 
-        binding.textView.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
+    private fun setupUIListeners() {
+        binding.textView2.setOnClickListener {
+            navigateToSignUp()
         }
 
         binding.button.setOnClickListener {
-            val email = binding.emailEt.text.toString()
-            val pass = binding.passET.text.toString()
-
-            if (email.isNotEmpty() && pass.isNotEmpty()) {
-                firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        firebaseAuth.currentUser?.uid?.let { uid ->
-                            val db = FirebaseFirestore.getInstance()
-                            db.collection("users").document(uid).get().addOnSuccessListener { document ->
-                                if (document.exists()) {
-                                    val intent = Intent(this, MainActivity::class.java)
-                                    intent.putExtra("email", email)
-                                    intent.putExtra("name", "User using email")
-                                    startActivity(intent)
-                                } else {
-                                    db.collection("admins").document(uid).get().addOnSuccessListener { document ->
-                                        if (document.exists()) {
-                                            val intent = Intent(this, AdminMainActivity::class.java)
-                                            intent.putExtra("email", email)
-                                            intent.putExtra("name", "Admin using email")
-                                            startActivity(intent)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            } else {
-                Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
-            }
+            performSignIn()
         }
 
         binding.btnGoogle.setOnClickListener {
             signInGoogle()
         }
+
+        binding.forgotPassword.setOnClickListener {
+            navigateToForgotPassword()
+        }
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun navigateToSignUp() {
+        val intent = Intent(this, SignUpActivity::class.java)
+        startActivity(intent)
+    }
 
-        val currentUser = firebaseAuth.currentUser
-        if (currentUser != null && currentUser.providerData.any { it.providerId == GoogleAuthProvider.PROVIDER_ID }) {
-            signOut()
+    private fun performSignIn() {
+        val email = binding.emailEt.text.toString()
+        val pass = binding.passET.text.toString()
+
+        if (email.isNotEmpty() && pass.isNotEmpty()) {
+            signInWithEmail(email, pass)
+        } else {
+            Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun signInWithEmail(email: String, password: String) {
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                checkUserAccessLevel(firebaseAuth.currentUser?.uid)
+            } else {
+                Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun checkUserAccessLevel(uid: String?) {
+        uid?.let {
+            val db = FirebaseFirestore.getInstance()
+            db.collection("users").document(it).get().addOnSuccessListener { document ->
+                if (document.exists()) {
+                    navigateToMainActivity(document.getString("email")!!)
+                } else {
+                    checkAdminAccess(it)
+                }
+            }
+        }
+    }
+
+    private fun checkAdminAccess(uid: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("admins").document(uid).get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                navigateToAdminMainActivity(document.getString("email")!!)
+            }
+        }
+    }
+
+    private fun navigateToForgotPassword() {
+        val intent = Intent(this, ForgotPasswordActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun navigateToMainActivity(email: String) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("email", email)
+        intent.putExtra("name", "User using email")
+        startActivity(intent)
+    }
+
+    private fun navigateToAdminMainActivity(email: String) {
+        val intent = Intent(this, AdminMainActivity::class.java)
+        intent.putExtra("email", email)
+        intent.putExtra("name", "Admin using email")
+        startActivity(intent)
     }
 
     private fun signInGoogle() {
@@ -98,57 +137,49 @@ class SignInActivity : AppCompatActivity() {
         launcher.launch(signInIntent)
     }
 
-    private val launcher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                handleResults(task)
-            }
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            handleGoogleSignInResult(task)
         }
+    }
 
-    private fun handleResults(task: Task<GoogleSignInAccount>) {
+    private fun handleGoogleSignInResult(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful) {
             val account: GoogleSignInAccount? = task.result
-            if (account != null) {
-                updateUI(account)
+            account?.let {
+                firebaseAuthWithGoogle(it)
             }
         } else {
             Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun updateUI(account: GoogleSignInAccount) {
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener {
-            if (it.isSuccessful) {
-                val intent: Intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("email", account.email)
-                intent.putExtra("name", account.displayName)
-                startActivity(intent)
-                Toast.makeText(this, "Sign in with Google successful!", Toast.LENGTH_SHORT).show()
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                updateUI(account)
             } else {
-                Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    fun signOut() {
-        firebaseAuth = FirebaseAuth.getInstance()
-        // googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN)
+    private fun updateUI(account: GoogleSignInAccount) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.putExtra("email", account.email)
+        intent.putExtra("name", account.displayName)
+        startActivity(intent)
+        Toast.makeText(this, "Sign in with Google successful!", Toast.LENGTH_SHORT).show()
+    }
 
-        if (firebaseAuth.currentUser != null) {
+    fun signOut() {
+        if (::firebaseAuth.isInitialized) {
             firebaseAuth.signOut()
         }
-        // if (googleSignInClient != null) {
-        //     googleSignInClient.signOut()
-        // }
-
-        // Check if shared preferences have any keys, then clear it if it does
-//        val sharedPreferences = getSharedPreferences("user_info", MODE_PRIVATE)
-//        if (sharedPreferences.all.isNotEmpty()) {
-//            val editor = sharedPreferences.edit()
-//            editor.clear()
-//            editor.apply() // or editor.commit() if you need synchronous operation
-//        }
+        if (::googleSignInClient.isInitialized) {
+            googleSignInClient.signOut()
+        }
     }
 }

@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".users.fragments.UserProfileFragment">
+    tools:context=".users.fragments.UserProfileFragment"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:text="Become Seller"
+            android:id="@+id/registerToSeller_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:icon="@drawable/potted_plant_24px" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:text="Order History"
+            android:id="@+id/orderHistory_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:icon="@drawable/potted_plant_24px" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="80dp"
-        android:layout_marginBottom="452dp"
-        android:text="Logout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:text="Become a Seller"
-        android:id="@+id/registerToSeller_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:icon="@drawable/potted_plant_24px"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/logoutButton"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:text="Logout" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

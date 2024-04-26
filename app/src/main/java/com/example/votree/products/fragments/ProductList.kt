@@ -8,40 +8,46 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.votree.R
 import com.example.votree.databinding.FragmentProductListBinding
 import com.example.votree.products.adapters.ProductAdapter
+import com.example.votree.products.models.Product
 import com.example.votree.products.view_models.ProductViewModel
 
 class ProductList : Fragment() {
     private var _binding: FragmentProductListBinding? = null
     private val binding get() = _binding!!
     private lateinit var mFirebaseProductViewModel: ProductViewModel
+    private lateinit var productAdapter: ProductAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProductListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        val adapter = ProductAdapter()
-        val productRecyclerView = binding.productListRv
-        productRecyclerView.adapter = adapter
-        productRecyclerView.setHasFixedSize(true)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val numberOfColumns = 2
-        productRecyclerView.layoutManager = GridLayoutManager(requireContext(), numberOfColumns)
+        productAdapter = ProductAdapter()
+        binding.productListRv.apply {
+            adapter = productAdapter
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            setHasFixedSize(true)
+        }
 
         mFirebaseProductViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
         mFirebaseProductViewModel.products.observe(viewLifecycleOwner) { products ->
-            adapter.setData(products)
+            productAdapter.setData(products)
         }
 
-        binding.addProductFab.setOnClickListener {
-            findNavController().navigate(R.id.action_productList_to_addNewProduct)
-        }
-
-        return binding.root
+        productAdapter.setOnProductClickListener(object : ProductAdapter.OnProductClickListener {
+            override fun onProductClick(product: Product) {
+                val action = ProductListDirections.actionProductListToProductDetail(product, "user")
+                findNavController().navigate(action)
+            }
+        })
     }
 
     override fun onDestroyView() {

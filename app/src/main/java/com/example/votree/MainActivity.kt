@@ -1,11 +1,11 @@
 package com.example.votree
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.widget.Button
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -13,17 +13,17 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.votree.admin.activities.AdminMainActivity
 import androidx.navigation.ui.setupWithNavController
+import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.databinding.ActivityMainBinding
 import com.example.votree.users.activities.RegisterToSeller
-import com.example.votree.users.activities.SignInActivity
+import com.example.votree.users.activities.StoreManagement
 import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -95,6 +95,14 @@ class MainActivity : AppCompatActivity() {
             navController.setGraph(R.navigation.nav_user_graph)
             bottomNavigation.inflateMenu(R.menu.nav_user)
         }
+        val hiddenDestinations = setOf(R.id.productDetail, R.id.productDetail)
+        navController.addOnDestinationChangedListener { _ , destination, _  ->
+            if(destination.id in hiddenDestinations) {
+                bottomNavigation.visibility = View.GONE
+            } else {
+                bottomNavigation.visibility = View.VISIBLE
+            }
+        }
 
         bottomNavigation.setupWithNavController(navController)
         setupActionBarWithNavController(navController, AppBarConfiguration(navController.graph))
@@ -105,6 +113,7 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.btnCart.setOnClickListener {
             navigateToCart()
         }
+        gotoAccountManagement()
     }
 
     private fun navigateToCart() {
@@ -112,6 +121,22 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         navController.navigate(R.id.cartList)
+    }
+
+    private fun gotoAccountManagement() {
+        binding.toolbar.btnAvatar.setOnClickListener {
+            RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
+                if (it == "user") {
+                    Log.d("MainActivity", "User")
+                } else if (it == "store") {
+                    Log.d("MainActivity", "Store")
+                    // Start Activity StoreManagement
+                    val intent = Intent(this, StoreManagement::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            })
+        }
     }
 
     private fun updateUserToSeller(role: String){

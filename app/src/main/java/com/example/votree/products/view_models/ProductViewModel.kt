@@ -40,11 +40,11 @@ class ProductViewModel : ViewModel() {
         }
     }
 
-    // Function to fetch a single product by its ID
     fun getProductById(productId: String): LiveData<Product?> {
         val productLiveData = MutableLiveData<Product?>()
 
         productsCollection.document(productId).get().addOnSuccessListener { documentSnapshot ->
+            Log.d(TAG, "Fetched product with ID: $documentSnapshot")
             val product = documentSnapshot.toObject(Product::class.java)
             productLiveData.value = product
         }.addOnFailureListener { e ->
@@ -58,6 +58,7 @@ class ProductViewModel : ViewModel() {
     // Function to get product price by id
     fun getProductPriceById(productId: String): Double? {
         val product = _products.value?.find { it.id == productId }
+        Log.d("_product", _products.value.toString())
         return product?.price
     }
 

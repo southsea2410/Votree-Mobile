@@ -9,7 +9,7 @@ import java.util.Date
 @Parcelize
 data class User (
     var id: String,
-    var userName: String,
+    var username: String,
     var fullName: String,
     var password: String,
     var phoneNumber: String,
@@ -24,7 +24,8 @@ data class User (
     var totalRevenue: Int,
     var transactionIdList: List<String>,
     var createdAt: Date = Date(),
-    var updatedAt: Date = Date()
+    var updatedAt: Date = Date(),
+    var expireBanDate: Date = Date()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -43,16 +44,17 @@ data class User (
         parcel.readInt(),
         parcel.createStringArrayList()!!,
         Date(parcel.readLong()),
+        Date(parcel.readLong()),
         Date(parcel.readLong())
     )
 
-    constructor() : this("", "", "", "", "", "", "", "", false, "", "", Date(), 0, 0, emptyList(), Date(), Date())
+    constructor() : this("", "", "", "", "", "", "", "", false, "", "", Date(), 0, 0, emptyList(), Date(), Date(), Date())
 
     companion object : Parceler<User> {
 
         override fun User.write(parcel: Parcel, flags: Int) {
             parcel.writeString(id)
-            parcel.writeString(userName)
+            parcel.writeString(username)
             parcel.writeString(fullName)
             parcel.writeString(password)
             parcel.writeString(phoneNumber)
@@ -68,6 +70,7 @@ data class User (
             parcel.writeStringList(transactionIdList)
             parcel.writeLong(createdAt.time)
             parcel.writeLong(updatedAt.time)
+            parcel.writeLong(expireBanDate.time)
         }
 
         override fun create(parcel: Parcel): User {

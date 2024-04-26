@@ -1,74 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    tools:context=".tips.TipMainScreenFragment">
+    tools:context=".tips.TipMainScreenFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.google.android.material.textview.MaterialTextView
-        style="?attr/textAppearanceHeadlineLarge"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:text="Recommend"
-        android:textColor="@color/md_theme_primary"
-        android:textFontWeight="500" />
+        android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/carousel_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="196dp"
-        android:layout_marginTop="32dp"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_marginTop="20dp"
-        app:dividerInsetStart="24dp"
-        app:dividerInsetEnd="24dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            <com.google.android.material.textview.MaterialTextView
+                style="?attr/textAppearanceHeadlineLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:text="Recommend"
+                android:textColor="@color/md_theme_primary"
+                android:textFontWeight="500"
+                android:textSize="25sp" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/test_text_view"
-        style="?attr/textAppearanceHeadlineMedium"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:text="Tips Feed"
-        android:textColor="@color/md_theme_primary"
-        android:textFontWeight="500" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/carousel_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="196dp"
+                android:layout_marginTop="10dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/time_sort_chip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="Newest first"/>
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_marginTop="20dp"
+                app:dividerInsetStart="24dp"
+                app:dividerInsetEnd="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tip_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/test_text_view"
+                style="?attr/textAppearanceHeadlineMedium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:text="Tips Feed"
+                android:textColor="@color/md_theme_primary"
+                android:textFontWeight="500"
+                android:textSize="25sp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/time_sort_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Newest first"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tip_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="5dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_nav_write_tip_action"
         style="?attr/floatingActionButtonPrimaryStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="30dp"
         android:contentDescription="Write an Tip"
         android:src="@drawable/edit_24px"
         app:fabSize="auto" />
-</LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
