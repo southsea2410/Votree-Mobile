@@ -16,6 +16,7 @@ import com.example.votree.R
 import com.example.votree.databinding.FragmentProductListBinding
 import com.example.votree.products.adapters.ProductAdapter
 import com.example.votree.products.models.Product
+import com.example.votree.products.view_models.ProductFilterViewModel
 import com.example.votree.products.view_models.ProductViewModel
 import com.google.android.material.tabs.TabLayout
 
@@ -23,6 +24,9 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
     private var _binding: FragmentProductListBinding? = null
     private val binding get() = _binding!!
     private lateinit var mFirebaseProductViewModel: ProductViewModel
+    private val FilterProductViewModel: ProductFilterViewModel by lazy {
+        ViewModelProvider(requireActivity()).get(ProductFilterViewModel::class.java)
+    }
     private lateinit var productAdapter: ProductAdapter
     private var sortPriceAscending = true
 
@@ -42,6 +46,7 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
         setUpTabLayout()
         navigateToProductDetail()
         setUpSearchQuery()
+        setupFilterObserver()
     }
 
     private fun setUpRecyclerView(){
@@ -75,6 +80,9 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
                             ContextCompat.getDrawable(requireContext(), R.drawable.ic_descending)
                         }
                     }
+                    3 -> {
+                        showProductFilterBottomSheet()
+                    }
                 }
             }
 
@@ -83,6 +91,8 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
                 if (tab?.position == 2) {
                     sortPriceAscending = true
                     tab.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_unfold)
+                }else if(tab?.position == 3){
+                    resetProductList()
                 }
             }
 
@@ -96,8 +106,16 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
                         ContextCompat.getDrawable(requireContext(), R.drawable.ic_descending)
                     }
                 }
+                else if (tab?.position == 3) {
+                    showProductFilterBottomSheet()
+                }
             }
         })
+    }
+
+    private fun showProductFilterBottomSheet() {
+        val bottomSheetFragment = ProductFilterBottomSheet()
+        bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
     }
 
     private fun navigateToProductDetail(){
@@ -163,6 +181,40 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
         if (activity is MainActivity)
             (activity as MainActivity).setSearchQueryListener(null)
     }
+
+    private fun setupFilterObserver() {
+        FilterProductViewModel.currentFilterCriteria.observe(viewLifecycleOwner) { criteria ->
+            applyFiltersToProductList(criteria)
+        }
+    }
+
+    private fun applyFiltersToProductList(criteria: ProductFilterViewModel.FilterCriteria) {
+        // Log the criteria to check if the filter is working correctly
+        Log.d("ProductList", "Filter criteria: $criteria")
+        mFirebaseProductViewModel.products.observe(viewLifecycleOwner) { products ->
+            Log.d("ProductList", "All products: $products")
+
+            // Filter products based on any matching criteria within each category
+            val filteredProducts = products.filter { product ->
+                val matchesPlantType = criteria.selectedPlantTypes.isEmpty() || criteria.selectedPlantTypes.contains(product.type)
+                val matchesClimate = criteria.selectedClimates.isEmpty() || criteria.selectedClimates.contains(product.suitClimate)
+                val matchesEnvironment = criteria.selectedEnvironments.isEmpty() || criteria.selectedEnvironments.contains(product.suitEnvironment)
+
+                matchesPlantType && matchesClimate && matchesEnvironment
+            }
+
+            Log.d("ProductList", "Filtered products: $filteredProducts")
+            productAdapter.setData(filteredProducts)
+        }
+    }
+
+//    private fun setupPriceRangeSlider() {
+//        priceRangeSlider =
+//        priceRangeSlider.addOnChangeListener { slider, _, _ ->
+//            val values = slider.values
+//            viewModel.setPriceRange(values[0], values[1])
+//        }
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

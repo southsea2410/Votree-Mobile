@@ -73,6 +73,7 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.activity:activity:1.8.2")
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -137,5 +138,8 @@ dependencies {
 
     // Tab for sort
     implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    // Slide bar for Filter price
+//    implementation("com.github.Jay-Goo:RangeSeekBar:v3.0.0")
 }
 
