@@ -20,7 +20,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:layout_gravity="bottom|start"
-        style="?attr/textAppearanceTitleLarge"
+        style="?attr/textAppearanceTitleMedium"
         android:textColor="@color/md_theme_onPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

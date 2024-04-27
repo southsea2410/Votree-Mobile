@@ -22,7 +22,9 @@
         <action
             android:id="@+id/action_productList_to_cartList"
             app:destination="@id/cartList" />
-
+        <action
+            android:id="@+id/action_productList_to_suggestionSearchFragment"
+            app:destination="@id/suggestionSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/productDetail"
@@ -36,7 +38,7 @@
             android:name="role"
             app:argType="string" />
         <action
-            android:id="@+id/action_productDetail2_to_checkout"
+            android:id="@+id/action_productDetail_to_checkout"
             app:destination="@id/checkout" />
     </fragment>
     <fragment
@@ -134,5 +136,18 @@
         <argument
             android:name="currentProduct"
             app:argType="com.example.votree.products.models.Product" />
+    </fragment>
+    <fragment
+        android:id="@+id/suggestionSearchFragment"
+        android:name="com.example.votree.products.fragments.SuggestionSearchFragment"
+        android:label="fragment_search_suggestion"
+        tools:layout="@layout/fragment_suggestion_search" >
+        <action
+            android:id="@+id/action_suggestionSearchFragment_to_productList"
+            app:destination="@id/productList" >
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
     </fragment>
 </navigation>
