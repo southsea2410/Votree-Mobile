@@ -73,6 +73,7 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.activity:activity:1.8.2")
+    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -127,5 +128,21 @@ dependencies {
 
     // OTP View
     implementation("io.github.chaosleung:pinview:1.4.4")
+
+    // Search Algorithm
+//    annotationProcessor("info.debatty:java-string-similarity:2.0.0")
+////    implementation("info.debatty:java-string-similarity:2.0.0"){
+////        exclude(group = "com.github.stephenc.jcip", module = "jcip-annotations")
+////    }
+//    implementation("info.debatty:java-string-similarity:2.0.0"){
+//        exclude(module = "jsr305")
+//        exclude(module = "jcip-annotations")
+//    }
+
+    // Tab for sort
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+
+    // Slide bar for Filter price
+//    implementation("com.github.Jay-Goo:RangeSeekBar:v3.0.0")
 }
 

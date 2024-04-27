@@ -14,4 +14,17 @@
         <item name="android:textColor">@color/blu500_dark</item>
     </style>
 
+<!--    Change color of tooltip-->
+    <style name="Myslider" parent="@style/Widget.MaterialComponents.Slider">
+        <item name="labelStyle">@style/SliderToolTip</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+    <style name="SliderToolTip" parent="Widget.MaterialComponents.Tooltip">
+        <item name="android:textColor">@color/md_theme_primary</item>
+        <item name="android:background">@color/white</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 </resources>
