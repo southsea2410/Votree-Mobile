@@ -188,6 +188,22 @@ class CheckoutActivity : AppCompatActivity() {
         }
     }
 
+    private fun notifyStoreAboutNewOrder(transaction: Transaction) {
+        val data = hashMapOf(
+            "storeId" to transaction.storeId,
+            "orderId" to transaction.id,
+            "message" to "You have a new order!"
+        )
+
+        functions.getHttpsCallable("sendStoreNotification").call(data)
+            .addOnSuccessListener {
+                Log.d(TAG, "Notification sent successfully to the store")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error sending notification to the store", e)
+            }
+    }
+
     private fun createTransactionFromCart(cart: Cart, receiver: ShippingAddress) {
         val currentDate = Date()
 
@@ -209,14 +225,19 @@ class CheckoutActivity : AppCompatActivity() {
                     phoneNumber = receiver.recipientPhoneNumber,
                     createdAt = currentDate
                 )
-                Log.d("CheckoutActivity", "Transaction: $transaction")
+                Log.d(TAG, "Transaction: $transaction")
                 lifecycleScope.launch {
                     transactionRepository.createAndUpdateTransaction(transaction)
+                    notifyStoreAboutNewOrder(transaction)
                 }
             }
     }
 
     private suspend fun clearCartAfterCheckout(cart: Cart) {
         cartRepository.clearCartAfterCheckout(userId, cart)
+    }
+
+    companion object {
+        private const val TAG = "CheckoutActivity"
     }
 }

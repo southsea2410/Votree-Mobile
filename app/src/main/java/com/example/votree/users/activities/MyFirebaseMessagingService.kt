@@ -10,9 +10,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.votree.MainActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -63,5 +68,30 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         notificationManager.notify(0, notificationBuilder.build())
+    }
+
+    override fun onNewToken(token: String) {
+        Log.d(TAG, "Refreshed token: $token")
+        // Send the token to  server or store it in Firestore
+        sendTokenToServer(token)
+    }
+
+    private fun sendTokenToServer(token: String) {
+        val deviceToken = hashMapOf(
+            "token" to token,
+            "timestamp" to FieldValue.serverTimestamp()
+        )
+
+        // Get user ID from Firebase Auth
+        val userId = Firebase.auth.currentUser?.uid ?: return
+
+        Firebase.firestore.collection("fcmTokens").document(userId)
+            .set(deviceToken)
+            .addOnSuccessListener { Log.d(TAG, "Token successfully written!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error writing token", e) }
+    }
+
+    companion object {
+        private const val TAG = "MyFirebaseMsgService"
     }
 }
