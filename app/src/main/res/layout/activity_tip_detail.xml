@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,7 +19,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:contentScrim="@color/fui_transparent"
             android:layout_width="match_parent"
-            android:layout_height="?attr/collapsingToolbarLayoutLargeSize">
+            android:layout_height="350dp">
 
             <ImageView
                 android:id="@+id/tip_detail_image_view"
@@ -58,6 +59,7 @@
                 android:orientation="horizontal"
                 app:layout_anchor="@id/tip_detail_app_bar_layout"
                 android:layout_marginTop="24dp"
+                android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.textview.MaterialTextView
@@ -66,9 +68,12 @@
                     android:text="Celebrating The First Day of Spring With These Flowers"
                     android:minLines="2"
                     android:maxLines="3"
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:textColor="@color/md_theme_scrim" />
+
+                <include layout="@layout/tip_voting_system" android:id="@+id/tip_voting_system"/>
             </LinearLayout>
 
             <LinearLayout
@@ -76,23 +81,20 @@
                 android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <ImageView
-                    android:src="@drawable/avatar_default"
-                    android:scaleType="fitCenter"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"/>
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_marginStart="12dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <TextView
+                        android:id="@+id/tip_detail_author_text_view"
                         style="?attr/textAppearanceTitleMedium"
                         android:textColor="?attr/colorPrimary"
                         android:text="Kha Huynh"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                     <TextView
+                        android:id="@+id/tip_detail_store_text_view"
                         style="?attr/textAppearanceLabelMedium"
                         android:textColor="?attr/colorSecondary"
                         android:layout_width="wrap_content"
@@ -114,11 +116,11 @@
 
             <TextView
                 android:id="@+id/tip_detail_content_text_view"
-                style="?attr/textAppearanceBodyMedium"
+                style="?attr/textAppearanceBody1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:lineHeight="18sp"
+                android:lineHeight="22sp"
                 android:text="Today marks the celebration of the first day of spring, a time when nature awakens with vibrant colors and fragrant blooms. As we welcome the warmth of the sun and the gentle breeze, let us take a moment to appreciate the beauty that surrounds us, particularly in the form of flowers.\nThe arrival of spring brings forth a kaleidoscope of blossoms, each with its own unique charm and significance. From the cheerful daffodils that herald the season's arrival to the delicate cherry blossoms that paint the landscape with hues of pink and white, there is a flower to enchant every heart.\nIn gardens and parks, on windowsills and balconies, these floral gems unfurl their petals, inviting us to revel in their splendor. They serve as a reminder of nature's resilience and the promise of renewal that spring brings.\nSo let us embrace this moment of rejuvenation and immerse ourselves in the beauty of these flowers. Let us celebrate the first day of spring with gratitude and joy, knowing that brighter days lie ahead."
                 android:textIsSelectable="true"
                 android:textColor="@color/md_theme_scrim" />
@@ -143,11 +145,16 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textField"
                     android:layout_width="0dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:hint="Share your thought...">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tip_detail_comment_edit_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
@@ -155,7 +162,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
                 <Button
                     style="?attr/materialIconButtonStyle"
-                    android:id="@+id/sendButton"
+                    android:id="@+id/tip_detail_send_comment_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -165,7 +172,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tip_detail_comment_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:minHeight="200dp">
 
             </androidx.recyclerview.widget.RecyclerView>
 

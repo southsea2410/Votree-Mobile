@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.READ_MEDIA_IMAGES"
         android:minSdkVersion="33" />
@@ -14,10 +13,6 @@
     <uses-permission
         android:name="android.permission.READ_MEDIA_AUDIO"
         android:minSdkVersion="33" />
-
-    <meta-data
-        android:name="PLACES_API_KEY"
-        android:value="${PLACES_API_KEY}" />
 
     <application
         android:allowBackup="true"
@@ -71,6 +66,7 @@
             android:name=".users.activities.RegisterToSeller"
             android:exported="false" />
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".tips.TipDetailActivity"
             android:exported="false" />
         <activity android:name=".tips.WriteTipActivity" />

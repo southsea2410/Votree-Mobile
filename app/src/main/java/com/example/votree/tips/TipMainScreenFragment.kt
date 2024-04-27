@@ -63,4 +63,10 @@ class TipMainScreenFragment : Fragment() {
             startActivity(intent)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.queryAllTips()
+        viewModel.queryTopTips()
+    }
 }

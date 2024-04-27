@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -23,7 +25,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 
-        buildConfigField("String", "PLACES_API_KEY", "")
+        val keystoreFile = rootProject.file("apis.properties")
+        val properties = Properties()
+        properties.load(keystoreFile.inputStream())
+
+        buildConfigField("String", "PLACES_API_KEY", properties.getProperty("PLACES_API_KEY") ?: "")
     }
 
     buildTypes {
