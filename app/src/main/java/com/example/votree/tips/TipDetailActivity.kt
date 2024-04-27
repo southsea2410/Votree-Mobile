@@ -20,16 +20,17 @@ import com.example.votree.R
 import com.example.votree.databinding.ActivityTipDetailBinding
 import com.example.votree.tips.adapters.TipCommentAdapter
 import com.example.votree.tips.models.ProductTip
+import com.google.android.gms.ads.AdView
 import com.example.votree.tips.view_models.TipsViewModel
 import com.google.android.material.button.MaterialButtonToggleGroup
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButtonCheckedListener {
-    
+
     private val viewModel: TipsViewModel by viewModels()
     private val commentAdapter = TipCommentAdapter()
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityTipDetailBinding.inflate(layoutInflater)

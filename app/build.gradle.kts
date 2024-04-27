@@ -57,28 +57,33 @@ android {
     sourceSets {
         getByName("main").java.srcDirs("build/generated/source/navigation-args")
     }
+
+    dataBinding {
+        enable = true
+    }
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     implementation("com.google.firebase:firebase-storage:20.3.0")
-    implementation("com.google.firebase:firebase-firestore-ktx:24.11.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.11.1")
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database-ktx:20.3.1")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
     implementation("com.google.firebase:firebase-functions-ktx:20.4.0")
     implementation("com.google.firebase:firebase-auth:22.3.1")
-    implementation("com.firebaseui:firebase-ui-auth:7.2.0")
+    implementation("com.firebaseui:firebase-ui-auth:8.0.2")
 
-    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.android.gms:play-services-auth:21.1.0")
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
-    implementation("androidx.activity:activity:1.8.2")
+    implementation("androidx.activity:activity:1.9.0")
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 
     testImplementation("junit:junit:4.13.2")
@@ -97,10 +102,10 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     // Import the BoM for the Firebase platform
-    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
     // Declare the dependencies for the Firebase Cloud Firestore and Analytics libraries
     implementation("com.google.firebase:firebase-firestore")
-    implementation("com.firebaseui:firebase-ui-firestore:7.2.0")
+    implementation("com.firebaseui:firebase-ui-firestore:8.0.2")
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
@@ -111,26 +116,26 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     // Facebook SDK
-    implementation("com.facebook.android:facebook-android-sdk:latest.release")
+    implementation("com.facebook.android:facebook-android-sdk:17.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // Activity KTX
-    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.activity:activity-ktx:1.9.0")
 
     // Places API
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.22"))
-    implementation("com.google.android.libraries.places:places:3.3.0")
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.9.23"))
+    implementation("com.google.android.libraries.places:places:3.4.0")
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
 
     // Stripe Android SDK
-    implementation("com.stripe:stripe-android:20.40.3")
+    implementation("com.stripe:stripe-android:20.41.0")
 
     //
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
     // OTP View
     implementation("io.github.chaosleung:pinview:1.4.4")

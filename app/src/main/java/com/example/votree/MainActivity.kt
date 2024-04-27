@@ -16,13 +16,17 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.databinding.ActivityMainBinding
+import com.example.votree.tips.AdManager
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @Suppress("DEPRECATION")
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -40,6 +44,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val adView = findViewById<AdView>(R.id.adView)
+        AdManager.loadBannerAd(adView)
 
         permissionManager = PermissionManager(this)
         permissionManager.checkPermissions()
