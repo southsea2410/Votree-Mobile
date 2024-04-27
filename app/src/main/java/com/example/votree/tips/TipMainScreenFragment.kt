@@ -12,6 +12,8 @@ import com.example.votree.databinding.FragmentTipMainScreenBinding
 import com.example.votree.tips.adapters.TipAdapter
 import com.example.votree.tips.adapters.TipCarouselAdapter
 import com.example.votree.tips.view_models.TipsViewModel
+import com.example.votree.utils.AuthHandler
+import com.example.votree.utils.RoleManagement
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.CarouselSnapHelper
 import com.google.android.material.carousel.HeroCarouselStrategy
@@ -58,9 +60,16 @@ class TipMainScreenFragment : Fragment() {
     }
 
     private fun setupFabButton(binding: FragmentTipMainScreenBinding) {
-        binding.fabNavWriteTipAction.setOnClickListener {
-            val intent = Intent(requireContext(), WriteTipActivity::class.java)
-            startActivity(intent)
+        RoleManagement.checkUserRole(AuthHandler.firebaseAuth) {
+            if (it == "store") {
+                binding.fabNavWriteTipAction.visibility = View.VISIBLE
+                binding.fabNavWriteTipAction.setOnClickListener {
+                    val intent = Intent(requireContext(), WriteTipActivity::class.java)
+                    startActivity(intent)
+                }
+            } else {
+                binding.fabNavWriteTipAction.visibility = View.GONE
+            }
         }
     }
 

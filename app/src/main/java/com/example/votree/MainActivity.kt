@@ -95,13 +95,11 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+        navController.setGraph(R.navigation.nav_seller_graph)
+        bottomNavigation.inflateMenu(R.menu.nav_seller)
 
-        if (role == "store") {
-            navController.setGraph(R.navigation.nav_seller_graph)
-            bottomNavigation.inflateMenu(R.menu.nav_seller)
-        } else {
-            navController.setGraph(R.navigation.nav_user_graph)
-            bottomNavigation.inflateMenu(R.menu.nav_user)
+        if (role != "store") {
+            bottomNavigation.menu.removeItem(R.id.storeManagement2)
         }
         val hiddenDestinations = setOf(R.id.productDetail, R.id.productDetail)
         navController.addOnDestinationChangedListener { _ , destination, _  ->
