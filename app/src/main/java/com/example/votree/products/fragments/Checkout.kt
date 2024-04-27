@@ -134,7 +134,6 @@ class Checkout : Fragment() {
                     binding.totalProductsPriceTv.text = getString(R.string.price_format, totalPrice)
                     binding.totalAmountTv.text = totalAmount.toString()
                     binding.deliveryFeeTv.text = getString(R.string.price_format, DELIVERY_FEE)
-                    binding.totalAmountTv.text = getString(R.string.price_format, totalAmount)
                     binding.totalAmountBottomTv.text = getString(R.string.price_format, totalAmount)
                 }
         }
