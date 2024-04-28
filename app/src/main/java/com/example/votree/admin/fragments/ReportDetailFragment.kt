@@ -3,7 +3,6 @@ package com.example.votree.admin.fragments
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,8 +44,8 @@ class ReportDetailFragment : Fragment() {
 
         viewDetailButton?.setOnClickListener {
             if (report?.tipId != null && report?.tipId != "") {
-                val fragment = ReportTipDetailFragment()
-                db.collection("ProductTip2").document(report!!.tipId!!).get()
+                val fragment = TipDetailFragment()
+                db.collection("ProductTip").document(report!!.tipId!!).get()
                     .addOnSuccessListener { document ->
                         if (document != null) {
                             val tip = document.toObject(Tip::class.java)
@@ -54,13 +53,13 @@ class ReportDetailFragment : Fragment() {
                                 putParcelable("tip", tip)
                             }
                             val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-                            (activity as AdminMainActivity).setCurrentFragment(ReportTipDetailFragment())
+                            (activity as AdminMainActivity).setCurrentFragment(TipDetailFragment())
                             fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
                         }
                     }
             } else {
                 // for different type of report
-                val fragment = ReportTipDetailFragment()
+                val fragment = TipDetailFragment()
             }
         }
 

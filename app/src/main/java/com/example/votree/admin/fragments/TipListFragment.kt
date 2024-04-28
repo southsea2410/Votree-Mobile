@@ -1,5 +1,6 @@
 package com.example.votree.admin.fragments
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,12 +11,14 @@ import com.example.votree.admin.adapters.BaseListAdapter
 import com.example.votree.admin.adapters.TipListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Tip
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class TipListFragment : BaseListFragment<Tip>(), OnItemClickListener {
 
     override val adapter: BaseListAdapter<Tip> by lazy { TipListAdapter(this) }
     override val itemList = mutableListOf<Tip>()
-    override val collectionName = "ProductTip2"
+    override val collectionName = "ProductTip"
 
     override fun getLayoutId(): Int = R.layout.fragment_list
 
@@ -61,6 +64,30 @@ class TipListFragment : BaseListFragment<Tip>(), OnItemClickListener {
 
     override fun onTipItemClicked(view: View?, position: Int) {
         (activity as AdminMainActivity).onTipItemClicked(view, position)
+        val topAppBar: MaterialToolbar = (activity as AdminMainActivity).findViewById(R.id.topAppBar)
+        topAppBar.menu.findItem(R.id.more).title = "Delete"
+        topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.more -> {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Delete Tip")
+                        .setMessage("Are you sure you want to delete this tip?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            db.collection(collectionName).document(adapter.getItem(position).id).delete()
+                                .addOnSuccessListener { Log.d(ContentValues.TAG, "DocumentSnapshot successfully deleted!") }
+                                .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error deleting document", e) }
+
+                            (activity as FragmentActivity).supportFragmentManager.popBackStack()
+                        }
+                        .setNegativeButton("No") { _, _ -> }
+                        .show()
+                    true
+                }
+
+                else -> false
+            }
+        }
+
         val fragment = TipDetailFragment()
         val bundle = Bundle().apply {
             putParcelable("tip", adapter.getItem(position))

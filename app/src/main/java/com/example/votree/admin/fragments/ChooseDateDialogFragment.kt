@@ -78,6 +78,8 @@ class ChooseDateDialogFragment : DialogFragment(), OnItemClickListener {
         adapter.setSelectedPosition(position)
     }
 
+    override fun onTransactionItemClicked(view: View?, position: Int) {}
+
     override fun onTipItemClicked(view: View?, position: Int) {}
 
     override fun onAccountItemClicked(view: View?, position: Int) {}

@@ -21,7 +21,7 @@ class TipsViewModel : ViewModel() {
     }
 
     fun queryAllTips() {
-        val collection = firestore.collection("ProductTip2")
+        val collection = firestore.collection("ProductTip")
         collection
             .whereEqualTo("approvalStatus", 1)
             .orderBy("createdAt", Query.Direction.DESCENDING)
@@ -36,7 +36,7 @@ class TipsViewModel : ViewModel() {
     }
 
     fun queryTopTips() {
-        val collection = firestore.collection("ProductTip2")
+        val collection = firestore.collection("ProductTip")
         collection
             .whereEqualTo("approvalStatus", 1)
             .orderBy("vote", Query.Direction.DESCENDING)

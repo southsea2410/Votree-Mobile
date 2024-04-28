@@ -1,5 +1,6 @@
 package com.example.votree.admin.fragments
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,8 @@ import com.example.votree.admin.adapters.BaseListAdapter
 import com.example.votree.admin.adapters.ReportListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Report
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ReportListFragment : BaseListFragment<Report>(), OnItemClickListener {
 
@@ -79,6 +82,30 @@ class ReportListFragment : BaseListFragment<Report>(), OnItemClickListener {
 
     override fun onReportItemClicked(view: View?, position: Int, processStatus: Boolean) {
         (activity as AdminMainActivity).onReportItemClicked(view, position, processStatus)
+        val topAppBar: MaterialToolbar = (activity as AdminMainActivity).findViewById(R.id.topAppBar)
+        topAppBar.menu.findItem(R.id.more).title = "Delete"
+        topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.more -> {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Delete Report")
+                        .setMessage("Are you sure you want to delete this report?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            db.collection(collectionName).document(adapter.getItem(position).id).delete()
+                                .addOnSuccessListener { Log.d(ContentValues.TAG, "DocumentSnapshot successfully deleted!") }
+                                .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error deleting document", e) }
+
+                            (activity as FragmentActivity).supportFragmentManager.popBackStack()
+                        }
+                        .setNegativeButton("No") { _, _ -> }
+                        .show()
+                    true
+                }
+
+                else -> false
+            }
+        }
+
         val fragment = ReportDetailFragment()
         val bundle = Bundle().apply {
             putParcelable("report", adapter.getItem(position))

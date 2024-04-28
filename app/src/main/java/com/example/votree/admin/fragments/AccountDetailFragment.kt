@@ -42,13 +42,13 @@ class AccountDetailFragment : Fragment() {
         topAppBar.setTitleTextColor(resources.getColor(R.color.md_theme_primary))
 
 
-//        viewTransactionListButton.setOnClickListener {
-//            val reporterId = account?.id
-//            reporterId?.let { id ->
-//                val dialogFragment = TransactionListDialogFragment.newInstance(id)
-//                dialogFragment.show(parentFragmentManager, "TransactionListDialogFragment")
-//            }
-//        }
+        viewTransactionListButton.setOnClickListener {
+            val reporterId = account?.id
+            reporterId?.let { id ->
+                val dialogFragment = TransactionDialogFragment.newInstance(id)
+                dialogFragment.show(parentFragmentManager, "TransactionDialogFragment")
+            }
+        }
 
         viewTipListButton.setOnClickListener {
             val accountId = account?.id

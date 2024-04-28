@@ -57,6 +57,8 @@ abstract class BaseListFragment<T> : Fragment(), OnItemClickListener {
 
     override fun onItemClicked(view: View?, position: Int) {}
 
+    override fun onTransactionItemClicked(view: View?, position: Int) {}
+
     override fun onTipItemClicked(view: View?, position: Int) {}
 
     override fun onAccountItemClicked(view: View?, position: Int) {}

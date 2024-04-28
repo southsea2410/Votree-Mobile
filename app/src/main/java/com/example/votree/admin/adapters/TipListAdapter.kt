@@ -1,6 +1,5 @@
 package com.example.votree.admin.adapters
 
-import android.annotation.SuppressLint
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout

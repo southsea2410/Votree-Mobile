@@ -65,5 +65,13 @@ abstract class BaseListAdapter<T>(
         singleitem_selection_position = position
         notifyDataSetChanged()
     }
+
+    fun priceFormat(price: String): String {
+        return price.substring(0, price.length - 3) + "." + price.substring(price.length - 3) + " VND"
+    }
+
+    fun dateFormat(date: String): String {
+        return date.substring(7, 9) + "/" + date.substring(5, 6) + date.substring(6, 7) + "/" + date.substring(0, 4)
+    }
 }
 

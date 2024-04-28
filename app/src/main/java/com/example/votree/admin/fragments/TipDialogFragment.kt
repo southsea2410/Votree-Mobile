@@ -14,7 +14,7 @@ import com.example.votree.models.Tip
 class TipDialogFragment : BaseDialogFragment<Tip>() {
 
     override val adapter: BaseListAdapter<Tip> by lazy { createAdapter(this) }
-    override val collectionName: String = "ProductTip2"
+    override val collectionName: String = "ProductTip"
     override val dialogTitle: String = "List of Tips"
     override val accountIdKey: String = "account_id"
 
@@ -35,7 +35,7 @@ class TipDialogFragment : BaseDialogFragment<Tip>() {
 
     override fun fetchDataFromFirestore(accountId: String?) {
         val tipList = mutableListOf<Tip>()
-        db.collection("ProductTip2").whereEqualTo("userId", accountId)
+        db.collection("ProductTip").whereEqualTo("userId", accountId)
             .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {

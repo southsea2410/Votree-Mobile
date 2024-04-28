@@ -69,10 +69,10 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
             .addOnSuccessListener {
                 storageRef.downloadUrl.addOnSuccessListener { uri ->
                     tip.imageList[0] = uri.toString()
-                    fireStoreInstance.collection("ProductTip2").add(tip)
+                    fireStoreInstance.collection("ProductTip").add(tip)
                         .addOnSuccessListener { documentReference ->
                             val documentId = documentReference.id
-                            fireStoreInstance.collection("ProductTip2").document(documentId)
+                            fireStoreInstance.collection("ProductTip").document(documentId)
                                 .update("id", documentId)
                             Toast.makeText(
                                 this,

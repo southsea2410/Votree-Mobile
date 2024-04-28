@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tipDetailLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/md_theme_onPrimary"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <ScrollView
+            android:id="@+id/tipScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" >
+
+            <LinearLayout
+                android:id="@+id/tip_detail_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="19dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:textSize="12sp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/account_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/user_name"
+                            android:textColor="@color/md_theme_primary"
+                            android:textSize="32sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/viewTransactionButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="View Profile"
+                            android:textColor="@color/md_theme_primary"
+                            android:textSize="15sp"
+                            android:textStyle="normal"
+                            android:drawablePadding="8dp"
+                            app:backgroundTint="@color/transparent"
+                            app:strokeColor="@color/md_theme_primary"
+                            app:strokeWidth="2dp"
+                            style="?android:attr/buttonBarButtonStyle" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/accountRoleIcon"
+                            android:layout_width="5dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="7dp"
+                            android:src="@drawable/icon_dot"
+                            android:layout_marginStart="5dp"
+                            android:contentDescription="@string/this_is_icon_for_illustration"
+                            app:layout_constraintTop_toBottomOf="@+id/tipImage"
+                            app:tint="@color/md_theme_onPrimaryContainer"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/user_role"
+                            android:textSize="12sp"
+                            android:textColor="@color/md_theme_onPrimaryContainer"
+                            android:id="@+id/account_role"
+                            app:textAllCaps="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="@color/md_theme_primary">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_primaryFixedDim"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+
+                        <TextView
+                            android:id="@+id/transactionInformation"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:text="Information"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_primary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/transactionCustomer"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Customer: Huynh Si Kha"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_secondary" />
+
+                        <ImageView
+                            android:id="@+id/customer_info_item_icon"
+                            android:layout_width="58dp"
+                            android:layout_height="35dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            android:contentDescription="@string/this_is_icon_for_illustration" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/product_name"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Customer: Huynh Si Kha"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textColor="@color/md_theme_secondary" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/address"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Address: 77 Dinh Tien Hoang, TPHCM"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textColor="@color/md_theme_onPrimaryContainer" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/ordered_date"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Ordered on 25 Jul"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textColor="@color/md_theme_onPrimaryContainer" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="@color/md_theme_primary">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_primaryFixedDim"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+
+                        <TextView
+                            android:id="@+id/shipping_option"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:text="Shipping Option"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_primary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/standard_international"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Standard International"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_secondary" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/standard_delivery"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Standard Delivery"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textColor="@color/md_theme_secondary" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/received_date"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Received on 25 Jul"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textColor="@color/md_theme_onPrimaryContainer" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp"
+                    android:backgroundTint="@color/md_theme_primary">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_primaryFixedDim"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+
+                        <TextView
+                            android:id="@+id/payment_details"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:text="Payment Details"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_primary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/payment_option"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Payment Option"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_onPrimaryContainer" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/merchandise_subtotal"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Merchandise Subtotal"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textColor="@color/md_theme_onPrimaryContainer" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/delivery_subtotal"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Delivery Subtotal"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textColor="@color/md_theme_onPrimaryContainer" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toTopOf="@+id/tipName"
+                        app:layout_constraintTop_toBottomOf="@+id/account_name"
+                        android:background="@color/md_theme_onPrimary"
+                        android:gravity="center">
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
+                        <TextView
+                            android:id="@+id/voucher_discount"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="48dp"
+                            android:text="Voucher Discount"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:textSize="14dp"
+                            android:textColor="@color/md_theme_onPrimaryContainer" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/md_theme_primary"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
