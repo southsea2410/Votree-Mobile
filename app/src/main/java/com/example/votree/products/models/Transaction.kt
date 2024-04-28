@@ -15,5 +15,6 @@ data class Transaction(
     val name: String = "",
     val address: String = "",
     val phoneNumber: String = "",
+    var totalAmount: Double = 0.0,
     val createdAt: Date = Date(),
 ) : Parcelable
