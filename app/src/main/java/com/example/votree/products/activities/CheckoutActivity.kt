@@ -230,6 +230,9 @@ class CheckoutActivity : AppCompatActivity() {
                 )
                 Log.d(TAG, "Transaction: $transaction")
                 lifecycleScope.launch {
+                    val totalAmount =
+                        transactionRepository.calculateTotalPrice(transaction.productsMap)
+                    transaction.totalAmount = totalAmount + 10.0 // Add delivery fee
                     transactionRepository.createAndUpdateTransaction(transaction)
                     notifyStoreAboutNewOrder(transaction)
                 }
