@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -17,6 +18,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.databinding.ActivityMainBinding
 import com.example.votree.tips.AdManager
+import com.example.votree.users.activities.MyFirebaseMessagingService
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.PermissionManager
@@ -24,6 +26,7 @@ import com.example.votree.utils.RoleManagement
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 
 @Suppress("DEPRECATION")
 
@@ -69,6 +72,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Manually invoke onNewToken
+                Log.d("FCM Token", task.result)
+                val newToken = task.result
+                MyFirebaseMessagingService().onNewToken(newToken)
+            }
+            else {
+                Toast.makeText(this, "Failed to get token", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
