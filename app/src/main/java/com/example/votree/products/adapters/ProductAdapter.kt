@@ -3,6 +3,8 @@ package com.example.votree.products.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -10,13 +12,14 @@ import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.products.models.Product
 
-class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(), Filterable {
 
     interface OnProductClickListener {
         fun onProductClick(product: Product)
     }
 
     private var productList = emptyList<Product>()
+    private var filteredProductList = productList
     private var listener: OnProductClickListener? = null
 
     fun setOnProductClickListener(listener: OnProductClickListener) {
@@ -39,12 +42,38 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
         )
     }
 
-    override fun getItemCount(): Int {
-        return productList.size
+    override fun getItemCount(): Int = filteredProductList.size
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charString = constraint.toString()
+                filteredProductList = if (charString.isEmpty()) {
+                    productList
+                } else {
+                    val filteredList = ArrayList<Product>()
+                    for (product in productList) {
+                        if (product.productName.toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(product)
+                        }
+                    }
+                    filteredList
+                }
+                val filterResults = FilterResults()
+                filterResults.values = filteredProductList
+                return filterResults
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredProductList = results?.values as List<Product>
+                notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        val currentItem = productList[position]
+//        val currentItem = productList[position]
+        val currentItem = filteredProductList[position]
         holder.itemView.apply {
             holder.productName.text = currentItem.productName
             holder.productPrice.text = currentItem.price.toString()
@@ -65,6 +94,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() 
 
     fun setData(product: List<Product>) {
         this.productList = product
+        this.filteredProductList = product
         notifyDataSetChanged()
     }
 }

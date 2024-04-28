@@ -21,7 +21,6 @@
             android:layout_height="40dp"
             android:layout_marginTop="152dp"
             android:drawableLeft="@drawable/outline_file_upload_24"
-            android:drawableTint="@color/colorPrimary"
             android:text="Add an image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
@@ -105,8 +104,8 @@
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
             app:title="Report Tip"
-            app:navigationIcon="@drawable/arrow_back_24px"
-            app:navigationIconTint="@color/colorPrimary"/>
+            app:navigationIcon="@drawable/arrow_back_24px"/>
+<!--            app:navigationIconTint="@color/colorPrimary"/>-->
 
     </com.google.android.material.appbar.AppBarLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

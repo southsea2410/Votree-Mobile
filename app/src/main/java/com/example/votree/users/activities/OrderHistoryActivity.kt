@@ -5,9 +5,12 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.votree.R
 import com.example.votree.databinding.ActivityOrderHistoryBinding
 import com.example.votree.products.view_models.OrderHistoryViewModel
+import com.example.votree.tips.AdManager
 import com.example.votree.users.adapters.OrderItemAdapter
+import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -40,6 +43,9 @@ class OrderHistoryActivity : AppCompatActivity(), CoroutineScope {
                 notifyDataSetChanged()
             }
         }
+
+        val adView = findViewById<AdView>(R.id.adView)
+        AdManager.loadBannerAd(adView)
     }
 
     override fun onDestroy() {

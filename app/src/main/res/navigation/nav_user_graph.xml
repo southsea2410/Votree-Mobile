@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_productList_to_cartList"
             app:destination="@id/cartList" />
+        <action
+            android:id="@+id/action_productList_to_suggestionSearchFragment"
+            app:destination="@id/suggestionSearchFragment" />
     </fragment>
     <fragment
         android:id="@+id/notifications_fragment"
@@ -63,8 +66,10 @@
             app:destination="@id/cartList" />
         <argument
             android:name="role"
-            android:defaultValue="user"
             app:argType="string" />
+        <action
+            android:id="@+id/action_productDetail_to_checkout"
+            app:destination="@id/checkout" />
     </fragment>
     <fragment
         android:id="@+id/cartList"
@@ -83,6 +88,13 @@
         <action
             android:id="@+id/action_checkout_to_shippingAddressFragment"
             app:destination="@id/shippingAddressFragment" />
+        <action
+            android:id="@+id/action_checkout_to_productDetail"
+            app:destination="@id/productDetail" />
+        <argument
+            android:name="cart"
+            app:argType="com.example.votree.products.models.Cart"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/shippingAddressFragment"
@@ -92,5 +104,18 @@
         <action
             android:id="@+id/action_shippingAddressFragment_to_checkout"
             app:destination="@id/checkout" />
+    </fragment>
+    <fragment
+        android:id="@+id/suggestionSearchFragment"
+        android:name="com.example.votree.products.fragments.SuggestionSearchFragment"
+        android:label="fragment_search_suggestion"
+        tools:layout="@layout/fragment_suggestion_search" >
+        <action
+            android:id="@+id/action_suggestionSearchFragment_to_productList"
+            app:destination="@id/productList" >
+            <argument
+                android:name="query"
+                app:argType="string" />
+        </action>
     </fragment>
 </navigation>

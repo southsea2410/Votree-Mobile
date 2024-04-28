@@ -98,9 +98,9 @@ class RegisterToSeller : AppCompatActivity() {
                     }
                 }
 
-                intent.putExtra("store", store)
-                setResult(RESULT_OK, intent)
-                finish()
+//                intent.putExtra("store", store)
+//                setResult(RESULT_OK, intent)
+//                finish()
             }
         }
     }

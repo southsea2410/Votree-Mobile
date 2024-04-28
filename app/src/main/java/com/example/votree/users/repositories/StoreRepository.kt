@@ -16,4 +16,33 @@ class StoreRepository {
         val userDocumentReference = db.collection("users").document(userId)
         userDocumentReference.update("storeId", storeId).await()
     }
+
+    fun fetchStores(
+        onSuccess: (List<com.example.votree.models.Store>) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        storeCollection.get()
+            .addOnSuccessListener { documents ->
+                val storeList = documents.toObjects(com.example.votree.models.Store::class.java)
+                onSuccess(storeList)
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+    }
+
+    fun fetchStoreById(
+        storeId: String,
+        onSuccess: (com.example.votree.models.Store) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        storeCollection.document(storeId).get()
+            .addOnSuccessListener { document ->
+                val store = document.toObject(com.example.votree.models.Store::class.java)!!
+                onSuccess(store)
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+    }
 }
