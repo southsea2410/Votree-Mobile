@@ -7,9 +7,9 @@ import java.util.Date
 @Parcelize
 data class Notification(
     var id: String = "",
-    val title: String,
-    val content: String,
-    var imageUrl: String = "",
+    val title: String = "",
+    val content: String = "",
     var isRead: Boolean = false,
+    var orderId: String = "",
     val createdAt: Date = Date()
 ) : Parcelable

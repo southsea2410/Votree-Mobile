@@ -4,27 +4,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.votree.databinding.NotificationAdapterBinding
 import com.example.votree.notifications.models.Notification
+import com.example.votree.notifications.view_holders.NotificationViewHolder
 
-class NotificationAdapter :
-    ListAdapter<Notification, NotificationAdapter.NotificationViewHolder>(NotificationDiffCallback()) {
 
-    class NotificationViewHolder(val binding: NotificationAdapterBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+class NotificationAdapter(private val listener: OnNotificationClickListener) :
+    ListAdapter<Notification, NotificationViewHolder>(NotificationDiffCallback()) {
 
-        fun bind(notification: Notification) {
-            binding.notificationTitleTv.text = notification.title
-            binding.notificationContentTv.text = notification.content
-            Glide.with(binding.root.context).load(notification.imageUrl).into(binding.notificationIv)
-        }
+    interface OnNotificationClickListener {
+        fun onNotificationClick(notification: Notification)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         val binding = NotificationAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return NotificationViewHolder(binding)
+        return NotificationViewHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {

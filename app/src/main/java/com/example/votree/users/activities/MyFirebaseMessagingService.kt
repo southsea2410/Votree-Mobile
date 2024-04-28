@@ -14,6 +14,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.votree.MainActivity
+import com.example.votree.notifications.models.Notification
+import com.example.votree.notifications.view_models.NotificationViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -27,9 +29,24 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         if (remoteMessage.notification != null) {
             println("Message Notification Body: ${remoteMessage.notification!!.body}")
-        }
 
+        }
         sendNotification(remoteMessage.from ?: "", remoteMessage.notification?.body ?: "")
+
+        // Extract orderId if available
+        val orderId = remoteMessage.data["orderId"] ?: ""
+        val notification = Notification(
+            title = remoteMessage.notification?.title ?: "No Title",
+            content = remoteMessage.notification?.body ?: "No Content",
+            orderId = orderId
+        )
+
+        saveNotification(notification)
+    }
+
+    private fun saveNotification(notification: Notification) {
+        val notificationViewModel = NotificationViewModel()
+        notificationViewModel.saveNotification(notification)
     }
 
     private fun sendNotification(from: String, body: String) {
@@ -49,7 +66,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("My new notification")
+            .setContentTitle("VoTree")
             .setContentText(body)
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
@@ -72,7 +89,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         Log.d(TAG, "Refreshed token: $token")
-        // Send the token to  server or store it in Firestore
         sendTokenToServer(token)
     }
 

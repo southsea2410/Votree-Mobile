@@ -1,5 +1,6 @@
 package com.example.votree.notifications.view_models
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,15 +23,18 @@ class NotificationViewModel : ViewModel() {
     }
 
     private fun fetchNotifications() {
+        Log.d("NotificationViewModel", "Fetching notifications")
         viewModelScope.launch {
             try {
                 val snapshot = db.collection("users/$userId/notifications")
-                    .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+//                    .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
                     .get()
                     .await()
                 val notificationsList = snapshot.toObjects(Notification::class.java)
+                Log.d("NotificationViewModel", "Notifications: $notificationsList")
                 _notifications.postValue(notificationsList)
             } catch (e: Exception) {
+                Log.e("NotificationViewModel", "Error fetching notifications", e)
                 // Handle exceptions
             }
         }
@@ -41,18 +45,18 @@ class NotificationViewModel : ViewModel() {
             val notificationMap = hashMapOf(
                 "title" to notification.title,
                 "content" to notification.content,
-                "imageUrl" to notification.imageUrl,
                 "isRead" to notification.isRead,
-                "createdAt" to com.google.firebase.Timestamp(notification.createdAt)
+                "createdAt" to com.google.firebase.Timestamp(notification.createdAt),
+                "orderId" to notification.orderId  // Include orderId in the map
             )
 
             try {
                 val documentReference = db.collection("users/$userId/notifications").add(notificationMap).await()
-                // Update the notification ID with the document ID from Firestore
                 val notificationId = documentReference.id
                 db.collection("users/$userId/notifications").document(notificationId)
                     .update("id", notificationId).await()
             } catch (e: Exception) {
+                Log.d("NotificationViewModel", "Error saving notification", e)
                 // Handle exceptions
             }
         }
@@ -69,6 +73,7 @@ class NotificationViewModel : ViewModel() {
                     db.collection("users/$userId/notifications").document(document.id).delete().await()
                 }
             } catch (e: Exception) {
+                Log.d("NotificationViewModel", "Error removing read notifications", e)
                 // Handle exceptions
             }
         }
@@ -79,8 +84,9 @@ class NotificationViewModel : ViewModel() {
             try {
                 db.collection("users/$userId/notifications").document(notificationId)
                     .update("isRead", isRead).await()
+                // After updating, fetch notifications again or update the list locally
             } catch (e: Exception) {
-                // Handle exceptions
+                Log.d("NotificationViewModel", "Error updating notification read status", e)
             }
         }
     }
