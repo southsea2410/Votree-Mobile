@@ -77,18 +77,43 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendTokenToServer(token: String) {
+        val userId = Firebase.auth.currentUser?.uid ?: ""
+        if (userId.isEmpty()) {
+            Log.w(TAG, "User ID is empty")
+            return
+        }
+
+        // Update the token for the user
+        updateToken("users", userId, token)
+
+        // Check if the user has a storeId and update the token for the store
+        Firebase.firestore.collection("users").document(userId).get()
+            .addOnSuccessListener { document ->
+                val storeId = document.getString("storeId")
+                if (!storeId.isNullOrEmpty()) {
+                    updateToken("stores", storeId, token)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Failed to fetch user profile for storeId", e)
+            }
+    }
+
+    private fun updateToken(collectionPath: String, id: String, token: String) {
         val deviceToken = hashMapOf(
             "token" to token,
             "timestamp" to FieldValue.serverTimestamp()
         )
 
-        // Get user ID from Firebase Auth
-        val userId = Firebase.auth.currentUser?.uid ?: return
-
-        Firebase.firestore.collection("fcmTokens").document(userId)
+        Firebase.firestore.collection("fcmTokens").document(collectionPath).collection(id)
+            .document("deviceToken")
             .set(deviceToken)
-            .addOnSuccessListener { Log.d(TAG, "Token successfully written!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error writing token", e) }
+            .addOnSuccessListener {
+                Log.d(TAG, "Device token updated for $collectionPath/$id")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error updating device token for $collectionPath/$id", e)
+            }
     }
 
     companion object {
