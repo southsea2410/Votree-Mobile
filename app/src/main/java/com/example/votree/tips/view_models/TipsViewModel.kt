@@ -1,6 +1,7 @@
 package com.example.votree.tips.view_models
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.votree.tips.models.Author
@@ -22,21 +23,57 @@ class TipsViewModel : ViewModel() {
     val tipList = MutableLiveData<List<ProductTip>>()
     val topTipList = MutableLiveData<List<ProductTip>>()
     private var tipListDocuments : QuerySnapshot? = null
-    private val collectionRef by lazy { firestore.collection("ProductTip") }
+    private val collectionRef = firestore.collection("ProductTip")
+    val sortDirection = MutableLiveData(SORT_BY_NEWEST)
 
-    fun queryAllTips() {
-        collectionRef
-            .whereEqualTo("approvalStatus", 1)
-            .orderBy("createdAt", Query.Direction.DESCENDING)
-            .get()
-            .addOnSuccessListener { documents ->
-                tipListDocuments = documents
-                tipList.value = documents.toObjects(ProductTip::class.java)
-                Log.d("TipsViewModel", "Done getting tips")
-            }
-            .addOnFailureListener{
-                Log.d("TipsViewModel", "Error getting documents: ", it)
-            }
+    // Directions
+    companion object {
+
+        const val SORT_BY_NEWEST = 1
+        const val SORT_BY_VOTE = 0
+        const val SORT_BY_OLDEST = -1
+    }
+
+    fun queryAllTips(direction: Int) {
+        Log.d("TipsViewModel", "Getting tips, direction: $direction")
+        val collectionApprovedRef = collectionRef.whereEqualTo("approvalStatus", 1)
+        fun querySuccessListener(documents: QuerySnapshot) {
+            tipListDocuments = documents
+            tipList.value = documents.toObjects(ProductTip::class.java)
+            Log.d("TipsViewModel", "Done getting tips")
+        }
+        fun queryFailListener(err: Exception){
+            Log.d("TipsViewModel", "Error getting documents: ", err)
+        }
+        when (direction) {
+            SORT_BY_NEWEST -> collectionApprovedRef
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { documents ->
+                    querySuccessListener(documents)
+                }
+                .addOnFailureListener{
+                    queryFailListener(it)
+                }
+            SORT_BY_VOTE -> collectionApprovedRef
+                .orderBy("vote_count", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { documents ->
+                    querySuccessListener(documents)
+                }
+                .addOnFailureListener{
+                    queryFailListener(it)
+                }
+            SORT_BY_OLDEST -> collectionApprovedRef
+                .orderBy("createdAt", Query.Direction.ASCENDING)
+                .get()
+                .addOnSuccessListener { documents ->
+                    querySuccessListener(documents)
+                }
+                .addOnFailureListener{
+                    queryFailListener(it)
+                }
+        }
     }
 
     fun queryTopTips() {
