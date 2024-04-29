@@ -190,17 +190,20 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun notifyStoreAboutNewOrder(transaction: Transaction) {
         val data = hashMapOf(
-            "storeId" to transaction.storeId,
-            "orderId" to transaction.id,
-            "message" to "You have a new order!"
+            "senderId" to userId,
+            "receiverId" to transaction.storeId,
+            "collectionPath" to "stores",
+            "title" to "New Order",
+            "body" to "You have a new order!",
+            "data" to hashMapOf("orderId" to transaction.id)
         )
 
-        functions.getHttpsCallable("sendStoreNotification").call(data)
+        functions.getHttpsCallable("sendNotification").call(data)
             .addOnSuccessListener {
-                Log.d(TAG, "Notification sent successfully to the store")
+                Log.d(TAG, "Notification sent successfully")
             }
             .addOnFailureListener { e ->
-                Log.e(TAG, "Error sending notification to the store", e)
+                Log.e(TAG, "Error sending notification", e)
             }
     }
 

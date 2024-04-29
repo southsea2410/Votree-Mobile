@@ -29,6 +29,9 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
+            android:name=".notifications.adapters.NotificationAdapter"
+            android:exported="false" />
+        <activity
             android:name=".users.activities.ForgotPasswordActivity"
             android:exported="false" />
         <activity
