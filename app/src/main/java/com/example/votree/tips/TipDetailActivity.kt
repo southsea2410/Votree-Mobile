@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -13,11 +14,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.Visibility
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.ActivityTipDetailBinding
 import com.example.votree.tips.adapters.TipCommentAdapter
 import com.example.votree.tips.models.ProductTip
+import com.example.votree.tips.view_models.CommentViewModel
 import com.google.android.gms.ads.AdView
 import com.example.votree.tips.view_models.TipsViewModel
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -27,6 +30,7 @@ import java.util.Locale
 class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButtonCheckedListener {
 
     private val viewModel: TipsViewModel by viewModels()
+    private val commentViewModel: CommentViewModel by viewModels()
     private val commentAdapter = TipCommentAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +54,8 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
 
         binding.tipDetailCommentRecyclerView.adapter = commentAdapter
         binding.tipDetailCommentRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        viewModel.queryComments(getTipData()!!)
-        viewModel.commentList.observe(this){
+        commentViewModel.queryComments(getTipData()!!)
+        commentViewModel.commentList.observe(this){
             Log.d("TipDetailActivity", "Comment list updated")
             commentAdapter.submitList(it)
         }
@@ -82,6 +86,12 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
             if (it === null) return@observe
             binding.tipDetailAuthorTextView.text = it.fullName
             binding.tipDetailStoreTextView.text = it.storeName
+            if (it.avatar.isNotBlank())
+            Glide.with(this.applicationContext)
+                .load(it.avatar)
+                .placeholder(R.drawable.img_placeholder)
+                .into(binding.tipDetailAvatarImageView)
+            else binding.tipDetailAvatarImageView.visibility = View.GONE
         }
 
     }
@@ -91,10 +101,10 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
         val commentBtn = binding.tipDetailSendCommentBtn
         commentBtn.setOnClickListener{
             val commentContent = comment.text.toString()
-            if (commentContent.isNotEmpty()){
-                viewModel.castComment(getTipData()!!, commentContent)
+            if (commentContent.isNotBlank()){
+                commentViewModel.castComment(getTipData()!!, commentContent)
                 comment.text?.clear()
-                viewModel.queryComments(getTipData()!!)
+                commentViewModel.queryComments(getTipData()!!)
             }
             else{
                 Toast.makeText(this, "Comment cannot be empty", Toast.LENGTH_SHORT).show()
