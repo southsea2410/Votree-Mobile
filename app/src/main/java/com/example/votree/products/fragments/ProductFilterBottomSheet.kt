@@ -72,6 +72,7 @@ class ProductFilterBottomSheet : BottomSheetDialogFragment() {
 
         binding.btnApply.setOnClickListener {
             viewModel.applyFilters()
+            dismiss()
         }
     }
 
