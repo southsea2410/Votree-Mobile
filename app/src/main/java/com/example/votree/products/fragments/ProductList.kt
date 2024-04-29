@@ -18,6 +18,7 @@ import com.example.votree.products.adapters.ProductAdapter
 import com.example.votree.products.models.Product
 import com.example.votree.products.view_models.ProductFilterViewModel
 import com.example.votree.products.view_models.ProductViewModel
+import com.example.votree.utils.GridSpacingItemDecoration
 import com.google.android.material.tabs.TabLayout
 
 class ProductList : Fragment(), MainActivity.SearchQueryListener {
@@ -49,13 +50,29 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
         setupFilterObserver()
     }
 
+    private fun calculateNoOfColumns(context: Context): Int {
+        val displayMetrics = context.resources.displayMetrics
+        val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
+        val columnWidthDp = 180 // Assume each item in the grid takes up 180dp
+        return (screenWidthDp / columnWidthDp).toInt()
+    }
+
     private fun setUpRecyclerView(){
+        val numberOfColumns = calculateNoOfColumns(requireContext())
         productAdapter = ProductAdapter()
         binding.productListRv.apply {
             adapter = productAdapter
-            layoutManager = GridLayoutManager(requireContext(), 2)
+            layoutManager = GridLayoutManager(requireContext(), numberOfColumns)
             setHasFixedSize(true)
         }
+
+        binding.productListRv.addItemDecoration(
+            GridSpacingItemDecoration(
+                numberOfColumns,
+                10,
+                true
+            )
+        )
     }
 
     private fun setUpViewModel(){
@@ -207,14 +224,6 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
             productAdapter.setData(filteredProducts)
         }
     }
-
-//    private fun setupPriceRangeSlider() {
-//        priceRangeSlider =
-//        priceRangeSlider.addOnChangeListener { slider, _, _ ->
-//            val values = slider.values
-//            viewModel.setPriceRange(values[0], values[1])
-//        }
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
