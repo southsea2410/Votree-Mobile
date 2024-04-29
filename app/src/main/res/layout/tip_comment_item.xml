@@ -2,15 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:minHeight="80dp"
+    android:layout_marginBottom="8dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:paddingHorizontal="16dp"
     android:background="@drawable/tip_comment_bg"
     android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/tip_comment_avatar"
+    <com.google.android.material.imageview.ShapeableImageView
+        app:shapeAppearanceOverlay="@style/circle_overlay"
+    android:id="@+id/tip_comment_avatar"
+        android:scaleType="centerCrop"
         android:layout_marginTop="8dp"
         android:layout_width="40dp"
         android:layout_height="40dp"

@@ -18,6 +18,7 @@
                 style="?attr/collapsingToolbarLayoutLargeStyle"
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
+                android:foreground="@drawable/gradient_inverse"
                 app:contentScrim="@color/fui_transparent"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
@@ -81,6 +82,13 @@
                 android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:shapeAppearanceOverlay="@style/circle_overlay"
+                    android:id="@+id/tip_detail_avatar_image_view"
+                    android:scaleType="centerCrop"
+                    android:layout_marginEnd="4dp" />
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_marginStart="12dp"
@@ -144,30 +152,33 @@
                 android:paddingVertical="12dp"
                 android:orientation="horizontal">
                 <com.google.android.material.textfield.TextInputLayout
+                    style="?attr/textInputFilledStyle"
                     android:id="@+id/textField"
                     android:layout_width="0dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusTopStart="12dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:hint="Share your thought...">
+                    app:boxBackgroundColor="?attr/colorSurfaceContainerLow"
+                    android:hint="Share your thought..."
+                    app:hintTextColor="?attr/colorSurfaceDim"
+                    app:hintTextAppearance="?attr/textAppearanceTitleSmall">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tip_detail_comment_edit_text"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
+                        android:layout_height="wrap_content" />
 
                 </com.google.android.material.textfield.TextInputLayout>
                 <Button
-                    style="?attr/materialIconButtonStyle"
+                    style="@style/BlackIconButton"
                     android:id="@+id/tip_detail_send_comment_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:contentDescription="Send"
+                    android:scaleX="1.5"
+                    android:scaleY="1.5"
                     app:icon="@drawable/send_48px"/>
             </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView

@@ -38,4 +38,16 @@
         <item name="android:minHeight">48dp</item>
     </style>
 
+    <style name="circle_overlay">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="rounded_overlay">
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="BlackIconButton" parent="Widget.Material3.Button.IconButton">
+        <item name="iconTint">@color/black</item>
+    </style>
+
 </resources>
