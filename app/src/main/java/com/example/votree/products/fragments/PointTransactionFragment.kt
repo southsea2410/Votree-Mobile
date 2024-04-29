@@ -1,0 +1,58 @@
+package com.example.votree.products.fragments
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.votree.databinding.FragmentPointTransactionBinding
+import com.example.votree.products.adapters.PointTransactionAdapter
+import com.example.votree.products.repositories.PointTransactionRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+class PointTransactionFragment : Fragment() {
+
+    private var _binding: FragmentPointTransactionBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var repository: PointTransactionRepository
+    private lateinit var adapter: PointTransactionAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPointTransactionBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        repository = PointTransactionRepository()
+        setupRecyclerView()
+        loadPointTransactions()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = PointTransactionAdapter(listOf())
+        binding.pointTransactionRv.layoutManager = LinearLayoutManager(context)
+        binding.pointTransactionRv.adapter = adapter
+    }
+
+    private fun loadPointTransactions() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val transactions = repository.getPointTransactionsForUser()
+            CoroutineScope(Dispatchers.Main).launch {
+                adapter = PointTransactionAdapter(transactions)
+                binding.pointTransactionRv.adapter = adapter
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}

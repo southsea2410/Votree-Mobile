@@ -45,4 +45,9 @@ class StoreRepository {
                 onFailure(exception)
             }
     }
+
+    suspend fun getStoreName(storeId: String): String {
+        val document = storeCollection.document(storeId).get().await()
+        return document.getString("storeName") ?: ""
+    }
 }
