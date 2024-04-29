@@ -76,7 +76,7 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
                                 .update("id", documentId)
                             Toast.makeText(
                                 this,
-                                "Product added successfully",
+                                "Tip sent successfully, please wait for approval",
                                 Toast.LENGTH_SHORT
                             ).show()
                             finish()

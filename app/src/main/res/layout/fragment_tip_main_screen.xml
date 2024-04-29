@@ -61,11 +61,14 @@
                 android:layout_marginBottom="10dp" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/time_sort_chip"
+                android:id="@+id/tips_sort_chip"
+                style="@style/Widget.Material3.Chip.Assist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:text="Newest first"/>
+                android:text="Newest first"
+                app:chipIcon="@drawable/newest_24px"
+                app:ensureMinTouchTargetSize="true"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tip_recycler_view"
@@ -78,15 +81,16 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_nav_write_tip_action"
         style="?attr/floatingActionButtonPrimaryStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="30dp"
-        android:contentDescription="Write an Tip"
-        android:src="@drawable/edit_24px"
+        android:text="New Tip"
+        android:contentDescription="New Tip"
+        app:icon="@drawable/edit_24px"
         app:fabSize="auto" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
