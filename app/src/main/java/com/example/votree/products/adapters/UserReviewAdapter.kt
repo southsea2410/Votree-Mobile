@@ -18,7 +18,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class UserReviewAdapter(
-    private val userReviews: List<ProductReview>,
+    var userReviews: List<ProductReview>,
     private val coroutineScope: CoroutineScope // Pass a CoroutineScope from the Activity or Fragment
 ) : RecyclerView.Adapter<UserReviewAdapter.UserReviewViewHolder>() {
 
@@ -63,5 +63,10 @@ class UserReviewAdapter(
         val db = FirebaseFirestore.getInstance()
         val docSnapshot = db.collection("users").document(userId).get().await()
         return docSnapshot.getString("fullName") // Assuming the field containing the user's name is "name"
+    }
+
+    fun setData(newReviews: List<ProductReview>) {
+        userReviews = newReviews
+        notifyDataSetChanged()
     }
 }

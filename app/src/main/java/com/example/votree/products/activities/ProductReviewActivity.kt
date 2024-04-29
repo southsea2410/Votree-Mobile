@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ProductReviewActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityProductReviewAcitivityBinding
     private var imageUri: Uri? = null
     private val firestore = FirebaseFirestore.getInstance()
