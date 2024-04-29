@@ -21,7 +21,6 @@ class TipsViewModel : ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
     val tipList = MutableLiveData<List<ProductTip>>()
     val topTipList = MutableLiveData<List<ProductTip>>()
-    val commentList = SingleLiveEvent<List<Comment>>()
     private var tipListDocuments : QuerySnapshot? = null
     private val collectionRef by lazy { firestore.collection("ProductTip") }
 
@@ -43,7 +42,7 @@ class TipsViewModel : ViewModel() {
     fun queryTopTips() {
         collectionRef
             .whereEqualTo("approvalStatus", 1)
-            .orderBy("vote", Query.Direction.DESCENDING)
+            .orderBy("vote_count", Query.Direction.DESCENDING)
             .limit(5)
             .get()
             .addOnSuccessListener { documents ->
@@ -61,11 +60,13 @@ class TipsViewModel : ViewModel() {
 
         var fullname = ""
         var storeName = ""
+        var avatar = ""
         userRef.get()
             .addOnSuccessListener { document ->
-                val name = document.toObject<User>()?.fullName
-                fullname = name ?: ""
-                Log.d("TipsViewModel", "Author name: $name")
+                val user = document.toObject<User>()
+                fullname = user?.fullName ?: ""
+                avatar = user?.avatar ?: ""
+                Log.d("TipsViewModel", "Author name: $fullname and Avatar: $avatar")
                 val storeId = document.toObject<User>()?.storeId
                 if (storeId !== null) {
                     val storeRef = firestore.collection("stores").document(storeId)
@@ -74,7 +75,7 @@ class TipsViewModel : ViewModel() {
                             val name = document.toObject<Store>()?.storeName
                             storeName = name ?: ""
                             Log.d("TipsViewModel", "Store name: $name")
-                            author.value = Author(userId,fullname , storeName)
+                            author.value = Author(userId,fullname , storeName, avatar)
                         }
                         .addOnFailureListener { e ->
                             author.value = null
@@ -82,7 +83,7 @@ class TipsViewModel : ViewModel() {
                         }
                 }
                 else {
-                    author.value = Author(userId, fullname, storeName)
+                    author.value = Author(userId, fullname, storeName, avatar)
                 }
             }
             .addOnFailureListener { e ->
@@ -163,57 +164,5 @@ class TipsViewModel : ViewModel() {
                 isUpvoted.value = null
             }
         return isUpvoted
-    }
-
-    fun castComment(tip: ProductTip, content: String) {
-        val commentRef = collectionRef.document(tip.id).collection("comments")
-        val comment = Comment(
-            userId = AuthHandler.firebaseAuth.currentUser?.uid!!,
-            content = content,
-        )
-        commentRef.add(comment)
-            .addOnSuccessListener {
-                Log.d("TipsViewModel", "[Comment] Comment added to database" + comment.toString())
-            }
-            .addOnFailureListener { e ->
-                Log.w("TipsViewModel", "[Comment] Error adding comment to database" + comment.toString())
-            }
-    }
-
-    fun queryComments(tip: ProductTip) {
-        val commentList = SingleLiveEvent<List<Comment>>()
-
-        val commentRef = collectionRef.document(tip.id).collection("comments")
-        val userRef = firestore.collection("users")
-
-        commentRef
-            .orderBy("createdAt", Query.Direction.DESCENDING)
-            .limit(5)
-            .get()
-            .addOnSuccessListener { documents ->
-                val queriedComments = documents.toObjects(Comment::class.java)
-
-                for (i in queriedComments.indices){
-                    userRef.document(queriedComments[i].userId).get()
-                        .addOnSuccessListener { document ->
-                            queriedComments[i].fullName = document.toObject<User>()?.fullName ?: ""
-                            queriedComments[i].avatar = document.toObject<User>()?.avatar ?: ""
-                            Log.d("TipsViewModel", "Comment $i: " + queriedComments[i].toString())
-                            if (i == queriedComments.size - 1){
-                                Log.d("TipsViewModel", "Done getting comments's names and avatars")
-                                commentList.postValue(queriedComments)
-                            }
-                        }
-                        .addOnFailureListener{
-                            Log.d("TipsViewModel", "Error getting author name and avatar: ", it)
-                        }
-
-                }
-                Log.d("TipsViewModel", "Done getting comments")
-            }
-            .addOnFailureListener{
-                Log.d("TipsViewModel", "Error getting comments: ", it)
-            }
-        return
     }
 }
