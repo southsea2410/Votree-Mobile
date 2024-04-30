@@ -12,9 +12,7 @@ import com.example.votree.R
 class SuggestionSearchAdapter(
     private val onSuggestionClicked: (String) -> Unit
 ) : ListAdapter<String, SuggestionSearchAdapter.SuggestionViewHolder>(SuggestionsComparator()) {
-    interface onSuggestionClickListener {
-        fun onSuggestionClick(suggestion: String)
-    }
+
     inner class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val productNameTextView: TextView = itemView.findViewById(R.id.productName_tv)
     }

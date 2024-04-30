@@ -1,6 +1,5 @@
 package com.example.votree.users.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentStoreProfile2Binding
@@ -28,7 +26,7 @@ class StoreProfile2 : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentStoreProfile2Binding.inflate(inflater, container, false)
         setupData(binding)
         setupToolbar()

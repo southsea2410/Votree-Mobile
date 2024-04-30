@@ -27,8 +27,6 @@ import com.google.android.gms.ads.AdView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.messaging.FirebaseMessaging
 
-@Suppress("DEPRECATION")
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

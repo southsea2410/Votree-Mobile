@@ -21,7 +21,6 @@ import com.example.votree.tips.adapters.TipCommentAdapter
 import com.example.votree.tips.models.ProductTip
 import com.example.votree.tips.view_models.CommentViewModel
 import com.example.votree.tips.view_models.TipsViewModel
-import com.example.votree.users.fragments.StoreProfile2
 import com.google.android.material.button.MaterialButtonToggleGroup
 import java.text.SimpleDateFormat
 import java.util.Locale
