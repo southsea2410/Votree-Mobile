@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.votree.R
 import com.example.votree.databinding.FragmentUserProfileBinding
 import com.example.votree.users.activities.OrderHistoryActivity
@@ -72,7 +73,7 @@ class UserProfileFragment : Fragment() {
     private fun setupClickListeners() {
         binding.settingLayout.setOnClickListener {
             // Navigate to Settings
-//            navigateToSettings()
+            navigateToSettings()
         }
 
         binding.ordersLayout.setOnClickListener {
@@ -92,8 +93,9 @@ class UserProfileFragment : Fragment() {
     }
 
     private fun navigateToSettings() {
-        // Implement navigation logic to Settings
-        TODO()
+        // Implement navigation logic to User Profile Settings Fragment
+        val action = UserProfileFragmentDirections.actionUserProfileFragmentToUserProfileSettingFragment()
+        findNavController().navigate(action)
     }
 
     private fun navigateToOrders() {
