@@ -25,6 +25,7 @@ class StoreManagement : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.storeManagement_f) as NavHostFragment
         val navController = navHostFragment.navController
+        navController.graph = navController.navInflater.inflate(R.navigation.nav_seller_graph)
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
     }

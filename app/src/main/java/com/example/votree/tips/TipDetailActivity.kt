@@ -42,7 +42,7 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
             enableEdgeToEdge()
             ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
                 val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                v.setPadding(systemBars.left, 0, systemBars.right, 0)
                 insets
             }
             setupToolbar(binding)
@@ -83,6 +83,13 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
         super.onPause()
 
         textToSpeechHelper?.shutdown()
+        // TODO: Implement store profile
+//        binding.tipDetailAuthorStoreLayout.setOnClickListener{
+//            val intent = Intent(this, StoreProfile2::class.java)
+//            if (tipData == null) return@setOnClickListener
+//            intent.putExtra("userId", tipData.userId)
+//            startActivity(intent)
+//        }
     }
 
     private fun setupData(tipData: ProductTip, binding: ActivityTipDetailBinding){
@@ -128,7 +135,6 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
             if (commentContent.isNotBlank()){
                 commentViewModel.castComment(getTipData()!!, commentContent)
                 comment.text?.clear()
-                commentViewModel.queryComments(getTipData()!!)
             }
             else{
                 Toast.makeText(this, "Comment cannot be empty", Toast.LENGTH_SHORT).show()
