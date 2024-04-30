@@ -44,6 +44,9 @@ class ProductReport : Fragment() {
                 Toast.makeText(activity, "No media selected", Toast.LENGTH_SHORT).show()
             }
         }
+        binding.productReportToolbar.setNavigationOnClickListener {
+            navigateUp()
+        }
         binding.productReportAddImageBtn.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
@@ -107,7 +110,7 @@ class ProductReport : Fragment() {
                         "Thank you for your contribution",
                         Toast.LENGTH_SHORT
                     ).show()
-
+                    navigateUp()
                 }
                 .addOnFailureListener {
                     Toast.makeText(activity, "Product report Error: ${it.message}", Toast.LENGTH_SHORT)

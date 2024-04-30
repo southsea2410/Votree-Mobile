@@ -49,6 +49,9 @@ class TipReportActivity : AppCompatActivity() {
                 Toast.makeText(this, "No media selected", Toast.LENGTH_SHORT).show()
             }
         }
+        binding.tipReportToolbar.setNavigationOnClickListener {
+            finish()
+        }
         binding.tipReportAddImageBtn.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
