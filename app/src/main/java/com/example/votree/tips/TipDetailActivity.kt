@@ -26,10 +26,11 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButtonCheckedListener {
-
     private val viewModel: TipsViewModel by viewModels()
     private val commentViewModel: CommentViewModel by viewModels()
     private val commentAdapter = TipCommentAdapter()
+    private var textToSpeechHelper: TextToSpeechHelper? = null
+    private var isPlaying = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +58,31 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
             Log.d("TipDetailActivity", "Comment list updated")
             commentAdapter.submitList(it)
         }
+
+        textToSpeechHelper = TextToSpeechHelper(this)
+
+        val titleText = binding.tipDetailTitleTextView
+        val authorText = binding.tipDetailAuthorTextView
+        val detailContent = binding.tipDetailContentTextView
+        val icSpeaker = binding.textToSpeechButton
+
+        icSpeaker.setOnClickListener {
+            if (isPlaying) {
+                icSpeaker.setImageResource(R.drawable.ic_speaker_idle)
+                textToSpeechHelper?.stop()
+            }
+            else {
+                icSpeaker.setImageResource(R.drawable.ic_speaker_playing)
+                textToSpeechHelper?.speak(titleText.text.toString(), authorText.text.toString(), detailContent.text.toString())
+            }
+            isPlaying = !isPlaying
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        textToSpeechHelper?.shutdown()
         // TODO: Implement store profile
 //        binding.tipDetailAuthorStoreLayout.setOnClickListener{
 //            val intent = Intent(this, StoreProfile2::class.java)
