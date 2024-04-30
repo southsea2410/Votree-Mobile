@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".users.fragments.UserProfileFragment"
+    tools:context=".users.fragments.UserProfileDetailsFragment"
     android:background="@color/white"
     android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <LinearLayout
@@ -25,6 +26,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -40,7 +42,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/userName_tv"
+                        android:id="@+id/userfullName_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
@@ -63,34 +65,6 @@
                 android:layout_marginEnd="24dp"
                 android:layout_height="wrap_content"/>
 
-<!--            <com.google.android.material.tabs.TabLayout-->
-<!--                android:id="@+id/userSettings_tl"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginEnd="24dp"-->
-<!--                android:layout_marginStart="24dp"-->
-<!--                android:background="@color/white"-->
-<!--                app:tabGravity="fill"-->
-<!--                app:tabMode="fixed">-->
-<!--                <com.google.android.material.tabs.TabItem-->
-<!--                    android:id="@+id/personalInfo_ti"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:icon="@drawable/ic_settings"-->
-<!--                    android:text="Personal Info" />-->
-<!--                <com.google.android.material.tabs.TabItem-->
-<!--                    android:id="@+id/orders_ti"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:icon="@drawable/ic_cart"-->
-<!--                    android:text="Orders" />-->
-<!--                <com.google.android.material.tabs.TabItem-->
-<!--                    android:id="@+id/becomeSeller_ti"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:icon="@drawable/ic_unfold"-->
-<!--                    android:text="Become Seller" />-->
-<!--            </com.google.android.material.tabs.TabLayout>-->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,6 +75,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:padding="4dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -161,6 +136,7 @@
                             android:src="@drawable/ic_unfold"/>
 
                         <TextView
+                            android:id="@+id/becomeSeller_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
@@ -176,12 +152,22 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/userRecyclerView"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/userProfileDetail_fcv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"/>
         </LinearLayout>
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/logout_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="8dp"
+        android:text="Log out"
+        app:icon="@drawable/ic_logout" />
+
 </LinearLayout>
