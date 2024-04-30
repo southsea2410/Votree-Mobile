@@ -2,6 +2,7 @@ package com.example.votree.users.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +39,7 @@ class OrderHistoryActivity : AppCompatActivity(), CoroutineScope {
 
         viewModel.transactions.observe(this) { transactions ->
             // Update the adapter with new data
+            Log.d("OrderHistoryActivity", "Transactions: $transactions")
             (binding.orderHistoryRv.adapter as OrderItemAdapter).apply {
                 this.transactions = transactions ?: emptyList()
                 notifyDataSetChanged()
