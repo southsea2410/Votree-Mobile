@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_productDetail_to_checkout"
             app:destination="@id/checkout" />
+        <action
+            android:id="@+id/action_productDetail_to_productReviewListFragment"
+            app:destination="@id/productReviewListFragment" />
     </fragment>
     <fragment
         android:id="@+id/notifications_fragment"
@@ -149,5 +152,17 @@
                 android:name="query"
                 app:argType="string" />
         </action>
+    </fragment>
+    <fragment
+        android:id="@+id/productReviewListFragment"
+        android:name="com.example.votree.products.fragments.ProductReviewListFragment"
+        android:label="fragment_product_review_list"
+        tools:layout="@layout/fragment_product_review_list" >
+        <action
+            android:id="@+id/action_productReviewListFragment_to_productDetail"
+            app:destination="@id/productDetail" />
+        <argument
+            android:name="currentProduct"
+            app:argType="com.example.votree.products.models.Product" />
     </fragment>
 </navigation>
