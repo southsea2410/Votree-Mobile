@@ -11,6 +11,8 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/tip_detail_app_bar_layout"
             android:layout_width="match_parent"
+            app:liftOnScroll="true"
+            app:liftOnScrollColor="@color/white"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true">
 
@@ -90,6 +92,7 @@
                     android:scaleType="centerCrop"
                     android:layout_marginEnd="4dp" />
                 <LinearLayout
+                    android:id="@+id/tip_detail_author_store_layout"
                     android:orientation="vertical"
                     android:layout_marginStart="12dp"
                     android:layout_width="wrap_content"

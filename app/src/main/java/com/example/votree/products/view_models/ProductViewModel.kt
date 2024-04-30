@@ -99,6 +99,24 @@ class ProductViewModel : ViewModel() {
         return filteredProductsLiveData
     }
 
+    fun searchProducts(query: String) : LiveData<List<Product>> {
+        val filteredProductsLiveData = MutableLiveData<List<Product>>()
+
+        productsCollection
+            .whereGreaterThanOrEqualTo("productName", query)
+            .whereLessThanOrEqualTo("productName", query+ '\uf8ff')
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val products = snapshot.toObjects(Product::class.java)
+                filteredProductsLiveData.value = products
+            }
+            .addOnFailureListener { error ->
+                Log.e(TAG, "Error fetching filtered product: $error")
+                filteredProductsLiveData.value = emptyList()
+            }
+        return filteredProductsLiveData
+    }
+
     fun getDebouncedProductSuggestions(query: String): LiveData<List<String>> {
         searchJob?.cancel()
         val result = MutableLiveData<List<String>>()

@@ -1,75 +1,70 @@
-package com.example.votree.tips
+package com.example.votree.products.fragments
 
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.example.votree.R
-import com.example.votree.databinding.ActivityTipReportBinding
-import com.example.votree.tips.models.ProductTip
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.example.votree.databinding.FragmentProductReportBinding
 import com.example.votree.tips.models.GeneralReport
 import com.example.votree.utils.AuthHandler
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
-class TipReportActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        val binding = ActivityTipReportBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        setupInputs(binding)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+class ProductReport : Fragment() {
+    lateinit var binding: FragmentProductReportBinding
+    val args : ProductReportArgs by navArgs()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentProductReportBinding.inflate(inflater, container, false)
+        setupInputs()
+        return binding.root
     }
 
-    private fun setupInputs(binding: ActivityTipReportBinding){
+    private fun setupInputs(){
         var imageUri : Uri? = null
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             // Callback is invoked after the user selects a media item or closes the
             // photo picker.
             if (uri != null) {
                 Log.d("PhotoPicker", "Selected URI: $uri")
-                Toast.makeText(this, "Selected 1 image", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Selected 1 image", Toast.LENGTH_SHORT).show()
                 imageUri = uri
             } else {
                 Log.d("PhotoPicker", "No media selected")
-                Toast.makeText(this, "No media selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "No media selected", Toast.LENGTH_SHORT).show()
             }
         }
-        binding.tipReportAddImageBtn.setOnClickListener {
+        binding.productReportAddImageBtn.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        binding.tipReportCancelBtn.setOnClickListener {
-            finish()
+        binding.productReportCancelBtn.setOnClickListener {
+            findNavController().navigateUp()
         }
 
-        binding.tipReportSubmitBtn.setOnClickListener {
-            val tipData = getTipData() ?: return@setOnClickListener
-            val generalReport = GeneralReport(
-                content = binding.tipReportContentEditText.text.toString(),
-                shortDescription = binding.tipReportReason.text.toString(),
+        binding.productReportSubmitBtn.setOnClickListener {
+            val productId = args.productId
+            val productReport = GeneralReport(
+                content = binding.productReportContentEditText.text.toString(),
+                shortDescription = binding.productReportReason.text.toString(),
+                productId = productId,
                 reporterId = AuthHandler.firebaseAuth.currentUser?.uid ?: "",
-                tipId = tipData.id
             )
-            pushReportToDatabase(generalReport, imageUri)
+            pushReportToDatabase(productReport, imageUri)
         }
     }
 
-    private fun pushReportToDatabase(generalReport: GeneralReport, imageUri: Uri?){
+    private fun pushReportToDatabase(productReport: GeneralReport, imageUri: Uri?){
         val fireStoreInstance = FirebaseFirestore.getInstance()
         val storageInstance = FirebaseStorage.getInstance()
 
@@ -78,56 +73,50 @@ class TipReportActivity : AppCompatActivity() {
             storageRef.putFile(imageUri)
                 .addOnSuccessListener {
                     storageRef.downloadUrl.addOnSuccessListener {
-                        generalReport.imageList[0]  = it.toString()
-                        fireStoreInstance.collection("reports").add(generalReport)
+                        productReport.imageList[0]  = it.toString()
+                        fireStoreInstance.collection("reports").add(productReport)
                             .addOnSuccessListener { documentReference ->
                                 val documentId = documentReference.id
                                 fireStoreInstance.collection("reports").document(documentId)
                                     .update("id", documentId)
                                 Toast.makeText(
-                                    this,
+                                    activity,
                                     "Thank you for your contribution",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                finish()
+                                navigateUp()
                             }
                             .addOnFailureListener {
-                                Toast.makeText(this, "Tip report Error: ${it.message}", Toast.LENGTH_SHORT)
+                                Toast.makeText(activity, "Product report Error: ${it.message}", Toast.LENGTH_SHORT)
                                     .show()
                             }
                     }
                 }
                 .addOnFailureListener {
-                    Toast.makeText(this, "Image upload Error: ${it.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, "Image upload Error: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
         }
         else{
-            fireStoreInstance.collection("reports").add(generalReport)
+            fireStoreInstance.collection("reports").add(productReport)
                 .addOnSuccessListener { documentReference ->
                     val documentId = documentReference.id
                     fireStoreInstance.collection("reports").document(documentId)
                         .update("id", documentId)
                     Toast.makeText(
-                        this,
+                        activity,
                         "Thank you for your contribution",
                         Toast.LENGTH_SHORT
                     ).show()
-                    finish()
+
                 }
                 .addOnFailureListener {
-                    Toast.makeText(this, "Tip report Error: ${it.message}", Toast.LENGTH_SHORT)
+                    Toast.makeText(activity, "Product report Error: ${it.message}", Toast.LENGTH_SHORT)
                         .show()
                 }
         }
-
     }
 
-    private fun getTipData() : ProductTip?{
-        val tipData = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            intent.getParcelableExtra("tipData", ProductTip::class.java)
-        else
-            intent.getParcelableExtra("tipData")
-
-        return tipData
+    private fun navigateUp(){
+        findNavController().navigateUp()
     }
 }

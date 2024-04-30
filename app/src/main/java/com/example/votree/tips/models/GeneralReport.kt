@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 @Parcelize
-data class TipReport (
+data class GeneralReport (
     var id: String = "",
     var userId: String = "",
     var reporterId: String = "",

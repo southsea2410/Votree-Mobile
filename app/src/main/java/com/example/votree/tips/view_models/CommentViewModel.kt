@@ -27,6 +27,7 @@ class CommentViewModel : ViewModel() {
         commentRef.add(comment)
             .addOnSuccessListener {
                 Log.d("TipsViewModel", "[Comment] Comment added to database" + comment.toString())
+                queryComments(tip)
             }
             .addOnFailureListener { e ->
                 Log.w("TipsViewModel", "[Comment] Error adding comment to database" + comment.toString())
