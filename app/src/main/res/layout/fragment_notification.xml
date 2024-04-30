@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".notifications.fragments.NotificationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         style="?attr/textAppearanceDisplaySmall"
         android:textColor="?attr/colorPrimary"
@@ -16,4 +15,9 @@
         android:layout_marginEnd="20dp"
         android:textSize="25sp" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/notification_recycler_view"
+        android:layout_marginTop="50dp" />
 </FrameLayout>

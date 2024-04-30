@@ -49,10 +49,10 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
             val tip = ProductTip(
                 0,
                 content=binding.tipContentInputEditText.text.toString(),
-                shortDescription=binding.tipShortDescriptionInputEditText.text.toString(),
+                shortDescription=binding.tipShortDescriptionInputEditText.text.toString().replace("\\n", System.getProperty("line.separator") ?: "\n"),
                 title=binding.tipTitleInputEditText.text.toString(),
                 userId = AuthHandler.firebaseAuth.currentUser?.uid ?: "",
-                vote=0)
+                vote_count=0)
             pushTiptoDatabase(tip)
         }
         binding.cancelNewTipButton.setOnClickListener{
@@ -64,19 +64,19 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
         if (!checkTipContent(tip)) {
             return
         }
-        val storageRef = storageInstance.reference.child("images/ProductTip/${imageUri?.lastPathSegment}")
+        val storageRef = storageInstance.reference.child("images/productTips/${imageUri?.lastPathSegment}")
         storageRef.putFile(imageUri!!)
             .addOnSuccessListener {
                 storageRef.downloadUrl.addOnSuccessListener { uri ->
                     tip.imageList[0] = uri.toString()
-                    fireStoreInstance.collection("ProductTip2").add(tip)
+                    fireStoreInstance.collection("ProductTip").add(tip)
                         .addOnSuccessListener { documentReference ->
                             val documentId = documentReference.id
-                            fireStoreInstance.collection("ProductTip2").document(documentId)
+                            fireStoreInstance.collection("ProductTip").document(documentId)
                                 .update("id", documentId)
                             Toast.makeText(
                                 this,
-                                "Product added successfully",
+                                "Tip sent successfully, please wait for approval",
                                 Toast.LENGTH_SHORT
                             ).show()
                             finish()

@@ -168,6 +168,7 @@ class CheckoutActivity : AppCompatActivity() {
                 receiver?.let {
                     updateProductInventory(cart)
                     createTransactionFromCart(cart, receiver)
+                    updateProductSoldQuantity(cart)
                     clearCartAfterCheckout(cart)
                     finish()
                 }
@@ -179,6 +180,31 @@ class CheckoutActivity : AppCompatActivity() {
         cart.productsMap.forEach { (productId, quantity) ->
             productRepository.updateProductInventory(productId, quantity)
         }
+    }
+
+    private suspend fun updateProductSoldQuantity(cart: Cart) {
+        cart.productsMap.forEach { (productId, quantity) ->
+            productRepository.updateProductSoldQuantity(productId, quantity)
+        }
+    }
+
+    private fun notifyStoreAboutNewOrder(transaction: Transaction) {
+        val data = hashMapOf(
+            "senderId" to userId,
+            "receiverId" to transaction.storeId,
+            "collectionPath" to "stores",
+            "title" to "New Order",
+            "body" to "You have a new order!",
+            "data" to hashMapOf("orderId" to transaction.id)
+        )
+
+        functions.getHttpsCallable("sendNotification").call(data)
+            .addOnSuccessListener {
+                Log.d(TAG, "Notification sent successfully")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error sending notification", e)
+            }
     }
 
     private fun createTransactionFromCart(cart: Cart, receiver: ShippingAddress) {
@@ -202,14 +228,22 @@ class CheckoutActivity : AppCompatActivity() {
                     phoneNumber = receiver.recipientPhoneNumber,
                     createdAt = currentDate
                 )
-                Log.d("CheckoutActivity", "Transaction: $transaction")
+                Log.d(TAG, "Transaction: $transaction")
                 lifecycleScope.launch {
+                    val totalAmount =
+                        transactionRepository.calculateTotalPrice(transaction.productsMap)
+                    transaction.totalAmount = totalAmount + 10.0 // Add delivery fee
                     transactionRepository.createAndUpdateTransaction(transaction)
+                    notifyStoreAboutNewOrder(transaction)
                 }
             }
     }
 
     private suspend fun clearCartAfterCheckout(cart: Cart) {
         cartRepository.clearCartAfterCheckout(userId, cart)
+    }
+
+    companion object {
+        private const val TAG = "CheckoutActivity"
     }
 }

@@ -36,7 +36,7 @@ class TipAdapter : ListAdapter<ProductTip, TipAdapter.ProductTipViewHolder>(Prod
     override fun onBindViewHolder(holder: TipAdapter.ProductTipViewHolder, position: Int) {
         val tip = getItem(position)
         holder.titleView.text = tip.title
-        holder.voteView.text = tip.vote.toString() + " votes"
+        holder.voteView.text = tip.vote_count.toString() + " votes"
         Glide.with(holder.itemView)
             .load(tip.imageList[0])
             .into(holder.imageView)

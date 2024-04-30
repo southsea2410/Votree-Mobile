@@ -18,6 +18,7 @@ import com.example.votree.products.adapters.UserReviewAdapter
 import com.example.votree.products.models.ProductReview
 import com.example.votree.products.repositories.ProductRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -105,6 +106,8 @@ class ProductDetailFragmentForStore : Fragment() {
         val reviews = mutableListOf<ProductReview>()
         // Go to the products/productId/reviews collection in Firestore
         firestore.collection("products").document(args.currentProduct.id).collection("reviews")
+            .orderBy("rating", Query.Direction.DESCENDING)
+            .limit(2)
             .get()
             .addOnSuccessListener { reviewsSnapshot ->
                 for (reviewDocument in reviewsSnapshot.documents) {
