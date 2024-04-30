@@ -27,6 +27,7 @@ import com.example.votree.admin.fragments.TipListFragment
 import com.example.votree.admin.fragments.TransactionDetailFragment
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.databinding.FragmentUserProfileBinding
+import com.example.votree.products.fragments.ProductDetailFragment
 import com.example.votree.users.activities.SignInActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -156,6 +157,16 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
     }
 
     override fun onItemClicked(view: View?, position: Int) {}
+    override fun onProductItemClicked(view: View?, position: Int) {
+        setCurrentFragment(ProductDetailFragment())
+        val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
+        topAppBar.setNavigationIcon(R.drawable.icon_back)
+        topAppBar.menu.findItem(R.id.search).isVisible = false
+        topAppBar.setNavigationOnClickListener {
+            supportFragmentManager.popBackStack()
+        }
+    }
+
     override fun onTransactionItemClicked(view: View?, position: Int) {
         setCurrentFragment(TransactionDetailFragment())
         val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)

@@ -35,7 +35,7 @@ class TipDialogFragment : BaseDialogFragment<Tip>() {
 
     override fun fetchDataFromFirestore(accountId: String?) {
         val tipList = mutableListOf<Tip>()
-        db.collection("ProductTip").whereEqualTo("userId", accountId)
+        db.collection(collectionName).whereEqualTo("userId", accountId)
             .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
@@ -59,6 +59,7 @@ class TipDialogFragment : BaseDialogFragment<Tip>() {
 
     override fun onTipItemClicked(view: View?, position: Int) {
         (activity as AdminMainActivity).onTipItemClicked(view, position)
+
         val fragment = TipDetailFragment()
         val bundle = Bundle().apply {
             putParcelable("tip", adapter.getItem(position))
@@ -69,4 +70,6 @@ class TipDialogFragment : BaseDialogFragment<Tip>() {
 
         fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("tip_list_fragment").commit()
     }
+
+    override fun onProductItemClicked(view: View?, position: Int) {}
 }

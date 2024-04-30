@@ -9,6 +9,7 @@
     tools:context=".MainActivity">
 
     <FrameLayout
+        android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center">
@@ -44,7 +45,7 @@
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/account_name"
+                            android:id="@+id/store_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/user_name"
@@ -89,7 +90,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/user_role"
+                            android:text="store"
                             android:textSize="12sp"
                             android:textColor="@color/md_theme_onPrimaryContainer"
                             android:id="@+id/account_role"
@@ -157,12 +158,11 @@
                             android:textColor="@color/md_theme_secondary" />
 
                         <ImageView
-                            android:id="@+id/customer_info_item_icon"
                             android:layout_width="58dp"
-                            android:layout_height="35dp"
+                            android:layout_height="20dp"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:src="@drawable/baseline_keyboard_arrow_right_24"
+                            android:src="@drawable/right_arrow"
                             android:contentDescription="@string/this_is_icon_for_illustration" />
 
                     </LinearLayout>
@@ -186,14 +186,24 @@
                             android:layout_height="48dp" />
 
                         <TextView
-                            android:id="@+id/product_name"
+                            android:id="@+id/transactionProducts"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="48dp"
-                            android:text="Customer: Huynh Si Kha"
+                            android:text="Peperomia Flex, Watermelon, Coconut, ochna tree, Plant Tree"
                             android:gravity="center_vertical"
                             android:textSize="14dp"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             android:textColor="@color/md_theme_secondary" />
+
+                        <ImageView
+                            android:layout_width="58dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/right_arrow"
+                            android:contentDescription="@string/this_is_icon_for_illustration" />
 
                     </LinearLayout>
 
@@ -266,137 +276,137 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="10dp"
-                    android:backgroundTint="@color/md_theme_primary">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:backgroundTint="@color/md_theme_primary">-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/tipName"
-                        app:layout_constraintTop_toBottomOf="@+id/account_name"
-                        android:background="@color/md_theme_primaryFixedDim"
-                        android:gravity="center">
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        app:layout_constraintBottom_toTopOf="@+id/tipName"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/account_name"-->
+<!--                        android:background="@color/md_theme_primaryFixedDim"-->
+<!--                        android:gravity="center">-->
 
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="48dp" />
+<!--                        <View-->
+<!--                            android:layout_width="20dp"-->
+<!--                            android:layout_height="48dp" />-->
 
 
-                        <TextView
-                            android:id="@+id/shipping_option"
-                            android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:text="Shipping Option"
-                            android:gravity="center_vertical"
-                            android:textSize="14dp"
-                            android:textStyle="bold"
-                            android:textColor="@color/md_theme_primary" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/shipping_option"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="48dp"-->
+<!--                            android:text="Shipping Option"-->
+<!--                            android:gravity="center_vertical"-->
+<!--                            android:textSize="14dp"-->
+<!--                            android:textStyle="bold"-->
+<!--                            android:textColor="@color/md_theme_primary" />-->
 
-                    </LinearLayout>
+<!--                    </LinearLayout>-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/tipName"
-                        app:layout_constraintTop_toBottomOf="@+id/account_name"
-                        android:background="@color/md_theme_onPrimary"
-                        android:gravity="center">
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        app:layout_constraintBottom_toTopOf="@+id/tipName"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/account_name"-->
+<!--                        android:background="@color/md_theme_onPrimary"-->
+<!--                        android:gravity="center">-->
 
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="48dp" />
+<!--                        <View-->
+<!--                            android:layout_width="20dp"-->
+<!--                            android:layout_height="48dp" />-->
 
-                        <TextView
-                            android:id="@+id/standard_international"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="48dp"
-                            android:text="Standard International"
-                            android:gravity="center_vertical"
-                            android:textSize="14dp"
-                            android:textStyle="bold"
-                            android:textColor="@color/md_theme_secondary" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/standard_international"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:layout_height="48dp"-->
+<!--                            android:text="Standard International"-->
+<!--                            android:gravity="center_vertical"-->
+<!--                            android:textSize="14dp"-->
+<!--                            android:textStyle="bold"-->
+<!--                            android:textColor="@color/md_theme_secondary" />-->
 
-                    </LinearLayout>
+<!--                    </LinearLayout>-->
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/md_theme_primary"/>
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/md_theme_primary"/>-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/tipName"
-                        app:layout_constraintTop_toBottomOf="@+id/account_name"
-                        android:background="@color/md_theme_onPrimary"
-                        android:gravity="center">
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        app:layout_constraintBottom_toTopOf="@+id/tipName"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/account_name"-->
+<!--                        android:background="@color/md_theme_onPrimary"-->
+<!--                        android:gravity="center">-->
 
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="48dp" />
+<!--                        <View-->
+<!--                            android:layout_width="20dp"-->
+<!--                            android:layout_height="48dp" />-->
 
-                        <TextView
-                            android:id="@+id/standard_delivery"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="48dp"
-                            android:text="Standard Delivery"
-                            android:gravity="center_vertical"
-                            android:textSize="14dp"
-                            android:textColor="@color/md_theme_secondary" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/standard_delivery"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:layout_height="48dp"-->
+<!--                            android:text="Standard Delivery"-->
+<!--                            android:gravity="center_vertical"-->
+<!--                            android:textSize="14dp"-->
+<!--                            android:textColor="@color/md_theme_secondary" />-->
 
-                    </LinearLayout>
+<!--                    </LinearLayout>-->
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/md_theme_primary"/>
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/md_theme_primary"/>-->
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/md_theme_primary"/>
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/md_theme_primary"/>-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/tipName"
-                        app:layout_constraintTop_toBottomOf="@+id/account_name"
-                        android:background="@color/md_theme_onPrimary"
-                        android:gravity="center">
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        app:layout_constraintBottom_toTopOf="@+id/tipName"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/account_name"-->
+<!--                        android:background="@color/md_theme_onPrimary"-->
+<!--                        android:gravity="center">-->
 
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="48dp" />
+<!--                        <View-->
+<!--                            android:layout_width="20dp"-->
+<!--                            android:layout_height="48dp" />-->
 
-                        <TextView
-                            android:id="@+id/received_date"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="48dp"
-                            android:text="Received on 25 Jul"
-                            android:textStyle="bold"
-                            android:gravity="center_vertical"
-                            android:textSize="14dp"
-                            android:textColor="@color/md_theme_onPrimaryContainer" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/received_date"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:layout_height="48dp"-->
+<!--                            android:text="Received on 25 Jul"-->
+<!--                            android:textStyle="bold"-->
+<!--                            android:gravity="center_vertical"-->
+<!--                            android:textSize="14dp"-->
+<!--                            android:textColor="@color/md_theme_onPrimaryContainer" />-->
 
-                    </LinearLayout>
+<!--                    </LinearLayout>-->
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/md_theme_primary"/>
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/md_theme_primary"/>-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -454,38 +464,20 @@
                             android:textSize="14dp"
                             android:textStyle="bold"
                             android:textColor="@color/md_theme_onPrimaryContainer" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/md_theme_primary"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/tipName"
-                        app:layout_constraintTop_toBottomOf="@+id/account_name"
-                        android:background="@color/md_theme_onPrimary"
-                        android:gravity="center">
+                        
+                        <TextView
+                            android:id="@+id/payment_option_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Prepay"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/md_theme_onPrimaryContainer" />
 
                         <View
                             android:layout_width="20dp"
                             android:layout_height="48dp" />
 
-                        <TextView
-                            android:id="@+id/merchandise_subtotal"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="48dp"
-                            android:text="Merchandise Subtotal"
-                            android:textStyle="bold"
-                            android:gravity="center_vertical"
-                            android:textSize="14dp"
-                            android:textColor="@color/md_theme_onPrimaryContainer" />
-
                     </LinearLayout>
 
                     <View
@@ -493,41 +485,67 @@
                         android:layout_height="1dp"
                         android:background="@color/md_theme_primary"/>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/md_theme_primary"/>
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        app:layout_constraintBottom_toTopOf="@+id/tipName"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/account_name"-->
+<!--                        android:background="@color/md_theme_onPrimary"-->
+<!--                        android:gravity="center">-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/tipName"
-                        app:layout_constraintTop_toBottomOf="@+id/account_name"
-                        android:background="@color/md_theme_onPrimary"
-                        android:gravity="center">
+<!--                        <View-->
+<!--                            android:layout_width="20dp"-->
+<!--                            android:layout_height="48dp" />-->
 
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="48dp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/merchandise_subtotal"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:layout_height="48dp"-->
+<!--                            android:text="Merchandise Subtotal"-->
+<!--                            android:textStyle="bold"-->
+<!--                            android:gravity="center_vertical"-->
+<!--                            android:textSize="14dp"-->
+<!--                            android:textColor="@color/md_theme_onPrimaryContainer" />-->
 
-                        <TextView
-                            android:id="@+id/delivery_subtotal"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="48dp"
-                            android:text="Delivery Subtotal"
-                            android:textStyle="bold"
-                            android:gravity="center_vertical"
-                            android:textSize="14dp"
-                            android:textColor="@color/md_theme_onPrimaryContainer" />
+<!--                    </LinearLayout>-->
 
-                    </LinearLayout>
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/md_theme_primary"/>-->
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/md_theme_primary"/>
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="horizontal"-->
+<!--                        app:layout_constraintBottom_toTopOf="@+id/tipName"-->
+<!--                        app:layout_constraintTop_toBottomOf="@+id/account_name"-->
+<!--                        android:background="@color/md_theme_onPrimary"-->
+<!--                        android:gravity="center">-->
+
+<!--                        <View-->
+<!--                            android:layout_width="20dp"-->
+<!--                            android:layout_height="48dp" />-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/delivery_subtotal"-->
+<!--                            android:layout_width="0dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:layout_height="48dp"-->
+<!--                            android:text="Delivery Subtotal"-->
+<!--                            android:textStyle="bold"-->
+<!--                            android:gravity="center_vertical"-->
+<!--                            android:textSize="14dp"-->
+<!--                            android:textColor="@color/md_theme_onPrimaryContainer" />-->
+
+<!--                    </LinearLayout>-->
+
+<!--                    <View-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="1dp"-->
+<!--                        android:background="@color/md_theme_primary"/>-->
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -553,12 +571,63 @@
                             android:textSize="14dp"
                             android:textColor="@color/md_theme_onPrimaryContainer" />
 
+                        <TextView
+                            android:id="@+id/voucher_discount_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0%"
+                            android:textSize="14sp"
+                            android:textColor="@color/md_theme_onPrimaryContainer" />
+
+                        <View
+                            android:layout_width="20dp"
+                            android:layout_height="48dp" />
+
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/md_theme_primary"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/total_payment_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@color/md_theme_primary"
+                    android:gravity="center"
+                    android:layout_marginTop="34dp">
+
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="48dp"/>
+
+                    <TextView
+                        android:id="@+id/total_payment"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_weight="1"
+                        android:text="Total Payment"
+                        android:gravity="center_vertical"
+                        android:textSize="14dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/md_theme_onPrimary" />
+
+                    <TextView
+                        android:id="@+id/total_payment_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="đ318.000"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_onPrimary" />
+
+                    <View
+                        android:layout_width="20dp"
+                        android:layout_height="48dp" />
 
                 </LinearLayout>
 

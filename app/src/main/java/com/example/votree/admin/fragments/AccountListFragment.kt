@@ -43,7 +43,7 @@ class AccountListFragment : BaseListFragment<User>() {
     override fun onAccountItemClicked(view: View?, position: Int) {
         (activity as AdminMainActivity).onAccountItemClicked(view, position)
         val topAppBar: MaterialToolbar = (activity as AdminMainActivity).findViewById(R.id.topAppBar)
-        topAppBar.menu.findItem(R.id.more).title = "Delete"
+        topAppBar.menu.findItem(R.id.more).title = "Delete Account"
         topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.more -> {

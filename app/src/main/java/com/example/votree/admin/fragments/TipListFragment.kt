@@ -65,7 +65,7 @@ class TipListFragment : BaseListFragment<Tip>(), OnItemClickListener {
     override fun onTipItemClicked(view: View?, position: Int) {
         (activity as AdminMainActivity).onTipItemClicked(view, position)
         val topAppBar: MaterialToolbar = (activity as AdminMainActivity).findViewById(R.id.topAppBar)
-        topAppBar.menu.findItem(R.id.more).title = "Delete"
+        topAppBar.menu.findItem(R.id.more).title = "Delete Tip"
         topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.more -> {

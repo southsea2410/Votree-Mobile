@@ -11,6 +11,7 @@ import com.example.votree.admin.adapters.TipListAdapter
 import com.example.votree.admin.adapters.TransactionListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Transaction
+import com.google.firebase.firestore.Query
 
 class TransactionDialogFragment : BaseDialogFragment<Transaction>() {
 
@@ -36,11 +37,10 @@ class TransactionDialogFragment : BaseDialogFragment<Transaction>() {
 
     override fun fetchDataFromFirestore(accountId: String?) {
         val transactionList = mutableListOf<Transaction>()
-        db.collection("ProductTip").whereEqualTo("userId", accountId)
-            .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+        db.collection(collectionName).whereEqualTo("customerId", accountId)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
-                    Log.w("TipListActivity", "listen:error", e)
+                    Log.w("TransactionListActivity", "listen:error", e)
                     return@addSnapshotListener
                 }
 
@@ -52,24 +52,27 @@ class TransactionDialogFragment : BaseDialogFragment<Transaction>() {
                 }
                 adapter.setData(transactionList)
             }
+
+        db.collection(collectionName).whereEqualTo("storeId", accountId)
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.w("TransactionListActivity", "listen:error", e)
+                    return@addSnapshotListener
+                }
+
+                for (doc in snapshots!!) {
+                    val transaction = doc.toObject(Transaction::class.java)
+                    transaction.id = doc.id
+                    transactionList.add(transaction)
+                }
+
+                adapter.setData(transactionList.sortedByDescending { it.createdAt })
+            }
     }
 
     override fun onItemSelected(position: Int) {
-        onTipItemClicked(null, adapter.getSelectedPosition())
+        onTransactionItemClicked(null, adapter.getSelectedPosition())
     }
-
-//    override fun onTipItemClicked(view: View?, position: Int) {
-//        (activity as AdminMainActivity).onTipItemClicked(view, position)
-//        val fragment = TipDetailFragment()
-//        val bundle = Bundle().apply {
-//            putParcelable("tip", adapter.getItem(position))
-//        }
-//        fragment.arguments = bundle
-//
-//        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-//
-//        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("tip_list_fragment").commit()
-//    }
 
     override fun onTransactionItemClicked(view: View?, position: Int) {
         (activity as AdminMainActivity).onTransactionItemClicked(view, position)
@@ -83,4 +86,6 @@ class TransactionDialogFragment : BaseDialogFragment<Transaction>() {
 
         fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("transaction_list_fragment").commit()
     }
+
+    override fun onProductItemClicked(view: View?, position: Int) {}
 }

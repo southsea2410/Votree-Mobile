@@ -5,6 +5,7 @@ import com.example.votree.models.Tip
 
 interface OnItemClickListener {
     fun onItemClicked(view: View?, position: Int)
+    fun onProductItemClicked(view: View?, position: Int)
     fun onTransactionItemClicked(view: View?, position: Int)
     fun onTipItemClicked(view: View?, position: Int)
     fun onAccountItemClicked(view: View?, position: Int)

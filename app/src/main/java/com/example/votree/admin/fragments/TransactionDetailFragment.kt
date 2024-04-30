@@ -3,26 +3,27 @@ package com.example.votree.admin.fragments
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
-import com.bumptech.glide.Glide
 import com.example.votree.R
+import com.example.votree.models.Product
+import com.example.votree.models.Store
 import com.example.votree.models.Transaction
+import com.example.votree.models.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Locale
 
 class TransactionDetailFragment : Fragment() {
-
-    private val db = Firebase.firestore
     private var transaction: Transaction? = null
+    private var currentTransactionId: String = ""
+    private var productBoughtList: String = ""
+    private val db = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,96 +55,91 @@ class TransactionDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        transaction = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable("transaction", Transaction::class.java)
-        } else {
-            arguments?.getParcelable("transaction", Transaction::class.java)
-        }
-
+        transaction = arguments?.getParcelable("transaction", Transaction::class.java)
+        setTransactionId(transaction?.id ?: "")
         updateUI()
     }
 
     private fun updateUI() {
+        if (currentTransactionId != "" && transaction != null) {
+            productBoughtList = ""
+            var isFirstProduct = true
+            for ((productId, _) in transaction!!.productsMap) {
+                db.collection("products").whereEqualTo("id", productId)
+                    .addSnapshotListener { snapshots, e ->
+                        if (e != null) {
+                            Log.w("TransactionDetailFragment", "listen:error", e)
+                            return@addSnapshotListener
+                        }
 
-        // !!! WILL USE IN THE FUTURE !!!
-//        db.collection("users")
-//            .addSnapshotListener { userSnapshots, userError ->
-//                if (userError != null) {
-//                    return@addSnapshotListener
-//                }
-//
-//                for (userDoc in userSnapshots!!) {
-//                    val user = userDoc.toObject(User::class.java)
-//                    if (user.id == tip?.userId) {
-//                        view?.findViewById<TextView>(R.id.userName)?.text = user.userName
-//                        db.collection("stores")
-//                            .addSnapshotListener { storeSnapshots, storeError ->
-//                                if (storeError != null) {
-//                                    return@addSnapshotListener
-//                                }
-//
-//                                for (storeDoc in storeSnapshots!!) {
-//                                    val store = storeDoc.toObject(Store::class.java)
-//                                    if (store.id == user.storeId) {
-//                                        view?.findViewById<TextView>(R.id.storeName)?.text = store.storeName
-//                                    }
-//                                }
-//                            }
-//                    }
-//                }
-//            }
+                        for (doc in snapshots!!) {
+                            val product = doc.toObject(Product::class.java)
+                            if (product.id == productId) {
+                                productBoughtList += if (isFirstProduct) {
+                                    isFirstProduct = false
+                                    product.productName
+                                } else {
+                                    ", ${product.productName}"
+                                }
+                            }
+                        }
+                        val transactionProductBought: TextView? = view?.findViewById(R.id.transactionProducts)
+
+                        transactionProductBought?.text = "Product(s): $productBoughtList"
+
+                    }
+            }
+        } else {
+            productBoughtList = "No product bought"
+        }
+
+        // Get store information
+        db.collection("stores").whereEqualTo("id", transaction?.storeId)
+            .addSnapshotListener { userSnapshots, userError ->
+                if (userError != null) {
+                    return@addSnapshotListener
+                }
+
+                for (userDoc in userSnapshots!!) {
+                    val store = userDoc.toObject(Store::class.java)
+                    if (store.id == transaction?.storeId) {
+                        view?.findViewById<TextView>(R.id.store_name)?.text = store.storeName
+                    }
+                }
+            }
+
+        // Get customer information
+        db.collection("users").whereEqualTo("id", transaction?.customerId)
+            .addSnapshotListener { userSnapshots, userError ->
+                if (userError != null) {
+                    return@addSnapshotListener
+                }
+
+                for (userDoc in userSnapshots!!) {
+                    val customer = userDoc.toObject(User::class.java)
+                    if (customer.id == transaction?.customerId) {
+                        view?.findViewById<TextView>(R.id.transactionCustomer)?.text = "Customer: ${customer.fullName}"
+                    }
+                }
+            }
 
         transaction?.let { nonNullTransaction ->
-            val tipStatusTextView: TextView? = view?.findViewById(R.id.tipStatus)
-//            val rejectButton: Button? = view?.findViewById(R.id.rejectButton)
-//            val approveButton: Button? = view?.findViewById(R.id.approveButton)
+            val transactionAddress: TextView? = view?.findViewById(R.id.address)
+            val transactionOrderedDate: TextView? = view?.findViewById(R.id.ordered_date)
+            val transactionPaymentOption: TextView? = view?.findViewById(R.id.payment_option_value)
+            val transactionVoucherDiscount: TextView? = view?.findViewById(R.id.voucher_discount_value)
+            val transactionTotalPaymentValue: TextView? = view?.findViewById(R.id.total_payment_value)
 
-//            view?.findViewById<TextView>(R.id.tipName)?.text = nonNullTransaction.title
-//            view?.findViewById<ImageView>(R.id.tipStatusIcon)?.setColorFilter(
-//                when (nonNullTransaction.approvalStatus) {
-//                    0 -> resources.getColor(R.color.md_theme_pending, null)
-//                    1 -> resources.getColor(R.color.md_theme_primary, null)
-//                    -1 -> resources.getColor(R.color.md_theme_error, null)
-//                    else -> resources.getColor(R.color.md_theme_primary, null)
-//                }
-//            )
-//            tipStatusTextView?.text = when (nonNullTip.approvalStatus) {
-//                0 -> "Pending"
-//                1 -> "Approved"
-//                -1 -> "Rejected"
-//                else -> "Unknown"
-//            }
-//            tipStatusTextView?.setTextColor(
-//                when (nonNullTip.approvalStatus) {
-//                    0 -> resources.getColor(R.color.md_theme_pending, null)
-//                    1 -> resources.getColor(R.color.md_theme_primary, null)
-//                    -1 -> resources.getColor(R.color.md_theme_error, null)
-//                    else -> resources.getColor(R.color.md_theme_primary, null)
-//                }
-//            )
-//            rejectButton?.backgroundTintList = when (nonNullTip.approvalStatus) {
-//                0 -> resources.getColorStateList(R.color.md_theme_tertiaryContainer, null)
-//                else -> resources.getColorStateList(R.color.md_theme_onPrimary, null)
-//            }
-//            approveButton?.backgroundTintList = when (nonNullTip.approvalStatus) {
-//                0 -> resources.getColorStateList(R.color.md_theme_primary, null)
-//                else -> resources.getColorStateList(R.color.md_theme_onPrimary, null)
-//            }
-//            approveButton?.setTextColor(
-//                when (nonNullTip.approvalStatus) {
-//                    0 -> resources.getColor(R.color.md_theme_onPrimary, null)
-//                    else -> resources.getColor(R.color.md_theme_primary, null)
-//                }
-//            )
-//            view?.findViewById<ImageView>(R.id.tipImage)?.let { imageView ->
-//                Glide.with(this)
-//                    .load(nonNullTip.imageList[0])
-//                    .into(imageView)
-//            }
-//            view?.findViewById<TextView>(R.id.dateOfTip)?.text = dateFormat(nonNullTip.updatedAt.toString())
-//            val upvotesText = resources.getString(R.string.upvotes_placeholder, nonNullTip.vote)
-//            view?.findViewById<TextView>(R.id.upvotes)?.text = upvotesText
-//            view?.findViewById<TextView>(R.id.tipDescription)?.text = nonNullTip.content
+            transactionAddress?.text = "Address: ${nonNullTransaction.address}"
+            transactionOrderedDate?.text = "Ordered on ${dateFormat(nonNullTransaction.createdAt.toString())}"
+            if (nonNullTransaction.remainPrice == 0.0) {
+                transactionPaymentOption?.text = "Prepay"
+            } else {
+                transactionPaymentOption?.text = if (nonNullTransaction.remainPrice.compareTo(nonNullTransaction.totalAmount) < 0) "Prepay and Cash" else "Cash"
+            }
+
+            transactionTotalPaymentValue?.text = formatPrice(nonNullTransaction.totalAmount.toString())
+
         }
     }
 
@@ -154,5 +150,21 @@ class TransactionDetailFragment : Fragment() {
         val outputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
 
         return outputFormat.format(inputDate)
+    }
+
+    private fun formatPrice(price: String): String {
+        val priceString = price.reversed()
+        var result = ""
+        for (i in priceString.indices) {
+            result += priceString[i]
+            if ((i + 1) % 3 == 0 && i != priceString.length - 1) {
+                result += "."
+            }
+        }
+        return "đ$result".reversed()
+    }
+
+    fun setTransactionId(transactionId: String) {
+        this.currentTransactionId = transactionId
     }
 }

@@ -111,8 +111,8 @@
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -121,8 +121,8 @@
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -131,8 +131,8 @@
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -141,8 +141,8 @@
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -151,8 +151,8 @@
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -161,8 +161,8 @@
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -171,7 +171,8 @@
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:layout_marginEnd="10dp"/>
+                            android:minLines="2"
+                            android:maxLines="2" />
 
                     </LinearLayout>
 
@@ -183,65 +184,79 @@
                         <TextView
                             android:id="@+id/account_username"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="@string/user_name"
                             android:textColor="@color/md_theme_scrim_mediumContrast"
                             android:textSize="16sp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
 
                         <TextView
                             android:id="@+id/account_phone_number"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="@string/user_name"
                             android:textColor="@color/md_theme_scrim_mediumContrast"
                             android:textSize="16sp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
 
                         <TextView
                             android:id="@+id/account_email"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="@string/user_name"
                             android:textColor="@color/md_theme_scrim_mediumContrast"
                             android:textSize="16sp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
 
                         <TextView
                             android:id="@+id/account_address"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="@string/user_name"
                             android:textColor="@color/md_theme_scrim_mediumContrast"
                             android:textSize="16sp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
 
                         <TextView
                             android:id="@+id/account_accumulate_point"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="@string/user_name"
                             android:textColor="@color/md_theme_scrim_mediumContrast"
                             android:textSize="16sp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
 
                         <TextView
                             android:id="@+id/account_created_date"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="@string/user_name"
                             android:textColor="@color/md_theme_scrim_mediumContrast"
                             android:textSize="16sp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
 
                         <TextView
                             android:id="@+id/account_updated_date"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:text="@string/user_name"
                             android:textColor="@color/md_theme_scrim_mediumContrast"
                             android:textSize="16sp"
-                            android:layout_marginBottom="20dp"/>
+                            android:minLines="2"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
 
                     </LinearLayout>
 
@@ -269,6 +284,7 @@
                             android:text="@string/link_text"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColorLink="@color/md_theme_primary"
                             android:layout_marginBottom="27dp" />
 
@@ -280,6 +296,7 @@
                             android:text="Discount Events"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColorLink="@color/md_theme_primary"
                             android:layout_marginBottom="27dp" />
 
@@ -291,6 +308,7 @@
                             android:text="Product List"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColorLink="@color/md_theme_primary"
                             android:layout_marginBottom="27dp" />
 
@@ -302,6 +320,7 @@
                             android:text="Tip List"
                             android:textColor="@color/md_theme_primary"
                             android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColorLink="@color/md_theme_primary"
                             android:layout_marginBottom="27dp" />
 
@@ -313,6 +332,7 @@
                             android:text="Report List"
                             android:textColor="@color/md_theme_onTertiaryContainer"
                             android:textStyle="bold"
+                            android:textSize="16sp"
                             android:textColorLink="@color/md_theme_onTertiaryContainer"
                             android:layout_marginTop="3dp"/>
 

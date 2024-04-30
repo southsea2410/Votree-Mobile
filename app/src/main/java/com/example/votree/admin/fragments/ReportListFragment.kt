@@ -83,7 +83,7 @@ class ReportListFragment : BaseListFragment<Report>(), OnItemClickListener {
     override fun onReportItemClicked(view: View?, position: Int, processStatus: Boolean) {
         (activity as AdminMainActivity).onReportItemClicked(view, position, processStatus)
         val topAppBar: MaterialToolbar = (activity as AdminMainActivity).findViewById(R.id.topAppBar)
-        topAppBar.menu.findItem(R.id.more).title = "Delete"
+        topAppBar.menu.findItem(R.id.more).title = "Delete Report"
         topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.more -> {

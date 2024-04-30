@@ -43,8 +43,8 @@ class AccountDetailFragment : Fragment() {
 
 
         viewTransactionListButton.setOnClickListener {
-            val reporterId = account?.id
-            reporterId?.let { id ->
+            val accountId = account?.id
+            accountId?.let { id ->
                 val dialogFragment = TransactionDialogFragment.newInstance(id)
                 dialogFragment.show(parentFragmentManager, "TransactionDialogFragment")
             }

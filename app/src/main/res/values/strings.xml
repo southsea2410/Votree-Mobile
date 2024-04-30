@@ -158,6 +158,7 @@
     <string name="by_user">By</string>
     <string name="reported_date">Reported date: %s</string>
     <string name="log_out">Log out</string>
+    <string name="strikethrough_text_html"> <strike>đ100.000 </strike> </string>
     <string-array name="tips_report_reasons">
         <item>Spam</item>
         <item>Offensive</item>
