@@ -88,7 +88,7 @@ class ProductDetailFragment : Fragment() {
     }
 
     private fun displayShopDetails() {
-        args.currentProduct.storeId?.let { storeId ->
+        args.currentProduct.storeId.let { storeId ->
             val storeRepository = StoreRepository()
 
             CoroutineScope(Dispatchers.IO).launch {
@@ -114,6 +114,24 @@ class ProductDetailFragment : Fragment() {
 
     private fun setupButtons() {
         with(binding) {
+            productDetailToolbar.setNavigationOnClickListener{
+                findNavController().navigateUp()
+            }
+            productDetailToolbar.setOnMenuItemClickListener {
+                when(it.itemId){
+                    R.id.productDetail_to_StoreReport -> {
+                        val action = ProductDetailFragmentDirections.actionProductDetailToStoreReport(args.currentProduct.storeId)
+                        findNavController().navigate(action)
+                        true
+                    }
+                    R.id.productDetail_to_ProductReport -> {
+                        val action = ProductDetailFragmentDirections.actionProductDetailToProductReport(args.currentProduct.id)
+                        findNavController().navigate(action)
+                        true
+                    }
+                    else -> false
+                }
+            }
             buyNowBtn.setOnClickListener {
                 gotoCheckout()
             }
@@ -123,6 +141,11 @@ class ProductDetailFragment : Fragment() {
 
             viewAllReviewBtn.setOnClickListener {
                 gotoReviewsList()
+            }
+
+            storeInfo.setOnClickListener{
+                val directions = ProductDetailFragmentDirections.actionProductDetailToStoreProfile2(args.currentProduct.storeId)
+                findNavController().navigate(directions)
             }
         }
     }

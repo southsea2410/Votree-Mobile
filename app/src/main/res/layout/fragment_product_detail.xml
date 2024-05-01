@@ -7,7 +7,24 @@
     android:layout_height="match_parent"
     tools:context=".products.fragments.ProductDetailFragment">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:background="@null"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            app:menu="@menu/product_detail"
+            android:id="@+id/productDetail_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:title=""
+            app:navigationIcon="@drawable/arrow_back_24px" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.core.widget.NestedScrollView
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:id="@+id/productDetail_sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -266,6 +283,7 @@
                     app:dividerColor="@color/md_theme_surfaceVariant" />
 
                 <LinearLayout
+                    android:id="@+id/storeInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -293,6 +311,16 @@
                         android:text="Store Name"
                         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                         android:textColor="@color/black" />
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/ic_nav_next"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -487,11 +515,14 @@
     </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
+        android:background="@color/md_theme_surfaceContainer"
         android:id="@+id/productDetail_bab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        android:gravity="center"
         android:layout_gravity="bottom"
-        android:layout_margin="10dp"
         app:fabAlignmentMode="center">
 
         <Button
