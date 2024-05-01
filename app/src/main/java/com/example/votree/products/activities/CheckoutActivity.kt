@@ -216,7 +216,7 @@ class CheckoutActivity : AppCompatActivity() {
         val storeRepository = StoreRepository()
         CoroutineScope(lifecycleScope.coroutineContext).launch {
             val storeName = storeRepository.getStoreName(storeId)
-            val description = "Earned 100 points for making a purchase at $storeName"
+            val description = "$storeName"
             val pointTransaction = PointTransaction(
                 userId = userId,
                 points = totalAmount.toInt(),

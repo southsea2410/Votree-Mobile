@@ -45,7 +45,7 @@ class PointTransactionRepository {
         if (currentPoints >= pointsToRedeem) {
             val redemptionTransaction = PointTransaction(
                 userId = userId,
-                points = -pointsToRedeem,
+                points = pointsToRedeem,
                 type = "redeem",
                 description = description,
                 transactionDate = Date()

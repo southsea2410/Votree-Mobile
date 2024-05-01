@@ -69,6 +69,9 @@
         <action
             android:id="@+id/action_user_profile_fragment_to_userProfileSettingFragment"
             app:destination="@id/userProfileSettingFragment" />
+        <action
+            android:id="@+id/action_user_profile_fragment_to_pointTransactionFragment"
+            app:destination="@id/pointTransactionFragment" />
     </fragment>
     <fragment
         android:id="@+id/cartList"
@@ -211,5 +214,15 @@
         <argument
             android:name="productId"
             app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pointTransactionFragment"
+        android:name="com.example.votree.products.fragments.PointTransactionFragment"
+        android:label="fragment_point_transaction"
+        tools:layout="@layout/fragment_point_transaction">
+        <action
+            android:id="@+id/action_pointTransactionFragment_to_user_profile_fragment"
+            app:destination="@id/user_profile_fragment" />
     </fragment>
 </navigation>

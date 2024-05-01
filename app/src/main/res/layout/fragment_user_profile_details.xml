@@ -163,7 +163,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:paddingStart="4dp"
-            android:src="@drawable/ic_points"/>
+            android:src="@drawable/ic_accumulate_points" />
     </LinearLayout>
 
 
