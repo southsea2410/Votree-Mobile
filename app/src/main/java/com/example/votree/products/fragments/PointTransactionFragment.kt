@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.votree.databinding.FragmentPointTransactionBinding
 import com.example.votree.products.adapters.PointTransactionAdapter
@@ -32,6 +33,7 @@ class PointTransactionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         repository = PointTransactionRepository()
         setupRecyclerView()
+        setupView()
         loadPointTransactions()
     }
 
@@ -39,6 +41,14 @@ class PointTransactionFragment : Fragment() {
         adapter = PointTransactionAdapter(listOf())
         binding.pointTransactionRv.layoutManager = LinearLayoutManager(context)
         binding.pointTransactionRv.adapter = adapter
+    }
+
+    private fun setupView() {
+        val pointTransactionRepository = PointTransactionRepository()
+        lifecycleScope.launch {
+            val currentPoints = pointTransactionRepository.getCurrentPoints()
+            binding.pointsTv.text = currentPoints.toString()
+        }
     }
 
     private fun loadPointTransactions() {

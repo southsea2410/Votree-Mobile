@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,10 +20,12 @@ import com.example.votree.products.activities.CheckoutActivity
 import com.example.votree.products.adapters.CheckoutProductAdapter
 import com.example.votree.products.models.Cart
 import com.example.votree.products.models.ShippingAddress
+import com.example.votree.products.repositories.PointTransactionRepository
 import com.example.votree.products.view_models.CartViewModel
 import com.example.votree.products.view_models.ProductViewModel
 import com.example.votree.products.view_models.ShippingAddressViewModel
 import com.google.android.material.materialswitch.MaterialSwitch
+import kotlinx.coroutines.launch
 
 const val DELIVERY_FEE = 10.0
 
@@ -38,6 +41,7 @@ class Checkout : Fragment() {
     private var cart = Cart()
     private var shippingAddress: ShippingAddress? = null
     private lateinit var adapter: CheckoutProductAdapter
+    private var newAccumlatedPoints = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,6 +60,7 @@ class Checkout : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupCheckout()
+        setupAccumulatePoints()
         setupObservers()
         setupRecyclerView()
     }
@@ -77,13 +82,29 @@ class Checkout : Fragment() {
         val payBeforeDeliverySwitch: MaterialSwitch = binding.paidBeforeDeliverySw
 
         placeOrderButton.setOnClickListener {
-            if (payBeforeDeliverySwitch.isChecked) {
-                proceedToPayment(cart, shippingAddress)
+            if (binding.usePointsSw.isChecked) {
+                val pointTransactionRepository = PointTransactionRepository()
+                lifecycleScope.launch {
+                    pointTransactionRepository.redeemPoints(
+                        newAccumlatedPoints,
+                        "Redeem points for purchase"
+                    )
+                    // Proceed to payment or place order without payment based on the payBeforeDeliverySwitch state
+                    if (payBeforeDeliverySwitch.isChecked) {
+                        proceedToPayment(cart, shippingAddress)
+                    } else {
+                        placeOrderWithoutPayment()
+                    }
+                }
             } else {
-                placeOrderWithoutPayment()
+                // If the use points switch is unchecked, simply proceed without redeeming points
+                if (payBeforeDeliverySwitch.isChecked) {
+                    proceedToPayment(cart, shippingAddress)
+                } else {
+                    placeOrderWithoutPayment()
+                }
             }
         }
-
         // Observe the shippingAddresses LiveData
         shippingAddressViewModel.shippingAddresses.observe(viewLifecycleOwner) { addresses ->
             if (addresses != null) {
@@ -144,6 +165,11 @@ class Checkout : Fragment() {
             Log.d("Checkout", "Setting up checkout with cart")
             setupCheckoutWithCart()
         }
+        lifecycleScope.launch {
+            val pointTransactionRepository = PointTransactionRepository()
+            val currentPoints = pointTransactionRepository.getCurrentPoints() ?: 0
+            binding.accumulatePointsTv.text = getString(R.string.price_format, currentPoints * 0.01)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -161,9 +187,65 @@ class Checkout : Fragment() {
         }
     }
 
+    private fun setupAccumulatePoints() {
+        // Get the state of the switch
+        val accumulatePointsSwitch: MaterialSwitch = binding.usePointsSw
+
+        accumulatePointsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                val pointTransactionRepository = PointTransactionRepository()
+                lifecycleScope.launch {
+                    val currentPoints = pointTransactionRepository.getCurrentPoints() ?: 0
+                    val totalAmount = binding.totalAmountTv.text.toString().toDouble()
+
+                    // Calculate the discount from points (assuming 1 point = $0.01)
+                    val discountFromPoints = currentPoints * 0.01
+
+                    if (discountFromPoints >= totalAmount) {
+                        // If discount is more than or equal to total amount, purchase is free and update points
+                        val remainingPoints = ((discountFromPoints - totalAmount) / 0.01).toInt()
+                        newAccumlatedPoints = remainingPoints
+
+                        // Update UI to show no amount due
+                        binding.saleByPointsTv.text = getString(R.string.price_format, -totalAmount)
+                        binding.totalAmountTv.text = "0.0"
+                        binding.totalAmountBottomTv.text = "0.0"
+                    } else {
+                        // If discount is less than total amount, deduct all points and update total amount
+                        newAccumlatedPoints = currentPoints
+
+                        // Calculate new total amount after applying points
+                        val newTotalAmount = totalAmount - discountFromPoints
+                        binding.saleByPointsTv.text =
+                            getString(R.string.price_format, -discountFromPoints)
+                        binding.totalAmountTv.text = newTotalAmount.toString()
+                        binding.totalAmountBottomTv.text = newTotalAmount.toString()
+                    }
+                }
+            } else {
+                // If the switch is unchecked, re-update the total amount without applying points
+                cartViewModel.calculateTotalProductsPrice(cart)
+                    .observe(viewLifecycleOwner) { totalPrice ->
+                        val totalAmount = totalPrice + DELIVERY_FEE
+
+                        binding.totalProductsPriceTv.text =
+                            getString(R.string.price_format, totalPrice)
+                        binding.totalAmountTv.text = totalAmount.toString()
+                        binding.deliveryFeeTv.text = getString(R.string.price_format, DELIVERY_FEE)
+                        binding.totalAmountBottomTv.text =
+                            getString(R.string.price_format, totalAmount)
+                        binding.saleByPointsTv.text = getString(R.string.price_format, -0.0)
+                    }
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         shippingAddressViewModel.updateAddresses()
+
+        // Load the cart from the database
+        setupCheckout()
     }
 
     override fun onDestroyView() {

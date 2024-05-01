@@ -86,6 +86,11 @@ class UserProfileFragment : Fragment() {
             navigateToBecomeSeller()
         }
 
+        binding.pointsLayout.setOnClickListener {
+            // Navigate to Points Fragment
+            navigateToAccumulatePoints()
+        }
+
         binding.logoutBtn.setOnClickListener {
             // Navigate to Sign In Activity
             navigateLogout()
@@ -106,6 +111,13 @@ class UserProfileFragment : Fragment() {
     private fun navigateToBecomeSeller() {
         val intent = Intent(context, RegisterToSeller::class.java)
         startActivity(intent)
+    }
+
+    private fun navigateToAccumulatePoints() {
+        // Implement navigation logic to Points Fragment
+        val action =
+            UserProfileFragmentDirections.actionUserProfileFragmentToPointTransactionFragment()
+        findNavController().navigate(action)
     }
 
     private fun navigateLogout(){
