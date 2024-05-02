@@ -381,14 +381,6 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
         return fragmentString.substring(0, endIndex)
     }
 
-    private fun setupLogoutButton(binding: FragmentUserProfileBinding) {
-        binding.logoutButton.setOnClickListener {
-            SignInActivity().signOut()
-            val intent = Intent(this, SignInActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
     fun dateFormat(date: String): String {
         val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
         val inputDate = inputFormat.parse(date)
