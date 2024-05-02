@@ -33,7 +33,7 @@ class AccountDetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_account_detail, container, false)
         val banButton = view.findViewById<Button>(R.id.banButton)
         val viewTransactionListButton = view.findViewById<Button>(R.id.viewTransactionButton)
-        val viewDiscountsButton = view.findViewById<Button>(R.id.viewDiscountsButton)
+//        val viewDiscountsButton = view.findViewById<Button>(R.id.viewDiscountsButton)
         val viewProductListButton = view.findViewById<Button>(R.id.viewProductListButton)
         val viewTipListButton = view.findViewById<Button>(R.id.viewTipListButton)
         val viewReportListButton = view.findViewById<Button>(R.id.viewReportListButton)
@@ -41,12 +41,19 @@ class AccountDetailFragment : Fragment() {
         topAppBar.title = "Account Detail"
         topAppBar.setTitleTextColor(resources.getColor(R.color.md_theme_primary))
 
-
         viewTransactionListButton.setOnClickListener {
             val accountId = account?.id
             accountId?.let { id ->
                 val dialogFragment = TransactionDialogFragment.newInstance(id)
                 dialogFragment.show(parentFragmentManager, "TransactionDialogFragment")
+            }
+        }
+
+        viewProductListButton.setOnClickListener {
+            val accountId = account?.id
+            accountId?.let { id ->
+                val dialogFragment = ProductDialogFragment.newInstance(id)
+                dialogFragment.show(parentFragmentManager, "ProductDialogFragment")
             }
         }
 
@@ -102,10 +109,10 @@ class AccountDetailFragment : Fragment() {
             view?.findViewById<TextView>(R.id.account_created_date)?.text = dateFormat(nonNullTip.createdAt.toString())
             view?.findViewById<TextView>(R.id.account_updated_date)?.text = dateFormat(nonNullTip.updatedAt.toString())
             if (nonNullTip.role.lowercase() == "user") {
-                view?.findViewById<TextView>(R.id.account_discountList)?.visibility = View.GONE
+//                view?.findViewById<TextView>(R.id.account_discountList)?.visibility = View.GONE
                 view?.findViewById<TextView>(R.id.account_productList)?.visibility = View.GONE
                 view?.findViewById<TextView>(R.id.account_tipList)?.visibility = View.GONE
-                view?.findViewById<Button>(R.id.viewDiscountsButton)?.visibility = View.GONE
+//                view?.findViewById<Button>(R.id.viewDiscountsButton)?.visibility = View.GONE
                 view?.findViewById<Button>(R.id.viewProductListButton)?.visibility = View.GONE
                 view?.findViewById<Button>(R.id.viewTipListButton)?.visibility = View.GONE
             }

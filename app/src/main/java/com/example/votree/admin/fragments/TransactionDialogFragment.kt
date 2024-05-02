@@ -11,6 +11,7 @@ import com.example.votree.admin.adapters.TipListAdapter
 import com.example.votree.admin.adapters.TransactionListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Transaction
+import com.example.votree.models.User
 import com.google.firebase.firestore.Query
 
 class TransactionDialogFragment : BaseDialogFragment<Transaction>() {
@@ -37,37 +38,47 @@ class TransactionDialogFragment : BaseDialogFragment<Transaction>() {
 
     override fun fetchDataFromFirestore(accountId: String?) {
         val transactionList = mutableListOf<Transaction>()
+        transactionList.clear()
+
+        // Fetch transactions directly related to the accountId
         db.collection(collectionName).whereEqualTo("customerId", accountId)
-            .addSnapshotListener { snapshots, e ->
-                if (e != null) {
-                    Log.w("TransactionListActivity", "listen:error", e)
-                    return@addSnapshotListener
-                }
-
-                transactionList.clear()
-                for (doc in snapshots!!) {
+            .get()
+            .addOnSuccessListener { documents ->
+                for (doc in documents) {
                     val transaction = doc.toObject(Transaction::class.java)
-                    transaction.id = doc.id
                     transactionList.add(transaction)
                 }
-                adapter.setData(transactionList)
-            }
-
-        db.collection(collectionName).whereEqualTo("storeId", accountId)
-            .addSnapshotListener { snapshots, e ->
-                if (e != null) {
-                    Log.w("TransactionListActivity", "listen:error", e)
-                    return@addSnapshotListener
-                }
-
-                for (doc in snapshots!!) {
-                    val transaction = doc.toObject(Transaction::class.java)
-                    transaction.id = doc.id
-                    transactionList.add(transaction)
-                }
-
                 adapter.setData(transactionList.sortedByDescending { it.createdAt })
             }
+            .addOnFailureListener { e ->
+                Log.w("TransactionListActivity", "Error fetching transactions", e)
+            }
+
+        // Fetch transactions related to the store of the user
+        db.collection("users").document(accountId!!)
+            .get()
+            .addOnSuccessListener { userDocument ->
+                val account = userDocument.toObject(User::class.java)
+                if (account != null) {
+                    db.collection(collectionName).whereEqualTo("storeId", account.storeId)
+                        .get()
+                        .addOnSuccessListener { storeTransactions ->
+                            for (storeDoc in storeTransactions) {
+                                val transaction = storeDoc.toObject(Transaction::class.java)
+                                transactionList.add(transaction)
+                            }
+                            adapter.setData(transactionList.sortedByDescending { it.createdAt })
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("TransactionListActivity", "Error fetching store transactions", e)
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.w("TransactionListActivity", "Error fetching user details", e)
+            }
+
+        adapter.setData(transactionList.sortedByDescending { it.createdAt })
     }
 
     override fun onItemSelected(position: Int) {

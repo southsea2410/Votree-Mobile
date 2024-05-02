@@ -34,7 +34,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@color/md_theme_onPrimary"
                 android:gravity="center">
 
                 <View
@@ -52,7 +51,7 @@
                     android:textStyle="bold"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textColor="@color/md_theme_secondary" />
+                    android:textColor="@color/md_theme_primary" />
 
                 <TextView
                     android:id="@+id/product_rating"
@@ -74,7 +73,9 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/baseline_star_24"
+                    app:tint="@color/md_theme_primary"
                     android:contentDescription="@string/this_is_icon_for_illustration" />
+
 
                 <View
                     android:layout_width="20dp"
@@ -82,11 +83,15 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/md_theme_primary"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/md_theme_onPrimary">
+                android:orientation="horizontal">
 
                 <View
                     android:layout_width="20dp"
@@ -95,9 +100,9 @@
                 <FrameLayout
                     android:layout_width="75dp"
                     android:layout_height="75dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/image_product">
+                    android:layout_marginBottom="10dp">
 
                     <ImageView
                         android:id="@+id/product_list_item_avatar"
@@ -106,8 +111,7 @@
                         android:scrollbarSize="4dp"
                         android:layout_margin="0.5dp"
                         app:srcCompat="@drawable/pika"
-                        app:cardElevation="4dp"
-                        android:contentDescription="@string/first_image_of_tip" />
+                        app:cardElevation="4dp" />
 
                 </FrameLayout>
 
@@ -115,6 +119,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -139,11 +144,8 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/md_theme_outline"
                             android:textSize="16sp"
+                            android:layout_marginEnd="7dp"
                             android:text="@string/strikethrough_text_html" />
-
-                        <View
-                            android:layout_width="7dp"
-                            android:layout_height="20dp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -192,7 +194,6 @@
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/tipName"
                 app:layout_constraintTop_toBottomOf="@+id/account_name"
-                android:background="@color/md_theme_onPrimary"
                 android:gravity="center">
 
                 <View

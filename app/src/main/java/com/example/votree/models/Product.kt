@@ -26,7 +26,9 @@ data class Product(
     val saleOff: Double = 0.0,
     val createdAt: Date = Date(),
     var updatedAt: Date = Date(),
-    var currentQuantitySold: Int = 0
+    var currentQuantitySold: Int = 0,
+    @field:JvmField
+    val isActive: Boolean = true
 ) : Parcelable {
     override fun toString(): String {
         return "Product(id=$id, name='$productName', price=$price)"

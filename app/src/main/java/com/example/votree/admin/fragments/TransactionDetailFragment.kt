@@ -7,10 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.example.votree.R
+import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.models.Product
 import com.example.votree.models.Store
 import com.example.votree.models.Transaction
@@ -31,21 +34,16 @@ class TransactionDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_transaction_detail, container, false)
-//        val approveButton = view?.findViewById<Button>(R.id.approveButton)
-//        val rejectButton = view?.findViewById<Button>(R.id.rejectButton)
-//
-//        approveButton?.setOnClickListener {
-//            db.collection("ProductTip2").document(tip!!.id).update("approvalStatus", 1)
-//                .addOnSuccessListener {
-//                    activity?.supportFragmentManager?.popBackStack("tip_list_fragment", POP_BACK_STACK_INCLUSIVE)
-//                }
-//        }
-//
-//        rejectButton?.setOnClickListener {
-//            db.collection("ProductTip2").document(tip!!.id).update("approvalStatus", -1)
-//                .addOnSuccessListener {
-//                    activity?.supportFragmentManager?.popBackStack("tip_list_fragment", POP_BACK_STACK_INCLUSIVE)
-//                }
+
+//        customerDetailButton?.setOnClickListener {
+//            val accountId = transaction?.customerId
+//            val fragment = AccountDetailFragment()
+//            val bundle = Bundle().apply {
+//                putParcelable("account", adapter.getItem(position))
+//            }
+//            fragment.arguments = bundle
+//            (activity as AdminMainActivity).supportFragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container, fragment)
 //        }
 
         return view
@@ -61,6 +59,10 @@ class TransactionDetailFragment : Fragment() {
     }
 
     private fun updateUI() {
+        val viewStoreProfileButton = view?.findViewById<Button>(R.id.view_store_profile)
+        val customerDetailButton = view?.findViewById<FrameLayout>(R.id.frame_layout_transaction_customer)
+        val productListButton = view?.findViewById<FrameLayout>(R.id.frame_layout_transaction_products)
+
         if (currentTransactionId != "" && transaction != null) {
             productBoughtList = ""
             var isFirstProduct = true
@@ -93,41 +95,87 @@ class TransactionDetailFragment : Fragment() {
             productBoughtList = "No product bought"
         }
 
-        // Get store information
-        db.collection("stores").whereEqualTo("id", transaction?.storeId)
-            .addSnapshotListener { userSnapshots, userError ->
-                if (userError != null) {
-                    return@addSnapshotListener
-                }
+        // List products
+        productListButton?.setOnClickListener {
+            val fragment = ProductBoughtListFragment()
+            val bundle = Bundle().apply {
+                putString("transactionId", currentTransactionId)
+            }
+            fragment.arguments = bundle
+            (activity as AdminMainActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack("transaction_detail_fragment")
+                .commit()
+        }
 
-                for (userDoc in userSnapshots!!) {
-                    val store = userDoc.toObject(Store::class.java)
-                    if (store.id == transaction?.storeId) {
-                        view?.findViewById<TextView>(R.id.store_name)?.text = store.storeName
+        // Get store information
+        db.collection("stores").document(transaction?.storeId!!)
+            .get()
+            .addOnSuccessListener { storeDocument ->
+                val store = storeDocument.toObject(Store::class.java)
+                if (store != null) {
+                    view?.findViewById<TextView>(R.id.store_name)?.text = store.storeName
+
+                    // Fetch the store owner data
+                    db.collection("users").whereEqualTo("storeId", store.id)
+                        .get()
+                        .addOnSuccessListener { userDocuments ->
+                            for (userDocument in userDocuments) {
+                                val owner = userDocument.toObject(User::class.java)
+                                if (owner.storeId == store.id) {
+                                    viewStoreProfileButton?.setOnClickListener {
+                                        val fragment = AccountDetailFragment()
+                                        val bundle = Bundle().apply {
+                                            putParcelable("account", owner)
+                                        }
+                                        fragment.arguments = bundle
+                                        (activity as AdminMainActivity).supportFragmentManager.beginTransaction()
+                                            .replace(R.id.fragment_container, fragment)
+                                            .addToBackStack("transaction_detail_fragment")
+                                            .commit()
+                                    }
+                                    break // Exit loop after finding the owner
+                                }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("TransactionDetailFragment", "Error fetching store owner", e)
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("TransactionDetailFragment", "Error fetching store details", e)
+            }
+
+        // Fetch the customer data
+        db.collection("users").document(transaction?.customerId!!)
+            .get()
+            .addOnSuccessListener { userDocument ->
+                val customer = userDocument.toObject(User::class.java)
+                if (customer != null) {
+                    view?.findViewById<TextView>(R.id.transactionCustomer)?.text = "Customer: ${customer.fullName}"
+                    customerDetailButton?.setOnClickListener {
+                        val fragment = AccountDetailFragment()
+                        val bundle = Bundle().apply {
+                            putParcelable("account", customer)
+                        }
+                        fragment.arguments = bundle
+                        (activity as AdminMainActivity).supportFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack("transaction_detail_fragment")
+                            .commit()
                     }
                 }
             }
-
-        // Get customer information
-        db.collection("users").whereEqualTo("id", transaction?.customerId)
-            .addSnapshotListener { userSnapshots, userError ->
-                if (userError != null) {
-                    return@addSnapshotListener
-                }
-
-                for (userDoc in userSnapshots!!) {
-                    val customer = userDoc.toObject(User::class.java)
-                    if (customer.id == transaction?.customerId) {
-                        view?.findViewById<TextView>(R.id.transactionCustomer)?.text = "Customer: ${customer.fullName}"
-                    }
-                }
+            .addOnFailureListener { e ->
+                Log.e("TransactionDetailFragment", "Error fetching customer details", e)
             }
 
         transaction?.let { nonNullTransaction ->
             val transactionAddress: TextView? = view?.findViewById(R.id.address)
             val transactionOrderedDate: TextView? = view?.findViewById(R.id.ordered_date)
             val transactionPaymentOption: TextView? = view?.findViewById(R.id.payment_option_value)
-            val transactionVoucherDiscount: TextView? = view?.findViewById(R.id.voucher_discount_value)
+//            val transactionVoucherDiscount: TextView? = view?.findViewById(R.id.voucher_discount_value)
             val transactionTotalPaymentValue: TextView? = view?.findViewById(R.id.total_payment_value)
 
             transactionAddress?.text = "Address: ${nonNullTransaction.address}"

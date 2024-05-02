@@ -288,17 +288,17 @@
                             android:textColorLink="@color/md_theme_primary"
                             android:layout_marginBottom="27dp" />
 
-                        <TextView
-                            android:id="@+id/account_discountList"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:soundEffectsEnabled="true"
-                            android:text="Discount Events"
-                            android:textColor="@color/md_theme_primary"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:textColorLink="@color/md_theme_primary"
-                            android:layout_marginBottom="27dp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/account_discountList"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:soundEffectsEnabled="true"-->
+<!--                            android:text="Discount Events"-->
+<!--                            android:textColor="@color/md_theme_primary"-->
+<!--                            android:textStyle="bold"-->
+<!--                            android:textSize="16sp"-->
+<!--                            android:textColorLink="@color/md_theme_primary"-->
+<!--                            android:layout_marginBottom="27dp" />-->
 
                         <TextView
                             android:id="@+id/account_productList"
@@ -360,20 +360,20 @@
                             app:strokeWidth="2dp"
                             style="?android:attr/buttonBarButtonStyle" />
 
-                        <Button
-                            android:id="@+id/viewDiscountsButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:text="View"
-                            android:textColor="@color/md_theme_primary"
-                            android:textSize="15sp"
-                            android:textStyle="normal"
-                            android:drawablePadding="8dp"
-                            app:backgroundTint="@color/transparent"
-                            app:strokeColor="@color/md_theme_primary"
-                            app:strokeWidth="2dp"
-                            style="?android:attr/buttonBarButtonStyle" />
+<!--                        <Button-->
+<!--                            android:id="@+id/viewDiscountsButton"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="10dp"-->
+<!--                            android:text="View"-->
+<!--                            android:textColor="@color/md_theme_primary"-->
+<!--                            android:textSize="15sp"-->
+<!--                            android:textStyle="normal"-->
+<!--                            android:drawablePadding="8dp"-->
+<!--                            app:backgroundTint="@color/transparent"-->
+<!--                            app:strokeColor="@color/md_theme_primary"-->
+<!--                            app:strokeWidth="2dp"-->
+<!--                            style="?android:attr/buttonBarButtonStyle" />-->
 
                         <Button
                             android:id="@+id/viewProductListButton"

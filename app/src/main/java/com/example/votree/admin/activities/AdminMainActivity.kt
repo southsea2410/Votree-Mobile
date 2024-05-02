@@ -19,7 +19,8 @@ import androidx.fragment.app.FragmentManager
 import com.example.votree.R
 import com.example.votree.admin.fragments.AccountDetailFragment
 import com.example.votree.admin.fragments.AccountListFragment
-import com.example.votree.admin.fragments.BaseListFragment
+import com.example.votree.admin.fragments.ProductBoughtListFragment
+import com.example.votree.admin.fragments.ProductDetailFragment
 import com.example.votree.admin.fragments.ReportDetailFragment
 import com.example.votree.admin.fragments.ReportListFragment
 import com.example.votree.admin.fragments.TipDetailFragment
@@ -27,7 +28,6 @@ import com.example.votree.admin.fragments.TipListFragment
 import com.example.votree.admin.fragments.TransactionDetailFragment
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.databinding.FragmentUserProfileBinding
-import com.example.votree.products.fragments.ProductDetailFragment
 import com.example.votree.users.activities.SignInActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -326,6 +326,8 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
             "TipDetailFragment" -> TipDetailFragment()
             "AccountDetailFragment" -> AccountDetailFragment()
             "ReportDetailFragment" -> ReportDetailFragment()
+            "ProductBoughtListFragment" -> ProductBoughtListFragment()
+            "ProductDetailFragment" -> ProductDetailFragment()
             else -> TipListFragment()
         }
     }

@@ -18,7 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class ProductBoughtListAdapter(private val listener: OnItemClickListener, private val isDialog: Boolean = false) :
     BaseListAdapter<Product>(listener) {
 
-    override var singleitem_selection_position = 0
+    override var singleitem_selection_position = -1
 
     override fun getLayoutId(): Int = R.layout.item_product_bought
 
@@ -53,7 +53,7 @@ class ProductBoughtListAdapter(private val listener: OnItemClickListener, privat
 
             if (isDialog) {
                 if (absoluteAdapterPosition == singleitem_selection_position) {
-                    itemView.setBackgroundResource(android.R.color.holo_blue_bright)
+                    itemView.setBackgroundResource(android.R.color.holo_green_light)
                 } else {
                     itemView.setBackgroundResource(android.R.color.transparent)
                 }

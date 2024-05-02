@@ -54,11 +54,7 @@ class TipDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tip = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable("tip", Tip::class.java)
-        } else {
-            arguments?.getParcelable("tip", Tip::class.java)
-        }
+        tip = arguments?.getParcelable("tip", Tip::class.java)
 
         updateUI()
     }

@@ -10,8 +10,7 @@ import com.example.votree.admin.adapters.BaseListAdapter
 import com.example.votree.admin.adapters.ProductListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Product
-import com.example.votree.products.fragments.ProductDetailFragment
-import com.google.firebase.firestore.Query
+import com.example.votree.models.User
 
 class ProductDialogFragment : BaseDialogFragment<Product>() {
 
@@ -37,21 +36,33 @@ class ProductDialogFragment : BaseDialogFragment<Product>() {
 
     override fun fetchDataFromFirestore(accountId: String?) {
         val productList = mutableListOf<Product>()
-        db.collection(collectionName).whereEqualTo("storeId", accountId)
-            .orderBy("createdAt", Query.Direction.DESCENDING)
-            .addSnapshotListener { snapshots, e ->
+        var storeId = ""
+        db.collection("users").whereEqualTo("id", accountId)
+            .addSnapshotListener() { snapshots, e ->
                 if (e != null) {
                     Log.w("ProductListActivity", "listen:error", e)
                     return@addSnapshotListener
                 }
 
-                productList.clear()
                 for (doc in snapshots!!) {
-                    val product = doc.toObject(Product::class.java)
-                    product.id = doc.id
-                    productList.add(product)
+                    Log.d("ProductListActivity", "storeId: ${doc.toObject(User::class.java)}")
+                    db.collection(collectionName).whereEqualTo("storeId", doc.toObject(User::class.java).storeId)
+                        .addSnapshotListener { snapshots2, e2 ->
+                            if (e2 != null) {
+                                Log.w("ProductListActivity", "listen:error", e2)
+                                return@addSnapshotListener
+                            }
+
+                            productList.clear()
+                            for (doc2 in snapshots2!!) {
+                                val product = doc2.toObject(Product::class.java)
+                                product.id = doc2.id
+                                Log.d("ProductListActivity", "product: ${doc2.toObject(Product::class.java)}")
+                                productList.add(product)
+                            }
+                            adapter.setData(productList.sortedByDescending { it.createdAt })
+                        }
                 }
-                adapter.setData(productList)
             }
     }
 

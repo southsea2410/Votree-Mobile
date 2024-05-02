@@ -15,7 +15,7 @@ import com.example.votree.models.Product
 class ProductListAdapter(private val listener: OnItemClickListener, private val isDialog: Boolean = false) :
     BaseListAdapter<Product>(listener) {
 
-    override var singleitem_selection_position = 0
+    override var singleitem_selection_position = -1
 
     override fun getLayoutId(): Int = R.layout.item_product
 
@@ -50,8 +50,18 @@ class ProductListAdapter(private val listener: OnItemClickListener, private val 
 
             if (isDialog) {
                 if (absoluteAdapterPosition == singleitem_selection_position) {
-                    itemView.setBackgroundResource(android.R.color.holo_blue_bright)
+                    itemView.findViewById<TextView>(R.id.product_name).setTextColor(itemView.resources.getColor(R.color.md_theme_onPrimary))
+                    itemView.findViewById<TextView>(R.id.product_rating).setTextColor(itemView.resources.getColor(R.color.md_theme_onPrimary))
+//                    itemView.findViewById<TextView>(R.id.star_icon).imageTintList = itemView.resources.getColorStateList(R.color.md_theme_onPrimary)
+                    itemView.findViewById<TextView>(R.id.payment_option).setTextColor(itemView.resources.getColor(R.color.md_theme_onPrimary))
+                    itemView.findViewById<TextView>(R.id.total_quantity_sold).setTextColor(itemView.resources.getColor(R.color.md_theme_onPrimary))
+                    itemView.setBackgroundResource(android.R.color.holo_green_light)
                 } else {
+                    itemView.findViewById<TextView>(R.id.product_name).setTextColor(itemView.resources.getColor(R.color.md_theme_primary))
+                    itemView.findViewById<TextView>(R.id.product_rating).setTextColor(itemView.resources.getColor(R.color.md_theme_primary))
+//                    itemView.findViewById<TextView>(R.id.star_icon).setTextColor(itemView.resources.getColor(R.color.md_theme_primary))
+                    itemView.findViewById<TextView>(R.id.payment_option).setTextColor(itemView.resources.getColor(R.color.md_theme_primary))
+                    itemView.findViewById<TextView>(R.id.total_quantity_sold).setTextColor(itemView.resources.getColor(R.color.md_theme_primary))
                     itemView.setBackgroundResource(android.R.color.transparent)
                 }
             } else {

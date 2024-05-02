@@ -54,7 +54,7 @@
                             android:textStyle="bold" />
 
                         <Button
-                            android:id="@+id/viewTransactionButton"
+                            android:id="@+id/view_store_profile"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
@@ -133,79 +133,99 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <FrameLayout
+                        android:id="@+id/frame_layout_transaction_customer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/tipName"
-                        app:layout_constraintTop_toBottomOf="@+id/account_name"
-                        android:background="@color/md_theme_onPrimary"
-                        android:gravity="center">
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="48dp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toTopOf="@+id/tipName"
+                            app:layout_constraintTop_toBottomOf="@+id/account_name"
+                            android:background="@color/md_theme_onPrimary"
+                            android:gravity="center">
 
-                        <TextView
-                            android:id="@+id/transactionCustomer"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="48dp"
-                            android:text="Customer: Huynh Si Kha"
-                            android:gravity="center_vertical"
-                            android:textSize="14dp"
-                            android:textStyle="bold"
-                            android:textColor="@color/md_theme_secondary" />
+                            <View
+                                android:layout_width="20dp"
+                                android:layout_height="48dp" />
 
-                        <ImageView
-                            android:layout_width="58dp"
-                            android:layout_height="20dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/right_arrow"
-                            android:contentDescription="@string/this_is_icon_for_illustration" />
+                            <TextView
+                                android:id="@+id/transactionCustomer"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="48dp"
+                                android:text="Customer: Huynh Si Kha"
+                                android:gravity="center_vertical"
+                                android:textSize="14dp"
+                                android:textStyle="bold"
+                                android:textColor="@color/md_theme_secondary" />
 
-                    </LinearLayout>
+                            <ImageView
+                                android:layout_width="58dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/right_arrow"
+                                android:contentDescription="@string/this_is_icon_for_illustration" />
+
+                        </LinearLayout>
+
+                    </FrameLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/md_theme_primary"/>
 
-                    <LinearLayout
+                    <FrameLayout
+                        android:id="@+id/frame_layout_transaction_products"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toTopOf="@+id/tipName"
-                        app:layout_constraintTop_toBottomOf="@+id/account_name"
-                        android:background="@color/md_theme_onPrimary"
-                        android:gravity="center">
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true">
 
-                        <View
-                            android:layout_width="20dp"
-                            android:layout_height="48dp" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toTopOf="@+id/tipName"
+                            app:layout_constraintTop_toBottomOf="@+id/account_name"
+                            android:background="@color/md_theme_onPrimary"
+                            android:gravity="center">
 
-                        <TextView
-                            android:id="@+id/transactionProducts"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="48dp"
-                            android:text="Peperomia Flex, Watermelon, Coconut, ochna tree, Plant Tree"
-                            android:gravity="center_vertical"
-                            android:textSize="14dp"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textColor="@color/md_theme_secondary" />
+                            <View
+                                android:layout_width="20dp"
+                                android:layout_height="48dp" />
 
-                        <ImageView
-                            android:layout_width="58dp"
-                            android:layout_height="20dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/right_arrow"
-                            android:contentDescription="@string/this_is_icon_for_illustration" />
+                            <TextView
+                                android:id="@+id/transactionProducts"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="48dp"
+                                android:text="Peperomia Flex, Watermelon, Coconut, ochna tree, Plant Tree"
+                                android:gravity="center_vertical"
+                                android:textSize="14dp"
+                                android:maxLines="1"
+                                android:ellipsize="end"
+                                android:textColor="@color/md_theme_secondary" />
 
-                    </LinearLayout>
+                            <ImageView
+                                android:layout_width="58dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/right_arrow"
+                                android:contentDescription="@string/this_is_icon_for_illustration" />
+
+                        </LinearLayout>
+
+                    </FrameLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -592,47 +612,56 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/total_payment_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@color/md_theme_primary"
-                    android:gravity="center"
-                    android:layout_marginTop="34dp">
-
-                    <View
-                        android:layout_width="20dp"
-                        android:layout_height="48dp"/>
-
-                    <TextView
-                        android:id="@+id/total_payment"
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:text="Total Payment"
-                        android:gravity="center_vertical"
-                        android:textSize="14dp"
-                        android:textStyle="bold"
-                        android:textColor="@color/md_theme_onPrimary" />
-
-                    <TextView
-                        android:id="@+id/total_payment_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="đ318.000"
-                        android:textStyle="bold"
-                        android:textSize="14sp"
-                        android:textColor="@color/md_theme_onPrimary" />
-
-                    <View
-                        android:layout_width="20dp"
-                        android:layout_height="48dp" />
-
-                </LinearLayout>
-
             </LinearLayout>
         </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="10dp"
+            app:fabAlignmentMode="center">
+
+            <LinearLayout
+                android:id="@+id/total_payment_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/md_theme_primary"
+                android:gravity="center"
+                android:layout_marginTop="34dp">
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="48dp"/>
+
+                <TextView
+                    android:id="@+id/total_payment"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:text="Total Payment"
+                    android:gravity="center_vertical"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_onPrimary" />
+
+                <TextView
+                    android:id="@+id/total_payment_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="đ318.000"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:textColor="@color/md_theme_onPrimary" />
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="48dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </FrameLayout>
 

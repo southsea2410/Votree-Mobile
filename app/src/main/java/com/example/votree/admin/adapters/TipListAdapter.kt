@@ -13,7 +13,7 @@ import com.example.votree.models.Tip
 class TipListAdapter(private val listener: OnItemClickListener, private val isDialog: Boolean = false) :
     BaseListAdapter<Tip>(listener) {
 
-    override var singleitem_selection_position = 0
+    override var singleitem_selection_position = -1
 
     override fun getLayoutId(): Int = R.layout.item_tip
 
@@ -56,7 +56,7 @@ class TipListAdapter(private val listener: OnItemClickListener, private val isDi
 
             if (isDialog) {
                 if (absoluteAdapterPosition == singleitem_selection_position) {
-                    itemView.setBackgroundResource(android.R.color.holo_blue_bright)
+                    itemView.setBackgroundResource(android.R.color.holo_green_light)
                 } else {
                     itemView.setBackgroundResource(android.R.color.transparent)
                 }

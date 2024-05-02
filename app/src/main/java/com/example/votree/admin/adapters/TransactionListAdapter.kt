@@ -13,7 +13,7 @@ import com.example.votree.models.Transaction
 class TransactionListAdapter(private val listener: OnItemClickListener, private val isDialog: Boolean = false) :
     BaseListAdapter<Transaction>(listener) {
 
-    override var singleitem_selection_position = 0
+    override var singleitem_selection_position = -1
 
     override fun getLayoutId(): Int = R.layout.item_transaction
 
@@ -31,7 +31,7 @@ class TransactionListAdapter(private val listener: OnItemClickListener, private 
 
             if (isDialog) {
                 if (absoluteAdapterPosition == singleitem_selection_position) {
-                    itemView.setBackgroundResource(android.R.color.holo_blue_bright)
+                    itemView.setBackgroundResource(android.R.color.holo_green_light)
                 } else {
                     itemView.setBackgroundResource(android.R.color.transparent)
                 }

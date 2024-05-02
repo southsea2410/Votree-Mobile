@@ -4,6 +4,7 @@ import DialogFragmentListener
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -38,7 +39,8 @@ abstract class BaseDialogFragment<T> : DialogFragment(), OnItemClickListener {
             val builder = AlertDialog.Builder(it)
             builder.setView(rvItems).setTitle(dialogTitle)
                 .setPositiveButton("View") { _, _ ->
-                    onItemSelected(adapter.getSelectedPosition())
+                    val selectedPosition = adapter.getSelectedPosition()
+                    if (selectedPosition >= 0) onItemSelected(adapter.getSelectedPosition())
                 }
                 .setNegativeButton("Cancel") { _, _ -> }
 
