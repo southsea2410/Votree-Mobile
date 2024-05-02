@@ -3,6 +3,7 @@ package com.example.votree.products.repositories
 import android.net.Uri
 import android.util.Log
 import com.example.votree.products.models.Product
+import com.example.votree.products.models.ProductReview
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
@@ -120,5 +121,25 @@ class ProductRepository(private val firestore: FirebaseFirestore) {
         val productRef = firestore.collection("products").document(productId!!)
         val snapshot = productRef.get().await()
         return snapshot.toObject(Product::class.java)!!
+    }
+
+    suspend fun updateProductSoldQuantity(productId: String, quantityPurchased: Int) {
+        val productRef = firestore.collection("products").document(productId)
+        firestore.runTransaction { transaction ->
+            val snapshot = transaction.get(productRef)
+            val newQuantitySold = snapshot.getLong("quantitySold")!! + quantityPurchased
+            transaction.update(productRef, "quantitySold", newQuantitySold)
+        }.await()
+    }
+
+    suspend fun getAverageProductRating(productId: String): Float {
+        val reviewsSnapshot =
+            firestore.collection("products").document(productId).collection("reviews").get().await()
+        val reviews = reviewsSnapshot.toObjects(ProductReview::class.java)
+        return if (reviews.isNotEmpty()) {
+            reviews.map { it.rating }.average().toFloat()
+        } else {
+            0.0f
+        }
     }
 }

@@ -10,6 +10,7 @@ import com.example.votree.admin.adapters.BaseListAdapter
 import com.example.votree.admin.adapters.ReportListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.example.votree.models.Report
+import com.google.firebase.firestore.Query
 
 class ReportDialogFragment : BaseDialogFragment<Report>() {
 
@@ -35,7 +36,7 @@ class ReportDialogFragment : BaseDialogFragment<Report>() {
 
     override fun fetchDataFromFirestore(accountId: String?) {
         val reportList = mutableListOf<Report>()
-        db.collection("reports").whereEqualTo("userId", accountId)
+        db.collection(collectionName).whereEqualTo("userId", accountId)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("ReportListActivity", "listen:error", e)
@@ -51,7 +52,7 @@ class ReportDialogFragment : BaseDialogFragment<Report>() {
                 adapter.setData(reportList)
             }
 
-        db.collection("reports").whereEqualTo("reporterId", accountId)
+        db.collection(collectionName).whereEqualTo("reporterId", accountId)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("ReportListActivity", "listen:error", e)
@@ -66,7 +67,7 @@ class ReportDialogFragment : BaseDialogFragment<Report>() {
                     }
                 }
 
-                adapter.setData(reportList)
+                adapter.setData(reportList.sortedByDescending { it.createdAt })
             }
     }
 
@@ -93,4 +94,6 @@ class ReportDialogFragment : BaseDialogFragment<Report>() {
 
         fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("account_detail_fragment").commit()
     }
+
+    override fun onProductItemClicked(view: View?, position: Int) {}
 }

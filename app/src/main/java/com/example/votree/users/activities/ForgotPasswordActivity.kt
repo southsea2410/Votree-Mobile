@@ -3,8 +3,10 @@ package com.example.votree.users.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.votree.R
+import com.example.votree.tips.AdManager
 import com.example.votree.users.fragments.EmailVerificationFragment
 import com.example.votree.utils.AuthHandler
+import com.google.android.gms.ads.AdView
 import com.google.firebase.auth.FirebaseAuth
 
 class ForgotPasswordActivity : AppCompatActivity() {
@@ -16,6 +18,9 @@ class ForgotPasswordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forgot_password)
+
+        val adView = findViewById<AdView>(R.id.adView)
+        AdManager.loadBannerAd(adView)
 
         // Initialize the AuthHandler
         auth = AuthHandler.firebaseAuth

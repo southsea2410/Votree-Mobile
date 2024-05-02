@@ -7,23 +7,26 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.databinding.ActivityMainBinding
+import com.example.votree.tips.AdManager
+import com.example.votree.users.activities.MyFirebaseMessagingService
 import com.example.votree.users.activities.RegisterToSeller
-import com.example.votree.users.activities.StoreManagement
 import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
+import com.google.android.gms.ads.AdView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 
-@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -41,6 +44,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(binding.root.id)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 25, systemBars.right, 0)
+            insets
+        }
+
+        val adView = findViewById<AdView>(R.id.adView)
+        AdManager.loadBannerAd(adView)
+
         permissionManager = PermissionManager(this)
         permissionManager.checkPermissions()
 
@@ -48,7 +61,6 @@ class MainActivity : AppCompatActivity() {
 
         RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
             role = it ?: ""
-            setupToolbar()
             setupNavigation()
 
             when (it) {
@@ -61,6 +73,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Manually invoke onNewToken
+                Log.d("FCM Token", task.result)
+                val newToken = task.result
+                MyFirebaseMessagingService().onNewToken(newToken)
+            }
+            else {
+                Toast.makeText(this, "Failed to get token", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -87,56 +111,22 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+        navController.setGraph(R.navigation.nav_seller_graph)
+        bottomNavigation.inflateMenu(R.menu.nav_seller)
 
-        if (role == "store") {
-            navController.setGraph(R.navigation.nav_seller_graph)
-            bottomNavigation.inflateMenu(R.menu.nav_seller)
-        } else {
-            navController.setGraph(R.navigation.nav_user_graph)
-            bottomNavigation.inflateMenu(R.menu.nav_user)
+        if (role != "store") {
+            bottomNavigation.menu.removeItem(R.id.storeManagement2)
         }
-        val hiddenDestinations = setOf(R.id.productDetail, R.id.productDetail)
+        val showDestinations = setOf(R.id.productList, R.id.main_tip_fragment, R.id.user_profile_fragment, R.id.notifications_fragment, R.id.storeManagement2)
         navController.addOnDestinationChangedListener { _ , destination, _  ->
-            if(destination.id in hiddenDestinations) {
-                bottomNavigation.visibility = View.GONE
-            } else {
+            if(destination.id in showDestinations) {
                 bottomNavigation.visibility = View.VISIBLE
+            } else {
+                bottomNavigation.visibility = View.GONE
             }
         }
 
         bottomNavigation.setupWithNavController(navController)
-        setupActionBarWithNavController(navController, AppBarConfiguration(navController.graph))
-    }
-
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar.toolbar)
-        binding.toolbar.btnCart.setOnClickListener {
-            navigateToCart()
-        }
-        gotoAccountManagement()
-    }
-
-    private fun navigateToCart() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        navController.navigate(R.id.cartList)
-    }
-
-    private fun gotoAccountManagement() {
-        binding.toolbar.btnAvatar.setOnClickListener {
-            RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
-                if (it == "user") {
-                    Log.d("MainActivity", "User")
-                } else if (it == "store") {
-                    Log.d("MainActivity", "Store")
-                    // Start Activity StoreManagement
-                    val intent = Intent(this, StoreManagement::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            })
-        }
     }
 
     private fun updateUserToSeller(role: String){

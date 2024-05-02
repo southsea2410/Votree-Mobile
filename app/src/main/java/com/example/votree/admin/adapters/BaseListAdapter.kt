@@ -15,6 +15,7 @@ abstract class BaseListAdapter<T>(
 ) : RecyclerView.Adapter<BaseListAdapter<T>.BaseViewHolder>() {
 
     private var items = emptyList<T>()
+    private var respectiveList = emptyList<Int>()
     protected abstract var singleitem_selection_position: Int
     val db = Firebase.firestore
 
@@ -49,6 +50,14 @@ abstract class BaseListAdapter<T>(
     @SuppressLint("NotifyDataSetChanged")
     fun setData(items: List<T>) {
         this.items = items
+        Log.d("BaseListAdapter", "setData: $items")
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setData(items: List<T>, respectiveList: List<Int>) {
+        this.items = items
+        this.respectiveList = respectiveList
         notifyDataSetChanged()
     }
 
@@ -64,6 +73,14 @@ abstract class BaseListAdapter<T>(
     fun setSelectedPosition(position: Int) {
         singleitem_selection_position = position
         notifyDataSetChanged()
+    }
+
+    fun priceFormat(price: String): String {
+        return price.substring(0, price.length - 3) + "." + price.substring(price.length - 3) + " VND"
+    }
+
+    fun dateFormat(date: String): String {
+        return date.substring(7, 9) + "/" + date.substring(5, 6) + date.substring(6, 7) + "/" + date.substring(0, 4)
     }
 }
 

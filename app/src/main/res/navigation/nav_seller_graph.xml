@@ -22,7 +22,9 @@
         <action
             android:id="@+id/action_productList_to_cartList"
             app:destination="@id/cartList" />
-
+        <action
+            android:id="@+id/action_productList_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
     </fragment>
     <fragment
         android:id="@+id/productDetail"
@@ -36,8 +38,21 @@
             android:name="role"
             app:argType="string" />
         <action
-            android:id="@+id/action_productDetail2_to_checkout"
+            android:id="@+id/action_productDetail_to_checkout"
             app:destination="@id/checkout" />
+        <action
+            android:id="@+id/action_productDetail_to_productReviewListFragment"
+            app:destination="@id/productReviewListFragment" />
+        <action
+            android:id="@+id/action_productDetail_to_storeProfile2"
+            app:destination="@id/storeProfile2"
+            app:enterAnim="@anim/fui_slide_in_right" />
+        <action
+            android:id="@+id/action_productDetail_to_store_report"
+            app:destination="@id/store_report" />
+        <action
+            android:id="@+id/action_productDetail_to_productReport"
+            app:destination="@id/productReport" />
     </fragment>
     <fragment
         android:id="@+id/notifications_fragment"
@@ -50,7 +65,14 @@
         android:name="com.example.votree.users.fragments.UserProfileFragment"
         android:label="User Profile"
         tools:layout="@layout/fragment_user_profile"
-        />
+        >
+        <action
+            android:id="@+id/action_user_profile_fragment_to_userProfileSettingFragment"
+            app:destination="@id/userProfileSettingFragment" />
+        <action
+            android:id="@+id/action_user_profile_fragment_to_pointTransactionFragment"
+            app:destination="@id/pointTransactionFragment" />
+    </fragment>
     <fragment
         android:id="@+id/cartList"
         android:name="com.example.votree.products.fragments.CartList"
@@ -84,11 +106,6 @@
     </fragment>
 
 
-    <activity
-        android:id="@+id/storeManagement"
-        android:name="com.example.votree.users.activities.StoreManagement"
-        android:label="activity_store_management"
-        tools:layout="@layout/activity_store_management" />
     <fragment
         android:id="@+id/storeManagement2"
         android:name="com.example.votree.users.fragments.StoreManagementFragment"
@@ -134,5 +151,78 @@
         <argument
             android:name="currentProduct"
             app:argType="com.example.votree.products.models.Product" />
+    </fragment>
+    <fragment
+        android:id="@+id/productReviewListFragment"
+        android:name="com.example.votree.products.fragments.ProductReviewListFragment"
+        android:label="fragment_product_review_list"
+        tools:layout="@layout/fragment_product_review_list" >
+        <action
+            android:id="@+id/action_productReviewListFragment_to_productDetail"
+            app:destination="@id/productDetail" />
+        <argument
+            android:name="currentProduct"
+            app:argType="com.example.votree.products.models.Product" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileSettingFragment"
+        android:name="com.example.votree.users.fragments.UserProfileSettingFragment"
+        android:label="fragment_user_profile_setting"
+        tools:layout="@layout/fragment_user_profile_setting" >
+        <action
+            android:id="@+id/action_userProfileSettingFragment_to_user_profile_fragment"
+            app:destination="@id/user_profile_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/storeProfile2"
+        android:name="com.example.votree.users.fragments.StoreProfile2"
+        android:label="fragment_store_profile2"
+        tools:layout="@layout/fragment_store_profile2">
+        <argument
+            android:name="storeId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_storeProfile2_to_store_report"
+            app:destination="@id/store_report" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.example.votree.products.fragments.SearchResultFragment"
+        android:label="fragment_search_result"
+        tools:layout="@layout/fragment_search_result" >
+        <argument
+            android:name="query"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_productDetail"
+            app:destination="@id/productDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/store_report"
+        android:name="com.example.votree.users.fragments.StoreReport"
+        android:label="fragment_store_report"
+        tools:layout="@layout/fragment_store_report" >
+        <argument
+            android:name="storeId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/productReport"
+        android:name="com.example.votree.products.fragments.ProductReport"
+        android:label="fragment_product_report"
+        tools:layout="@layout/fragment_product_report" >
+        <argument
+            android:name="productId"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pointTransactionFragment"
+        android:name="com.example.votree.products.fragments.PointTransactionFragment"
+        android:label="fragment_point_transaction"
+        tools:layout="@layout/fragment_point_transaction">
+        <action
+            android:id="@+id/action_pointTransactionFragment_to_user_profile_fragment"
+            app:destination="@id/user_profile_fragment" />
     </fragment>
 </navigation>

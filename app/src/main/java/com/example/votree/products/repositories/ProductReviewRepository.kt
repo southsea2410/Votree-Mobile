@@ -2,6 +2,7 @@ package com.example.votree.products.repositories
 
 import com.example.votree.products.models.ProductReview
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 class ProductReviewRepository(private val db: FirebaseFirestore) {
 
@@ -32,5 +33,22 @@ class ProductReviewRepository(private val db: FirebaseFirestore) {
             .addOnFailureListener { e ->
                 onFailure(e)
             }
+    }
+
+    suspend fun getProductRating(productId: String): Float {
+        val reviewsSnapshot =
+            db.collection("products").document(productId).collection("reviews").get().await()
+        var totalRating = 0f
+        var totalReviews = 0
+        for (reviewDocument in reviewsSnapshot.documents) {
+            val review = reviewDocument.toObject(ProductReview::class.java)
+            review?.let {
+                totalRating += it.rating
+                totalReviews++
+            }
+        }
+        if (totalReviews == 0) return -1f
+
+        return totalRating / totalReviews
     }
 }

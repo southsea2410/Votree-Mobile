@@ -7,17 +7,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.votree.R
 import com.example.votree.products.models.Cart
+import com.example.votree.products.models.PointTransaction
 import com.example.votree.products.models.ShippingAddress
 import com.example.votree.products.models.Transaction
 import com.example.votree.products.repositories.CartRepository
+import com.example.votree.products.repositories.PointTransactionRepository
 import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.repositories.TransactionRepository
+import com.example.votree.users.repositories.StoreRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -168,6 +172,7 @@ class CheckoutActivity : AppCompatActivity() {
                 receiver?.let {
                     updateProductInventory(cart)
                     createTransactionFromCart(cart, receiver)
+                    updateProductSoldQuantity(cart)
                     clearCartAfterCheckout(cart)
                     finish()
                 }
@@ -178,6 +183,51 @@ class CheckoutActivity : AppCompatActivity() {
     private suspend fun updateProductInventory(cart: Cart) {
         cart.productsMap.forEach { (productId, quantity) ->
             productRepository.updateProductInventory(productId, quantity)
+        }
+    }
+
+    private suspend fun updateProductSoldQuantity(cart: Cart) {
+        cart.productsMap.forEach { (productId, quantity) ->
+            productRepository.updateProductSoldQuantity(productId, quantity)
+        }
+    }
+
+    private fun notifyStoreAboutNewOrder(transaction: Transaction) {
+        val data = hashMapOf(
+            "senderId" to userId,
+            "receiverId" to transaction.storeId,
+            "collectionPath" to "stores",
+            "title" to "New Order",
+            "body" to "You have a new order!",
+            "data" to hashMapOf("orderId" to transaction.id)
+        )
+
+        functions.getHttpsCallable("sendNotification").call(data)
+            .addOnSuccessListener {
+                Log.d(TAG, "Notification sent successfully")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error sending notification", e)
+            }
+    }
+
+    // Function to earn points after successful payment
+    private fun earnPointsAfterPayment(totalAmount: Double, storeId: String) {
+        val storeRepository = StoreRepository()
+        CoroutineScope(lifecycleScope.coroutineContext).launch {
+            val storeName = storeRepository.getStoreName(storeId)
+            val description = "$storeName"
+            val pointTransaction = PointTransaction(
+                userId = userId,
+                points = totalAmount.toInt(),
+                type = "earn",
+                description = description,
+                transactionDate = Date()
+            )
+            lifecycleScope.launch {
+                val pointTransactionRepository = PointTransactionRepository()
+                pointTransactionRepository.addPointTransaction(pointTransaction)
+            }
         }
     }
 
@@ -202,14 +252,25 @@ class CheckoutActivity : AppCompatActivity() {
                     phoneNumber = receiver.recipientPhoneNumber,
                     createdAt = currentDate
                 )
-                Log.d("CheckoutActivity", "Transaction: $transaction")
+                Log.d(TAG, "Transaction: $transaction")
                 lifecycleScope.launch {
+                    val totalAmount =
+                        transactionRepository.calculateTotalPrice(transaction.productsMap)
+                    transaction.totalAmount = totalAmount + 10.0 // Add delivery fee
                     transactionRepository.createAndUpdateTransaction(transaction)
+                    notifyStoreAboutNewOrder(transaction)
+
+                    // Earn points after successful payment
+                    earnPointsAfterPayment(totalAmount, storeId)
                 }
             }
     }
 
     private suspend fun clearCartAfterCheckout(cart: Cart) {
         cartRepository.clearCartAfterCheckout(userId, cart)
+    }
+
+    companion object {
+        private const val TAG = "CheckoutActivity"
     }
 }

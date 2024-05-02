@@ -1,6 +1,7 @@
 package com.example.votree.admin.activities
 
 import DialogFragmentListener
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
@@ -18,13 +19,16 @@ import androidx.fragment.app.FragmentManager
 import com.example.votree.R
 import com.example.votree.admin.fragments.AccountDetailFragment
 import com.example.votree.admin.fragments.AccountListFragment
-import com.example.votree.admin.fragments.BaseListFragment
+import com.example.votree.admin.fragments.ProductBoughtListFragment
+import com.example.votree.admin.fragments.ProductDetailFragment
 import com.example.votree.admin.fragments.ReportDetailFragment
 import com.example.votree.admin.fragments.ReportListFragment
-import com.example.votree.admin.fragments.ReportTipDetailFragment
 import com.example.votree.admin.fragments.TipDetailFragment
 import com.example.votree.admin.fragments.TipListFragment
+import com.example.votree.admin.fragments.TransactionDetailFragment
 import com.example.votree.admin.interfaces.OnItemClickListener
+import com.example.votree.databinding.FragmentUserProfileBinding
+import com.example.votree.users.activities.SignInActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
@@ -153,6 +157,25 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
     }
 
     override fun onItemClicked(view: View?, position: Int) {}
+    override fun onProductItemClicked(view: View?, position: Int) {
+        setCurrentFragment(ProductDetailFragment())
+        val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
+        topAppBar.setNavigationIcon(R.drawable.icon_back)
+        topAppBar.menu.findItem(R.id.search).isVisible = false
+        topAppBar.setNavigationOnClickListener {
+            supportFragmentManager.popBackStack()
+        }
+    }
+
+    override fun onTransactionItemClicked(view: View?, position: Int) {
+        setCurrentFragment(TransactionDetailFragment())
+        val topAppBar: MaterialToolbar = findViewById(R.id.topAppBar)
+        topAppBar.setNavigationIcon(R.drawable.icon_back)
+        topAppBar.menu.findItem(R.id.search).isVisible = false
+        topAppBar.setNavigationOnClickListener {
+            supportFragmentManager.popBackStack()
+        }
+    }
 
     override fun onTipItemClicked(view: View?, position: Int) {
         setCurrentFragment(TipDetailFragment())
@@ -258,6 +281,22 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
                 return true
             }
 
+            R.id.nav_logout -> {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Log Out")
+                    .setMessage("Are you sure you want to log out?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        SignInActivity().signOut()
+                        val intent = Intent(this, SignInActivity::class.java)
+                        startActivity(intent)
+                    }
+                    .setNegativeButton("No") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+                return true
+            }
+
             else -> return false
         }
     }
@@ -287,7 +326,8 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
             "TipDetailFragment" -> TipDetailFragment()
             "AccountDetailFragment" -> AccountDetailFragment()
             "ReportDetailFragment" -> ReportDetailFragment()
-            "ReportTipDetailFragment" -> ReportTipDetailFragment()
+            "ProductBoughtListFragment" -> ProductBoughtListFragment()
+            "ProductDetailFragment" -> ProductDetailFragment()
             else -> TipListFragment()
         }
     }
