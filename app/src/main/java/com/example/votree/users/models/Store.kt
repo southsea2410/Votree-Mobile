@@ -8,6 +8,7 @@ import java.util.Date
 data class Store(
     var id: String = "",
     val storeName: String = "",
+    var storeAvatar: String = "",
     val storeLocation: String = "",
     val storeEmail: String = "",
     val storePhoneNumber: String = "",
