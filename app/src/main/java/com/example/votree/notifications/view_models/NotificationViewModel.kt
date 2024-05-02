@@ -27,7 +27,7 @@ class NotificationViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val snapshot = db.collection("users/$userId/notifications")
-//                    .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                    .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
                     .get()
                     .await()
                 val notificationsList = snapshot.toObjects(Notification::class.java)
@@ -35,7 +35,6 @@ class NotificationViewModel : ViewModel() {
                 _notifications.postValue(notificationsList)
             } catch (e: Exception) {
                 Log.e("NotificationViewModel", "Error fetching notifications", e)
-                // Handle exceptions
             }
         }
     }
@@ -45,7 +44,7 @@ class NotificationViewModel : ViewModel() {
             val notificationMap = hashMapOf(
                 "title" to notification.title,
                 "content" to notification.content,
-                "isRead" to notification.isRead,
+                "read" to notification.read,
                 "createdAt" to com.google.firebase.Timestamp(notification.createdAt),
                 "orderId" to notification.orderId  // Include orderId in the map
             )
@@ -84,7 +83,6 @@ class NotificationViewModel : ViewModel() {
             try {
                 db.collection("users/$userId/notifications").document(notificationId)
                     .update("isRead", isRead).await()
-                // After updating, fetch notifications again or update the list locally
             } catch (e: Exception) {
                 Log.d("NotificationViewModel", "Error updating notification read status", e)
             }

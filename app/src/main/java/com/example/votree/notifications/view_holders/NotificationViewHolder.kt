@@ -13,8 +13,7 @@ class NotificationViewHolder(val binding: NotificationAdapterBinding, val listen
         binding.notificationTitleTv.text = notification.title
         binding.notificationContentTv.text = notification.content
 
-        // Change background color based on read status
-        if (notification.isRead) {
+        if (notification.read) {
             binding.notificationLayout.setBackgroundColor(Color.parseColor("#DEE5D8"))
         }
         else {
@@ -23,8 +22,12 @@ class NotificationViewHolder(val binding: NotificationAdapterBinding, val listen
 
         binding.root.setOnClickListener {
             listener.onNotificationClick(notification)
-            // Update the UI
+            notification.read = true
             binding.notificationLayout.setBackgroundColor(Color.parseColor("#DEE5D8"))
+
+            if (notification.orderId.isNotEmpty()) {
+                // Handle orderId
+            }
         }
     }
 }

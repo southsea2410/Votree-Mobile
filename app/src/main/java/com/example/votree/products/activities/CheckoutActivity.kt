@@ -204,10 +204,11 @@ class CheckoutActivity : AppCompatActivity() {
 
         functions.getHttpsCallable("sendNotification").call(data)
             .addOnSuccessListener {
+                // Log the success message response
                 Log.d(TAG, "Notification sent successfully")
             }
             .addOnFailureListener { e ->
-                Log.e(TAG, "Error sending notification", e)
+                Log.e(TAG, "Error sending notification ${e.message}", e)
             }
     }
 
@@ -257,7 +258,10 @@ class CheckoutActivity : AppCompatActivity() {
                     val totalAmount =
                         transactionRepository.calculateTotalPrice(transaction.productsMap)
                     transaction.totalAmount = totalAmount + 10.0 // Add delivery fee
-                    transactionRepository.createAndUpdateTransaction(transaction)
+                    val generatedId = transactionRepository.createAndUpdateTransaction(transaction)
+                    Log.d(TAG, "Transaction ID: $generatedId")
+                    transaction.id = generatedId
+                    Log.d(TAG, "Transaction: $transaction")
                     notifyStoreAboutNewOrder(transaction)
 
                     // Earn points after successful payment
