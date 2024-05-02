@@ -83,9 +83,14 @@ class OrderItemAdapter(
         coroutineScope.launch(Dispatchers.IO){
             val isReviewed = transactionRepository.isReviewSubmitted(transaction.id, userId)
             withContext(Dispatchers.Main){
-                holder.reviewBtn.isEnabled = !isReviewed
+                if (isReviewed){
+                    holder.reviewBtn.text = "View Review"
+                } else {
+                    holder.reviewBtn.text = "Write Review"
+                }
                 holder.reviewBtn.setOnClickListener {
                     val intent = Intent(holder.itemView.context, ProductReviewActivity::class.java)
+                    intent.putExtra("isSubmitted", isReviewed)
                     intent.putExtra("transactionId", transaction.id)
                     holder.itemView.context.startActivity(intent)
                 }

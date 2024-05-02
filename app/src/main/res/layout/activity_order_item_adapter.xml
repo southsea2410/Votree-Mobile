@@ -207,7 +207,6 @@
             android:layout_height="wrap_content"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:enabled="false"
             android:text="Review"
             android:textColor="@color/md_theme_primary"
             android:textSize="12sp"
