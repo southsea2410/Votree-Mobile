@@ -5,6 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:padding="8dp"
+    android:background="@drawable/order_history_background"
     tools:context=".users.adapters.OrderItemAdapter"
     android:orientation="vertical">
 
@@ -13,6 +16,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shop: "
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/md_theme_outlineVariant"
+            android:layout_gravity="left"/>
 
         <TextView
             android:id="@+id/shopName_tv"
@@ -33,9 +45,9 @@
             android:text="Status"
             android:textSize="14sp"
             android:textColor="@color/md_theme_errorContainer_mediumContrast"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
     </LinearLayout>
+
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -51,7 +63,6 @@
             android:layout_height="wrap_content"
             android:text="Product details"
             android:textSize="12sp"
-            android:textColor="@color/md_theme_outlineVariant"
             android:gravity="center_horizontal" />
     </LinearLayout>
 
@@ -115,8 +126,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="Product Price"
-                android:textSize="12sp"
-                android:textColor="@color/md_theme_primary"/>
+                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -138,16 +149,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="3"
-            android:textSize="12sp"
-            android:textColor="@color/md_theme_outlineVariant"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             android:layout_gravity="left"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" products"
             android:layout_weight="1"
-            android:textSize="12sp"
-            android:textColor="@color/md_theme_outlineVariant"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             android:layout_gravity="left"/>
 
         <LinearLayout
@@ -160,8 +169,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Total: "
-                android:textSize="14sp"
-                android:textColor="@color/md_theme_outlineVariant"/>
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/total_tv"
@@ -187,9 +195,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Review product to get discount"
-            android:textSize="12sp"
+            android:text="Add a review"
             android:textColor="@color/md_theme_outlineVariant"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
             android:gravity="left" />
 
         <Button
@@ -199,6 +207,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
+            android:enabled="false"
             android:text="Review"
             android:textColor="@color/md_theme_primary"
             android:textSize="12sp"

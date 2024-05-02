@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -15,6 +14,8 @@ import com.example.votree.databinding.ActivityProductReviewAcitivityBinding
 import com.example.votree.products.models.ProductReview
 import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.repositories.ProductReviewRepository
+import com.example.votree.utils.CustomToast
+import com.example.votree.utils.ToastType
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -68,7 +69,7 @@ class ProductReviewActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getImageFromDevice()
             } else {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                CustomToast.show(this, "Permission denied", ToastType.FAILURE)
             }
         }
     }
@@ -97,13 +98,13 @@ class ProductReviewActivity : AppCompatActivity() {
                     )
 
                     productReviewRepository.addProductReview(productReview, transactionId, onSuccess = {
-                        Toast.makeText(this, "Review submitted successfully", Toast.LENGTH_SHORT).show()
+                        CustomToast.show(this, "Review submitted successfully", ToastType.SUCCESS)
                         finish()
                     }, onFailure = {
-                        Toast.makeText(this, "Failed to submit review: ${it.message}", Toast.LENGTH_SHORT).show()
+                        CustomToast.show(this, "Failed to submit review: ${it.message}", ToastType.FAILURE)
                     })
                 }, onFailure = {
-                    Toast.makeText(this, "Failed to upload image: ${it.message}", Toast.LENGTH_SHORT).show()
+                    CustomToast.show(this, "Failed to upload image: ${it.message}", ToastType.FAILURE)
                 })
             }
         }

@@ -95,4 +95,14 @@ class TransactionRepository(private val db: FirebaseFirestore) {
 
         awaitClose { listenerRegistration.remove() }
     }
+
+    suspend fun isReviewSubmitted(transactionId: String, userId: String): Boolean {
+        val db = FirebaseFirestore.getInstance()
+        val productReviewsCollection = db.collection("productReviews")
+        val query = productReviewsCollection.whereEqualTo("transactionId", transactionId)
+            .whereEqualTo("userId", userId)
+
+        val querySnapshot = query.get().await()
+        return !querySnapshot.isEmpty
+    }
 }

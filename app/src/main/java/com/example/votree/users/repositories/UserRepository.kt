@@ -16,6 +16,10 @@ class UserRepository(private val db: FirebaseFirestore) {
         usersCollection.document(userId).set(user).await()
     }
 
+    suspend fun updateAvatar(userId: String, avatarUrl: String) {
+        usersCollection.document(userId).update("avatar", avatarUrl).await()
+    }
+
     suspend fun updateToStore(userId: String, storeId: String) {
         usersCollection.document(userId).update(
             mapOf(

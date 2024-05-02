@@ -16,62 +16,95 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Product Review"
-            android:textSize="24sp"
             android:textColor="@color/md_theme_primary"
-            android:textStyle="bold" />
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            android:textStyle="bold"/>
 
         <LinearLayout
             android:layout_marginTop="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
-                android:layout_weight="0.7"
                 android:layout_height="150dp"
+                android:background="@color/transparent"
+                android:layout_gravity="center_horizontal"
                 app:cardCornerRadius="8dp">
                 <ImageView
                     android:id="@+id/productImageView"
                     android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/img_placeholder" />
             </androidx.cardview.widget.CardView>
-
-            <Button
-                android:id="@+id/addImageButton"
-                style="@style/Widget.Material3.Button.IconButton.Filled"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Add Image"
-                android:textSize="14sp"
-                app:cornerRadius="5dp"
-                app:icon="@drawable/ic_add"
-                app:iconPadding="3dp"
-                app:iconSize="16dp" />
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/reviewEditText"
+        <Button
+            android:id="@+id/addImageButton"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_gravity="center_horizontal"
+            android:text="Add Image"
+            android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+            app:icon="@drawable/file_upload"
+            app:iconPadding="3dp"
+            app:iconSize="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="Rating"
+                android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                android:textColor="@color/black" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:numStars="5"
+                android:progressTint="@color/yellow"
+                android:scaleX="0.7"
+                android:scaleY="0.7"
+                android:stepSize="0.5" />
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
-            android:hint="Write your review here"
-            android:inputType="textMultiLine"
-            android:gravity="top"
-            android:minLines="4" />
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxStrokeColor="@color/md_theme_primary"
+            app:boxStrokeWidth="1dp">
 
-        <RatingBar
-            android:id="@+id/ratingBar"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:numStars="5"
-            android:stepSize="0.5"
-            android:rating="0" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reviewEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write your review here"
+                android:inputType="textMultiLine"
+                android:gravity="top"
+                android:minLines="4" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
 
     </LinearLayout>
 
@@ -81,6 +114,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0">
         <Button
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
             android:id="@+id/submitReviewButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

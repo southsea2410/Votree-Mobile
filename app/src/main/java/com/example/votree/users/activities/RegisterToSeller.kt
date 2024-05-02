@@ -119,6 +119,7 @@ class RegisterToSeller : AppCompatActivity() {
 
                     val userRepository = UserRepository(Firebase.firestore)
                     userRepository.updateToStore(userId, store.id)
+                    userRepository.updateAvatar(userId, avatarUrl)
 
                     runOnUiThread {
                         CustomToast.show(this@RegisterToSeller, "Store created successfully", ToastType.SUCCESS)
@@ -154,7 +155,6 @@ class RegisterToSeller : AppCompatActivity() {
             if (task.isSuccessful) {
                 val downloadUri = task.result
                 createNewStore(downloadUri.toString())
-
                 ProgressDialogUtils.hideLoadingDialog()
             } else {
                 CustomToast.show(this, "Failed to upload image", ToastType.FAILURE)
