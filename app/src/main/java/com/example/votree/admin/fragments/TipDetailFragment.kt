@@ -34,14 +34,14 @@ class TipDetailFragment : Fragment() {
         val rejectButton = view?.findViewById<Button>(R.id.rejectButton)
 
         approveButton?.setOnClickListener {
-            db.collection("ProductTip2").document(tip!!.id).update("approvalStatus", 1)
+            db.collection("ProductTip").document(tip!!.id).update("approvalStatus", 1)
                 .addOnSuccessListener {
                     activity?.supportFragmentManager?.popBackStack("tip_list_fragment", POP_BACK_STACK_INCLUSIVE)
                 }
         }
 
         rejectButton?.setOnClickListener {
-            db.collection("ProductTip2").document(tip!!.id).update("approvalStatus", -1)
+            db.collection("ProductTip").document(tip!!.id).update("approvalStatus", -1)
                 .addOnSuccessListener {
                     activity?.supportFragmentManager?.popBackStack("tip_list_fragment", POP_BACK_STACK_INCLUSIVE)
                 }
@@ -54,11 +54,7 @@ class TipDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tip = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable("tip", Tip::class.java)
-        } else {
-            arguments?.getParcelable("tip", Tip::class.java)
-        }
+        tip = arguments?.getParcelable("tip", Tip::class.java)
 
         updateUI()
     }

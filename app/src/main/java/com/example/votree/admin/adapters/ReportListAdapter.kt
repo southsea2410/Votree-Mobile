@@ -12,7 +12,7 @@ import com.example.votree.models.Report
 class ReportListAdapter(private val listener: OnItemClickListener, private val isDialog: Boolean = false) :
     BaseListAdapter<Report>(listener) {
 
-    override var singleitem_selection_position = 0
+    override var singleitem_selection_position = -1
 
     override fun getLayoutId(): Int = R.layout.item_report
 
@@ -58,7 +58,7 @@ class ReportListAdapter(private val listener: OnItemClickListener, private val i
 
             if (isDialog) {
                 if (absoluteAdapterPosition == singleitem_selection_position) {
-                    itemView.setBackgroundResource(android.R.color.holo_blue_bright)
+                    itemView.setBackgroundResource(android.R.color.holo_green_light)
                 } else {
                     itemView.setBackgroundResource(android.R.color.transparent)
                 }

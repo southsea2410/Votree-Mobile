@@ -9,7 +9,7 @@ import com.example.votree.admin.interfaces.OnItemClickListener
 class DialogDateListAdapter(private val nDates: List<String>, listener: OnItemClickListener) :
     BaseListAdapter<String>(listener) {
 
-    override var singleitem_selection_position = 0
+    override var singleitem_selection_position = -1
 
     override fun getLayoutId(): Int = R.layout.item_date
 
@@ -24,7 +24,7 @@ class DialogDateListAdapter(private val nDates: List<String>, listener: OnItemCl
             super.bind(item)
             // Set the background color based on the selected position
             if (absoluteAdapterPosition == singleitem_selection_position) {
-                itemView.setBackgroundResource(android.R.color.holo_blue_bright)
+                itemView.setBackgroundResource(android.R.color.holo_green_light)
             } else {
                 itemView.setBackgroundResource(android.R.color.transparent)
             }

@@ -22,4 +22,10 @@
         android:id="@+id/more"
         android:title="@string/more"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/more2"
+        android:title="@string/more"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>

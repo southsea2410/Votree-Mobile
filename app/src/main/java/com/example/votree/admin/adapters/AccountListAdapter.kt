@@ -10,7 +10,7 @@ import com.example.votree.models.User
 class AccountListAdapter(private var listener: OnItemClickListener) :
     BaseListAdapter<User>(listener) {
 
-    override var singleitem_selection_position = 0 // no use
+    override var singleitem_selection_position = -1 // no use
 
     override fun getLayoutId(): Int = R.layout.item_account
 
