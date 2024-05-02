@@ -1,21 +1,32 @@
 package com.example.votree.users.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.votree.databinding.ActivityRegisterToSellerBinding
 import com.example.votree.users.models.Store
 import com.example.votree.users.repositories.StoreRepository
+import com.example.votree.users.repositories.UserRepository
+import com.example.votree.utils.CustomToast
+import com.example.votree.utils.ProgressDialogUtils
+import com.example.votree.utils.ToastType
+import com.example.votree.utils.ValidationUtils
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class RegisterToSeller : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterToSellerBinding
     private val storeRepository = StoreRepository()
+    private val storageReference = FirebaseStorage.getInstance().getReference("images/storeAvatars")
+    private var avatarUri = Uri.EMPTY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +47,13 @@ class RegisterToSeller : AppCompatActivity() {
         }
     }
 
+    private val getImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            binding.shopAvatarIv.setImageURI(uri)
+            avatarUri = uri
+        }
+    }
+
     private fun validateForm(): Boolean {
         var isValid = true
 
@@ -49,16 +67,22 @@ class RegisterToSeller : AppCompatActivity() {
             isValid = false
         }
 
-        if (binding.etShopEmail.text.toString().trim().isEmpty()) {
+        val email = binding.etShopEmail.text.toString().trim()
+        val phoneNumber = binding.etShopPhone.text.toString().trim()
+
+        if (email.isEmpty()) {
             binding.etShopEmail.error = "Email is required"
             isValid = false
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(binding.etShopEmail.text.toString().trim()).matches()) {
+        } else if (!ValidationUtils.isValidEmail(email)) {
             binding.etShopEmail.error = "Invalid email format"
             isValid = false
         }
 
-        if (binding.etShopPhone.text.toString().trim().isEmpty()) {
+        if (phoneNumber.isEmpty()) {
             binding.etShopPhone.error = "Phone number is required"
+            isValid = false
+        } else if (!ValidationUtils.isValidPhoneNumber(phoneNumber)) {
+            binding.etShopPhone.error = "Phone number must be 10 digits"
             isValid = false
         }
 
@@ -67,40 +91,73 @@ class RegisterToSeller : AppCompatActivity() {
 
     private fun setupButton() {
         binding.btnRegister.setOnClickListener {
-            if (validateForm()) {
-                // return the result to the parent calling
-                val intent = Intent()
-                intent.putExtra("role", "store")
-                // Create a store object and pass it to the parent activity
-                val store = Store(
-                    id = "",
-                    storeName = binding.etShopName.text.toString(),
-                    storeLocation = binding.etShopAddress.text.toString(),
-                    storeEmail = binding.etShopEmail.text.toString(),
-                    storePhoneNumber = binding.etShopPhone.text.toString()
-                )
-                // Call the storeRepository to create new store in the database
-                CoroutineScope(Dispatchers.IO).launch {
-                    try{
-                        val userId = Firebase.auth.currentUser?.uid ?: ""
-                        storeRepository.createNewStore(store, userId)
+            uploadImageToFirebase(avatarUri)
+        }
 
-                        // Return the result to the parent activity
-                        val intent = Intent()
-                        intent.putExtra("role", "store")
-                        intent.putExtra("store", store)
-                        setResult(RESULT_OK, intent)
+        // Set up the button click listener
+        binding.uploadAvatarBtn.setOnClickListener {
+            // Launch the image picker
+            getImage.launch("image/*")
+        }
+    }
+
+    private fun createNewStore(avatarUrl: String) {
+        if (validateForm()) {
+            val store = Store(
+                id = "",
+                storeName = binding.etShopName.text.toString(),
+                storeLocation = binding.etShopAddress.text.toString(),
+                storeEmail = binding.etShopEmail.text.toString(),
+                storePhoneNumber = binding.etShopPhone.text.toString(),
+                storeAvatar = avatarUrl
+            )
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val userId = Firebase.auth.currentUser?.uid ?: ""
+                    storeRepository.createNewStore(store, userId)
+
+                    val userRepository = UserRepository(Firebase.firestore)
+                    userRepository.updateToStore(userId, store.id)
+
+                    runOnUiThread {
+                        CustomToast.show(this@RegisterToSeller, "Store created successfully", ToastType.SUCCESS)
+                        SignInActivity().signOut()
+                        val intent = Intent(this@RegisterToSeller, SignInActivity::class.java)
+                        startActivity(intent)
                         finish()
-                    } catch (e: Exception){
-                        runOnUiThread{
-                            Toast.makeText(this@RegisterToSeller, "Failed to create store: ${e.message}", Toast.LENGTH_SHORT).show()
-                        }
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        CustomToast.show(this@RegisterToSeller, "Failed to create store: ${e.message}", ToastType.FAILURE)
                     }
                 }
+            }
+        }
+    }
 
-//                intent.putExtra("store", store)
-//                setResult(RESULT_OK, intent)
-//                finish()
+    private fun uploadImageToFirebase(fileUri: Uri) {
+        ProgressDialogUtils.showLoadingDialog(this)
+
+        val fileName = UUID.randomUUID().toString() + ".jpg"
+        val fileRef = storageReference.child(fileName)
+        val uploadTask = fileRef.putFile(fileUri)
+
+        uploadTask.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            fileRef.downloadUrl
+        }.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val downloadUri = task.result
+                createNewStore(downloadUri.toString())
+
+                ProgressDialogUtils.hideLoadingDialog()
+            } else {
+                CustomToast.show(this, "Failed to upload image", ToastType.FAILURE)
             }
         }
     }
