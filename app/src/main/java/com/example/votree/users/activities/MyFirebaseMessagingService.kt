@@ -27,14 +27,16 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         println("From: ${remoteMessage.from}")
 
-        if (remoteMessage.notification != null) {
-            println("Message Notification Body: ${remoteMessage.notification!!.body}")
-
+        // Check for notification payload
+        remoteMessage.notification?.let {
+            println("Message Notification Body: ${it.body}")
+            sendNotification(remoteMessage.from ?: "", it.body ?: "")
         }
-        sendNotification(remoteMessage.from ?: "", remoteMessage.notification?.body ?: "")
 
-        // Extract orderId if available
+        // Extract orderId from the data payload
         val orderId = remoteMessage.data["orderId"] ?: ""
+        println("Order ID: $orderId") // For debugging
+
         val notification = Notification(
             title = remoteMessage.notification?.title ?: "No Title",
             content = remoteMessage.notification?.body ?: "No Content",

@@ -9,7 +9,7 @@ data class Notification(
     var id: String = "",
     val title: String = "",
     val content: String = "",
-    var isRead: Boolean = false,
+    var read: Boolean = false,
     var orderId: String = "",
     val createdAt: Date = Date()
 ) : Parcelable

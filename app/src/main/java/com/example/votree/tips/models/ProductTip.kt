@@ -27,7 +27,8 @@ data class ProductTip(
 data class Author(
     val userId: String = "",
     val fullName: String = "",
-    val storeName: String = ""
+    val storeName: String = "",
+    val avatar: String = "",
 ) {
     override fun toString(): String {
         return "Author(userId='$userId', fullName='$fullName', storeName='$storeName')"

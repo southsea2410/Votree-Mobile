@@ -16,10 +16,15 @@ import com.example.votree.databinding.FragmentProductDetailBinding
 import com.example.votree.products.adapters.UserReviewAdapter
 import com.example.votree.products.models.Cart
 import com.example.votree.products.models.ProductReview
+import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.view_models.CartViewModel
+import com.example.votree.users.repositories.StoreRepository
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProductDetailFragment : Fragment() {
 
@@ -44,17 +49,33 @@ class ProductDetailFragment : Fragment() {
         setupButtons()
         setupReviewAdapter()
         fetchAndDisplayReviews()
+        displayShopDetails()
     }
 
     private fun displayProductDetails() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val productRepository = ProductRepository(firestore)
+            try {
+                val productRating =
+                    productRepository.getAverageProductRating(args.currentProduct.id)
+                withContext(Dispatchers.Main) {
+                    binding.productRatingRb.rating = productRating
+                    binding.productRating.text = productRating.toString()
+                }
+            } catch (e: Exception) {
+                Log.e("ProductDetailFragment", "Error fetching product details", e)
+
+            }
+        }
+
         with(binding) {
             args.currentProduct.let { product ->
+                productName.text = product.productName
                 productPrice.text = getString(R.string.price_format, product.price)
                 description.text = product.description
                 productType.text = product.type.toString()
                 suitEnvironment.text = product.suitEnvironment.toString()
                 suitClimate.text = product.suitClimate.toString()
-                productRating.text = product.averageRate.toString()
                 productSoldQuantity.text = product.quantitySold.toString()
 
                 Glide.with(this@ProductDetailFragment)
@@ -66,13 +87,65 @@ class ProductDetailFragment : Fragment() {
         }
     }
 
+    private fun displayShopDetails() {
+        args.currentProduct.storeId.let { storeId ->
+            val storeRepository = StoreRepository()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val store = storeRepository.fetchStore(storeId)
+                    val numberOfProducts = storeRepository.getNumberOfProductsOfStore(storeId)
+                    val averageRating = storeRepository.getAverageProductRating(storeId)
+
+                    // Update the UI on the main thread
+                    withContext(Dispatchers.Main) {
+                        binding.storeName.text = store.storeName
+                        binding.storeSoldProductsTv.text = "$numberOfProducts"
+                        binding.storeRatingTv.text = averageRating.toString()
+                    }
+                } catch (e: Exception) {
+                    Log.e("ProductDetailFragment", "Error fetching store details", e)
+                    // Handle errors, possibly update the UI to show an error message
+                }
+            }
+        }
+
+    }
+
     private fun setupButtons() {
         with(binding) {
+            productDetailToolbar.setNavigationOnClickListener{
+                findNavController().navigateUp()
+            }
+            productDetailToolbar.setOnMenuItemClickListener {
+                when(it.itemId){
+                    R.id.productDetail_to_StoreReport -> {
+                        val action = ProductDetailFragmentDirections.actionProductDetailToStoreReport(args.currentProduct.storeId)
+                        findNavController().navigate(action)
+                        true
+                    }
+                    R.id.productDetail_to_ProductReport -> {
+                        val action = ProductDetailFragmentDirections.actionProductDetailToProductReport(args.currentProduct.id)
+                        findNavController().navigate(action)
+                        true
+                    }
+                    else -> false
+                }
+            }
             buyNowBtn.setOnClickListener {
                 gotoCheckout()
             }
             addToCartBtn.setOnClickListener {
                 cartViewModel.addProductToCart(args.currentProduct.id, 1)
+            }
+
+            viewAllReviewBtn.setOnClickListener {
+                gotoReviewsList()
+            }
+
+            storeInfo.setOnClickListener{
+                val directions = ProductDetailFragmentDirections.actionProductDetailToStoreProfile2(args.currentProduct.storeId)
+                findNavController().navigate(directions)
             }
         }
     }
@@ -84,19 +157,42 @@ class ProductDetailFragment : Fragment() {
 
     private fun fetchAndDisplayReviews() {
         val reviews = mutableListOf<ProductReview>()
+        // Go to the products/productId/reviews collection in Firestore
         firestore.collection("products").document(args.currentProduct.id).collection("reviews")
+            .orderBy("rating", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { reviewsSnapshot ->
                 for (reviewDocument in reviewsSnapshot.documents) {
                     val review = reviewDocument.toObject(ProductReview::class.java)
                     review?.let { reviews.add(it) }
                 }
-                userReviewAdapter = UserReviewAdapter(reviews, CoroutineScope(Dispatchers.Main))
+                // Only take the first 2 reviews to display
+                val reviewsToDisplay = reviews.take(2)
+                userReviewAdapter = UserReviewAdapter(reviewsToDisplay, CoroutineScope(Dispatchers.Main))
                 reviewRecyclerView.adapter = userReviewAdapter
+
+                binding.totalReviewTv.text = reviews.size.toString()
             }
             .addOnFailureListener { e ->
                 Log.e("ProductDetail", "Error fetching reviews", e)
             }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val productRepository = ProductRepository(firestore)
+            try {
+                val productRating = productRepository.getAverageProductRating(args.currentProduct.id)
+                withContext(Dispatchers.Main) {
+                    binding.totalRatingTv.text = productRating.toString()
+                }
+            } catch (e: Exception) {
+                Log.e("ProductDetailFragment", "Error fetching product details", e)
+            }
+        }
+    }
+
+    private fun gotoReviewsList(){
+        val action = ProductDetailFragmentDirections.actionProductDetailToProductReviewListFragment(args.currentProduct)
+        findNavController().navigate(action)
     }
 
     private fun gotoCheckout() {

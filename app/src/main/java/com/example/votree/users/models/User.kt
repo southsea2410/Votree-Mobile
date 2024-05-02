@@ -7,13 +7,13 @@ import java.util.Date
 @Parcelize
 data class User(
     var id: String = "",
-    val email: String = "",
+    var email: String = "",
     val username: String = "",
-    val fullName: String = "",
+    var fullName: String = "",
     val password: String = "",
     val avatar: String = "",
-    val phoneNumber: String = "",
-    val address: String = "",
+    var phoneNumber: String = "",
+    var address: String = "",
     val role: String = "",
     val storeId: String = "",
     var expirePremium: Date = Date(),

@@ -12,11 +12,12 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class TransactionRepository(private val db: FirebaseFirestore) {
-    suspend fun createAndUpdateTransaction(transaction: Transaction) {
+    suspend fun createAndUpdateTransaction(transaction: Transaction): String {
         val generatedId = createTransaction(transaction)
         updateTransactionId(transaction, generatedId)
         updateUserTransactionIdList(transaction.customerId, generatedId)
         updateStoreTransactionIdList(transaction.storeId, generatedId)
+        return generatedId
     }
 
     private suspend fun createTransaction(transaction: Transaction): String {
@@ -94,5 +95,15 @@ class TransactionRepository(private val db: FirebaseFirestore) {
         }
 
         awaitClose { listenerRegistration.remove() }
+    }
+
+    suspend fun isReviewSubmitted(transactionId: String, userId: String): Boolean {
+        val db = FirebaseFirestore.getInstance()
+        val productReviewsCollection = db.collection("productReviews")
+        val query = productReviewsCollection.whereEqualTo("transactionId", transactionId)
+            .whereEqualTo("userId", userId)
+
+        val querySnapshot = query.get().await()
+        return !querySnapshot.isEmpty
     }
 }

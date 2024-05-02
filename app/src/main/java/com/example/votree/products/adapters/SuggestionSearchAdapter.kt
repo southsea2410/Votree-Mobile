@@ -4,24 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.R
 
 class SuggestionSearchAdapter(
-    private val suggestions: MutableList<String>,
     private val onSuggestionClicked: (String) -> Unit
-) : RecyclerView.Adapter<SuggestionSearchAdapter.SuggestionViewHolder>() {
+) : ListAdapter<String, SuggestionSearchAdapter.SuggestionViewHolder>(SuggestionsComparator()) {
 
-    interface onSuggestionClickListener {
-        fun onSuggestionClick(suggestion: String)
-    }
-    private var listener: onSuggestionClickListener? = null
-
-    fun setOnSuggestionClickListener(listener: onSuggestionClickListener) {
-        this.listener = listener
-    }
-
-    class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val productNameTextView: TextView = itemView.findViewById(R.id.productName_tv)
     }
 
@@ -31,17 +23,20 @@ class SuggestionSearchAdapter(
     }
 
     override fun onBindViewHolder(holder: SuggestionViewHolder, position: Int) {
-        val suggestion = suggestions[position]
+        val suggestion = getItem(position)
         holder.productNameTextView.text = suggestion
         holder.itemView.setOnClickListener {
             onSuggestionClicked(suggestion)
         }
     }
 
-    override fun getItemCount(): Int = suggestions.size
-    fun updateSuggestions(newSuggestions: List<String>) {
-        suggestions.clear()
-        suggestions.addAll(newSuggestions)
-        notifyDataSetChanged()
+    class SuggestionsComparator : DiffUtil.ItemCallback<String>() {
+        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
     }
 }

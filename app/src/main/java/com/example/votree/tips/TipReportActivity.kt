@@ -14,7 +14,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.votree.R
 import com.example.votree.databinding.ActivityTipReportBinding
 import com.example.votree.tips.models.ProductTip
-import com.example.votree.tips.models.TipReport
+import com.example.votree.tips.models.GeneralReport
+import com.example.votree.utils.AuthHandler
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
@@ -48,6 +49,9 @@ class TipReportActivity : AppCompatActivity() {
                 Toast.makeText(this, "No media selected", Toast.LENGTH_SHORT).show()
             }
         }
+        binding.tipReportToolbar.setNavigationOnClickListener {
+            finish()
+        }
         binding.tipReportAddImageBtn.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
@@ -58,16 +62,17 @@ class TipReportActivity : AppCompatActivity() {
 
         binding.tipReportSubmitBtn.setOnClickListener {
             val tipData = getTipData() ?: return@setOnClickListener
-            val tipReport = TipReport(
+            val generalReport = GeneralReport(
                 content = binding.tipReportContentEditText.text.toString(),
                 shortDescription = binding.tipReportReason.text.toString(),
+                reporterId = AuthHandler.firebaseAuth.currentUser?.uid ?: "",
                 tipId = tipData.id
             )
-            pushReportToDatabase(tipReport, imageUri)
+            pushReportToDatabase(generalReport, imageUri)
         }
     }
 
-    private fun pushReportToDatabase(tipReport: TipReport, imageUri: Uri?){
+    private fun pushReportToDatabase(generalReport: GeneralReport, imageUri: Uri?){
         val fireStoreInstance = FirebaseFirestore.getInstance()
         val storageInstance = FirebaseStorage.getInstance()
 
@@ -76,8 +81,8 @@ class TipReportActivity : AppCompatActivity() {
             storageRef.putFile(imageUri)
                 .addOnSuccessListener {
                     storageRef.downloadUrl.addOnSuccessListener {
-                        tipReport.imageList[0]  = it.toString()
-                        fireStoreInstance.collection("reports").add(tipReport)
+                        generalReport.imageList[0]  = it.toString()
+                        fireStoreInstance.collection("reports").add(generalReport)
                             .addOnSuccessListener { documentReference ->
                                 val documentId = documentReference.id
                                 fireStoreInstance.collection("reports").document(documentId)
@@ -100,7 +105,7 @@ class TipReportActivity : AppCompatActivity() {
                 }
         }
         else{
-            fireStoreInstance.collection("reports").add(tipReport)
+            fireStoreInstance.collection("reports").add(generalReport)
                 .addOnSuccessListener { documentReference ->
                     val documentId = documentReference.id
                     fireStoreInstance.collection("reports").document(documentId)

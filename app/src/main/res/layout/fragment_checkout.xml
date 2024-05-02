@@ -24,7 +24,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/md_theme_inversePrimary_mediumContrast"
                 android:padding="14dp"
                 android:text="Shipping Address"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -33,18 +32,19 @@
             />
 
             <LinearLayout
+                android:id="@+id/addressView"
                 android:layout_width="match_parent"
+                android:background="@color/white"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true"
                 android:padding="14dp">
 
                 <LinearLayout
-                    android:id="@+id/addressView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -117,7 +117,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_theme_inversePrimary_mediumContrast"
                     android:padding="14dp"
                     android:text="Delivery Options"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -128,6 +127,7 @@
                     android:id="@+id/deliveryOptionsView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="14dp">
 
@@ -156,7 +156,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/md_theme_inversePrimary_mediumContrast"
                 android:padding="14dp"
                 android:paddingBottom="0dp"
                 android:text="Products List"
@@ -168,6 +167,7 @@
                 android:id="@+id/products_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 android:layout_marginTop="4dp"
                 android:padding="14dp"
                 android:paddingBottom="0dp" />
@@ -180,7 +180,6 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_theme_inversePrimary_mediumContrast"
                     android:padding="14dp"
                     android:text="Payment Options"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -191,6 +190,7 @@
                     android:id="@+id/paymentOptionsView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:orientation="horizontal"
                     android:padding="14dp">
 
@@ -229,7 +229,66 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/md_theme_inversePrimary_mediumContrast"
+                    android:padding="14dp"
+                    android:text="Accumulate Points"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/md_theme_onSecondaryFixedVariant"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/accumulatePointsView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:padding="14dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_accumulate_points" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:text="Your points: "
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/md_theme_onSecondaryFixedVariant" />
+
+                    <TextView
+                        android:id="@+id/accumulatePoints_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:text="10"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/md_theme_onSecondaryFixedVariant" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/usePoints_sw"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="14dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:padding="14dp"
                     android:text="Transaction Details"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
@@ -241,20 +300,22 @@
                     android:id="@+id/transactionDetailsView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="14dp">
 
                     <LinearLayout
+                        android:id="@+id/totalProductsPrice_ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:layout_marginBottom="2dp"
-                            android:layout_weight="1"
+                            android:layout_weight="0.7"
                             android:text="Total products price"
                             android:textAppearance="?attr/textAppearanceBodySmall" />
 
@@ -272,16 +333,17 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/deliveryFee_ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:layout_marginBottom="2dp"
-                            android:layout_weight="1"
+                            android:layout_weight="0.7"
                             android:text="Delivery Fee"
                             android:textAppearance="?attr/textAppearanceBodySmall" />
 
@@ -294,21 +356,50 @@
                             android:layout_marginBottom="2dp"
                             android:layout_weight="0"
                             android:paddingEnd="14dp"
-                            android:text="$ 10"
+                            android:text="$ +10"
                             android:textAppearance="?attr/textAppearanceBodySmall" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/saleByPoints_ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:layout_marginBottom="2dp"
-                            android:layout_weight="1"
+                            android:layout_weight="0.7"
+                            android:text="Sale by Accumulate Points"
+                            android:textAppearance="?attr/textAppearanceBodySmall" />
+
+                        <TextView
+                            android:id="@+id/saleByPoints_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="14dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="0"
+                            android:paddingEnd="14dp"
+                            android:text="$ -0"
+                            android:textAppearance="?attr/textAppearanceBodySmall" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/totalAmount_ll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:layout_weight="0.7"
                             android:text="Total Amount"
                             android:textAppearance="?attr/textAppearanceBodySmall" />
 

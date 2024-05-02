@@ -18,7 +18,7 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
     private var _binding: FragmentNotificationBinding? = null
     private val binding get() = _binding!!
     private val viewModel: NotificationViewModel by viewModels()
-    private val adapter = NotificationAdapter(this)
+    private var adapter = NotificationAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,10 +44,8 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
 
     override fun onNotificationClick(notification: Notification) {
         Log.d("NotificationFragment", "Notification clicked: $notification")
-        if (!notification.isRead) {
+        if (!notification.read) {
             viewModel.updateNotificationReadStatus(notification.id, true)
-            notification.isRead = true // Update the local notification object
-            adapter.notifyItemChanged(adapter.currentList.indexOf(notification)) // Refresh the specific item
         }
     }
 

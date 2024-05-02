@@ -11,6 +11,8 @@ import com.example.votree.R
 import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.databinding.ActivitySignInBinding
 import com.example.votree.tips.AdManager
+import com.example.votree.utils.CustomToast
+import com.example.votree.utils.ToastType
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -18,6 +20,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -91,7 +95,13 @@ class SignInActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 checkUserAccessLevel(firebaseAuth.currentUser?.uid)
             } else {
-                Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
+                // Use CustomToast to show the error message
+                val errorMessage = when {
+                    task.exception is FirebaseAuthInvalidCredentialsException -> "The password is incorrect."
+                    task.exception is FirebaseAuthInvalidUserException -> "The email address is not registered."
+                    else -> "Sign in failed: ${task.exception?.message}"
+                }
+                CustomToast.show(this, errorMessage, ToastType.FAILURE)
             }
         }
     }
@@ -156,7 +166,8 @@ class SignInActivity : AppCompatActivity() {
                 firebaseAuthWithGoogle(it)
             }
         } else {
-            Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
+            // Use CustomToast to show the error message
+            CustomToast.show(this, "Google sign in failed: ${task.exception?.message}", ToastType.FAILURE)
         }
     }
 
@@ -176,7 +187,7 @@ class SignInActivity : AppCompatActivity() {
         intent.putExtra("email", account.email)
         intent.putExtra("name", account.displayName)
         startActivity(intent)
-        Toast.makeText(this, "Sign in with Google successful!", Toast.LENGTH_SHORT).show()
+        CustomToast.show(this, "Sign in with Google successful!", ToastType.SUCCESS)
     }
 
     fun signOut() {

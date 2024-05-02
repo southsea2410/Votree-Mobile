@@ -7,13 +7,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.databinding.ActivityMainBinding
@@ -24,11 +24,8 @@ import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.messaging.FirebaseMessaging
-
-@Suppress("DEPRECATION")
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,7 +33,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var permissionManager: PermissionManager
     private val bottomNavigation by lazy { findViewById<BottomNavigationView>(R.id.bottom_navigation_view) }
     private var role = ""
-    private var searchQueryListener: SearchQueryListener? = null
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     @SuppressLint("MissingInflatedId")
@@ -48,6 +44,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(binding.root.id)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 25, systemBars.right, 0)
+            insets
+        }
+
         val adView = findViewById<AdView>(R.id.adView)
         AdManager.loadBannerAd(adView)
 
@@ -55,11 +58,9 @@ class MainActivity : AppCompatActivity() {
         permissionManager.checkPermissions()
 
         setupPermissions()
-        setupSearchView()
 
         RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
             role = it ?: ""
-            setupToolbar()
             setupNavigation()
 
             when (it) {
@@ -116,31 +117,16 @@ class MainActivity : AppCompatActivity() {
         if (role != "store") {
             bottomNavigation.menu.removeItem(R.id.storeManagement2)
         }
-        val hiddenDestinations = setOf(R.id.productDetail, R.id.productDetail)
+        val showDestinations = setOf(R.id.productList, R.id.main_tip_fragment, R.id.user_profile_fragment, R.id.notifications_fragment, R.id.storeManagement2, R.id.pointTransactionFragment)
         navController.addOnDestinationChangedListener { _ , destination, _  ->
-            if(destination.id in hiddenDestinations) {
-                bottomNavigation.visibility = View.GONE
-            } else {
+            if(destination.id in showDestinations) {
                 bottomNavigation.visibility = View.VISIBLE
+            } else {
+                bottomNavigation.visibility = View.GONE
             }
         }
 
         bottomNavigation.setupWithNavController(navController)
-        setupActionBarWithNavController(navController, AppBarConfiguration(navController.graph))
-    }
-
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar.toolbar)
-        binding.toolbar.btnCart.setOnClickListener {
-            navigateToCart()
-        }
-    }
-
-    private fun navigateToCart() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.main_navigation_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        navController.navigate(R.id.cartList)
     }
 
     private fun updateUserToSeller(role: String){
@@ -157,51 +143,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    interface SearchQueryListener {
-        fun onQueryTextChange(newText: String)
-
-        fun onQueryTextSubmit(query: String)
-    }
-
-    fun setSearchQueryListener(listener: SearchQueryListener?) {
-        this.searchQueryListener = listener
-    }
-
-    fun setSearchQuery(query: String) {
-        searchQueryListener?.onQueryTextChange(query)
-    }
-
-    private fun setupSearchView() {
-        binding.toolbar.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                val navController = findNavController(R.id.main_navigation_fragment)
-                navController.navigate(R.id.suggestionSearchFragment)
-            } else {
-            }
-            binding.toolbar.AccountLinearLayout.visibility = if (hasFocus) View.GONE else View.VISIBLE
-        }
-
-        binding.toolbar.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                binding.toolbar.searchView.clearFocus()
-                searchQueryListener?.onQueryTextSubmit(query ?: "")
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                searchQueryListener?.onQueryTextChange(newText ?: "")
-                return true
-            }
-        })
-
-        // When user clear the search view, navigate to suggestion search fragment
-        binding.toolbar.searchView.setOnCloseListener {
-            val navController = findNavController(R.id.main_navigation_fragment)
-            navController.navigate(R.id.productList)
-            false
-        }
-    }
-
 }
 
