@@ -15,4 +15,13 @@ class UserRepository(private val db: FirebaseFirestore) {
     suspend fun updateUser(userId: String, user: User) {
         usersCollection.document(userId).set(user).await()
     }
+
+    suspend fun updateToStore(userId: String, storeId: String) {
+        usersCollection.document(userId).update(
+            mapOf(
+                "storeId" to storeId,
+                "role" to "store"
+            )
+        ).await()
+    }
 }
