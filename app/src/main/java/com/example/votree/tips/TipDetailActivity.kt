@@ -14,24 +14,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.transition.Visibility
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.ActivityTipDetailBinding
 import com.example.votree.tips.adapters.TipCommentAdapter
 import com.example.votree.tips.models.ProductTip
 import com.example.votree.tips.view_models.CommentViewModel
-import com.google.android.gms.ads.AdView
 import com.example.votree.tips.view_models.TipsViewModel
 import com.google.android.material.button.MaterialButtonToggleGroup
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButtonCheckedListener {
-
     private val viewModel: TipsViewModel by viewModels()
     private val commentViewModel: CommentViewModel by viewModels()
     private val commentAdapter = TipCommentAdapter()
+    private var textToSpeechHelper: TextToSpeechHelper? = null
+    private var isPlaying = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +42,7 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
             enableEdgeToEdge()
             ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
                 val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+                v.setPadding(systemBars.left, 0, systemBars.right, 0)
                 insets
             }
             setupToolbar(binding)
@@ -59,6 +58,38 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
             Log.d("TipDetailActivity", "Comment list updated")
             commentAdapter.submitList(it)
         }
+
+        textToSpeechHelper = TextToSpeechHelper(this)
+
+        val titleText = binding.tipDetailTitleTextView
+        val authorText = binding.tipDetailAuthorTextView
+        val detailContent = binding.tipDetailContentTextView
+        val icSpeaker = binding.textToSpeechButton
+
+        icSpeaker.setOnClickListener {
+            if (isPlaying) {
+                icSpeaker.setImageResource(R.drawable.ic_speaker_idle)
+                textToSpeechHelper?.stop()
+            }
+            else {
+                icSpeaker.setImageResource(R.drawable.ic_speaker_playing)
+                textToSpeechHelper?.speak(titleText.text.toString(), authorText.text.toString(), detailContent.text.toString())
+            }
+            isPlaying = !isPlaying
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        textToSpeechHelper?.shutdown()
+        // TODO: Implement store profile
+//        binding.tipDetailAuthorStoreLayout.setOnClickListener{
+//            val intent = Intent(this, StoreProfile2::class.java)
+//            if (tipData == null) return@setOnClickListener
+//            intent.putExtra("userId", tipData.userId)
+//            startActivity(intent)
+//        }
     }
 
     private fun setupData(tipData: ProductTip, binding: ActivityTipDetailBinding){
@@ -104,7 +135,6 @@ class TipDetailActivity : AppCompatActivity(), MaterialButtonToggleGroup.OnButto
             if (commentContent.isNotBlank()){
                 commentViewModel.castComment(getTipData()!!, commentContent)
                 comment.text?.clear()
-                commentViewModel.queryComments(getTipData()!!)
             }
             else{
                 Toast.makeText(this, "Comment cannot be empty", Toast.LENGTH_SHORT).show()

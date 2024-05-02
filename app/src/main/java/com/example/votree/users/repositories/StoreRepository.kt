@@ -92,4 +92,9 @@ class StoreRepository {
             throw RuntimeException("Failed to calculate average rating", e)
         }
     }
+
+    suspend fun getStoreName(storeId: String): String {
+        val document = storeCollection.document(storeId).get().await()
+        return document.getString("storeName") ?: ""
+    }
 }

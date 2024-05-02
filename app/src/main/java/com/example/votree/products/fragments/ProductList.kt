@@ -2,6 +2,8 @@ package com.example.votree.products.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,17 +13,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.votree.MainActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.votree.R
 import com.example.votree.databinding.FragmentProductListBinding
 import com.example.votree.products.adapters.ProductAdapter
+import com.example.votree.products.adapters.SuggestionSearchAdapter
 import com.example.votree.products.models.Product
 import com.example.votree.products.view_models.ProductFilterViewModel
 import com.example.votree.products.view_models.ProductViewModel
 import com.example.votree.utils.GridSpacingItemDecoration
 import com.google.android.material.tabs.TabLayout
 
-class ProductList : Fragment(), MainActivity.SearchQueryListener {
+class ProductList : Fragment() {
     private var _binding: FragmentProductListBinding? = null
     private val binding get() = _binding!!
     private lateinit var mFirebaseProductViewModel: ProductViewModel
@@ -46,8 +49,68 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
         setUpViewModel()
         setUpTabLayout()
         navigateToProductDetail()
-        setUpSearchQuery()
+        setupSearchBar()
+        setupSearchView()
         setupFilterObserver()
+    }
+
+    private fun setupSearchBar() {
+        binding.searchBar.inflateMenu(R.menu.search_bar)
+        binding.searchBar.setOnMenuItemClickListener{
+            when(it.itemId){
+                R.id.cart -> {
+                    val action = ProductListDirections.actionProductListToCartList()
+                    findNavController().navigate(action)
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun setupSearchView() {
+        val suggestionAdapter = SuggestionSearchAdapter{ suggestion ->
+            Log.d("SuggestionSearchFragment", "Suggestion clicked: $suggestion")
+            // TODO: Navigate to ResultFragment with the suggestion
+            val action = ProductListDirections.actionProductListToSearchResultFragment(suggestion)
+            findNavController().navigate(action)
+        }
+        binding.suggestionsRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.suggestionsRecyclerView.adapter = suggestionAdapter
+
+        fun onSearchQueryChanged(query: String, suggestionAdapter: SuggestionSearchAdapter) {
+            if (query.isBlank()) return
+            mFirebaseProductViewModel.getDebouncedProductSuggestions(query).observe(viewLifecycleOwner) { suggestions ->
+                Log.d("SuggestionSearchFragment", "Suggestions: $suggestions")
+                suggestionAdapter.submitList(suggestions)
+            }
+        }
+
+        val searchEditText = binding.searchView.editText
+        searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Do nothing
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val query = s.toString()
+                onSearchQueryChanged(query, suggestionAdapter)
+            }
+        })
+        searchEditText
+            .setOnEditorActionListener { v, actionId, event ->
+                if (actionId == 3) {
+                    val query = v.text.toString()
+                    val action = ProductListDirections.actionProductListToSearchResultFragment(query)
+                    findNavController().navigate(action)
+                    true
+                } else false
+            }
+
     }
 
     private fun calculateNoOfColumns(context: Context): Int {
@@ -161,42 +224,6 @@ class ProductList : Fragment(), MainActivity.SearchQueryListener {
         mFirebaseProductViewModel.products.observe(viewLifecycleOwner) { products ->
             productAdapter.setData(products)
         }
-    }
-
-    private fun setUpSearchQuery(){
-        val query = arguments?.getString("query") ?: ""
-        Log.d("ProductList", "Query: $query")
-        filterProducts(query)
-        (activity as MainActivity).setSearchQueryListener(this)
-    }
-
-    override fun onQueryTextChange(newText: String) {
-        // Navigate to suggestion search fragment
-        val navController = findNavController()
-        if (navController.currentDestination?.id != com.example.votree.R.id.suggestionSearchFragment) {
-            navController.navigate(com.example.votree.R.id.suggestionSearchFragment)
-        }
-    }
-
-    override fun onQueryTextSubmit(query: String) {
-        // Navigate to product list fragment
-        val navController = findNavController()
-        if (navController.currentDestination?.id != com.example.votree.R.id.productList) {
-            val action = ProductListDirections.actionProductListToSuggestionSearchFragment()
-            navController.navigate(action)
-        }
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is MainActivity)
-            context.setSearchQueryListener(this)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        if (activity is MainActivity)
-            (activity as MainActivity).setSearchQueryListener(null)
     }
 
     private fun setupFilterObserver() {
