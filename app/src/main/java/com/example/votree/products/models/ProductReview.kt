@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ProductReview(
-    val id: String = "",
+    var id: String = "",
     val transactionId: String = "",
     val userId: String = "",
     val reviewText: String = "",

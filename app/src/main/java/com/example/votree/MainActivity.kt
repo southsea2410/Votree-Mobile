@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         if (role != "store") {
             bottomNavigation.menu.removeItem(R.id.storeManagement2)
         }
-        val showDestinations = setOf(R.id.productList, R.id.main_tip_fragment, R.id.user_profile_fragment, R.id.notifications_fragment, R.id.storeManagement2)
+        val showDestinations = setOf(R.id.productList, R.id.main_tip_fragment, R.id.user_profile_fragment, R.id.notifications_fragment, R.id.storeManagement2, R.id.pointTransactionFragment)
         navController.addOnDestinationChangedListener { _ , destination, _  ->
             if(destination.id in showDestinations) {
                 bottomNavigation.visibility = View.VISIBLE
