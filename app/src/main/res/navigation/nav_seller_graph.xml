@@ -151,6 +151,9 @@
         <argument
             android:name="currentProduct"
             app:argType="com.example.votree.products.models.Product" />
+        <action
+            android:id="@+id/action_productDetailFragmentForStore_to_storeProfile2"
+            app:destination="@id/storeProfile2" />
     </fragment>
     <fragment
         android:id="@+id/productReviewListFragment"
@@ -184,6 +187,9 @@
         <action
             android:id="@+id/action_storeProfile2_to_store_report"
             app:destination="@id/store_report" />
+        <action
+            android:id="@+id/action_storeProfile2_to_productDetailFragmentForStore"
+            app:destination="@id/productDetailFragmentForStore" />
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"

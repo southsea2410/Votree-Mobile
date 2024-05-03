@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".products.fragments.ProductDetailFragment">
+    tools:context=".products.fragments.ProductDetailFragmentForStore">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -343,6 +343,50 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="5dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/md_theme_primary"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:padding="10dp"
+                            android:paddingEnd="0dp"
+                            android:text="$"
+                            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                            android:textColor="@color/white" />
+
+                        <TextView
+                            android:id="@+id/productPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="12.00"
+                            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
             <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
@@ -461,29 +505,37 @@
 
         <Button
             android:id="@+id/delete_btn"
-            style="@style/Widget.Material3.Button.IconButton.Filled"
-            android:layout_width="150dp"
+            style="@style/Widget.Material3.Button.IconButton.Outlined"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/transparent"
             android:drawablePadding="8dp"
             android:strokeColor="@color/md_theme_error"
             android:text="Delete"
-            android:textColor="@color/md_theme_primary"
-            android:textSize="15sp"
-            android:textStyle="normal"
-            app:backgroundTint="@color/transparent"
+            app:icon="@drawable/delete_24px"
+            app:iconPadding="8dp"
             app:cornerRadius="5dp"
-            app:strokeColor="@color/md_theme_primary"
-            app:strokeWidth="3dp" />
+            app:strokeWidth="2dp" />
 
+        <Button
+            android:id="@+id/hide_btn"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="Hide"
+            app:cornerRadius="5dp"
+            app:icon="@drawable/ic_hide"
+            app:iconPadding="8dp" />
 
         <Button
             android:id="@+id/update_btn"
-            style="@style/Widget.Material3.Button.IconButton.Filled"
-            android:layout_width="150dp"
+            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:text="Update"
+            app:icon="@drawable/ic_edit"
+            app:iconPadding="8dp"
             app:cornerRadius="5dp" />
     </LinearLayout>
 

@@ -27,30 +27,36 @@ class ProductViewModel : ViewModel() {
     }
 
     private fun fetchProducts() {
-        productsCollection.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                // Handle error
-                Log.e(TAG, "Error fetching products: $error")
-                return@addSnapshotListener
-            }
+        // Assuming 'productsCollection' is already defined as a reference to the Firestore collection
+        productsCollection
+            .whereEqualTo("active", true)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    // Handle error
+                    Log.e(TAG, "Error fetching products: $error")
+                    return@addSnapshotListener
+                }
 
-            val productsList = mutableListOf<Product>()
-            snapshot?.let {
-                for (doc in it.documents) {
-                    val product = doc.toObject(Product::class.java)
-                    product?.let { product ->
-                        productsList.add(product)
+                val productsList = mutableListOf<Product>()
+                snapshot?.let {
+                    for (doc in it.documents) {
+                        val product = doc.toObject(Product::class.java)
+                        product?.let { product ->
+                            productsList.add(product)
+                        }
                     }
                 }
+                _products.value =
+                    productsList  // Assuming _products is a MutableLiveData<List<Product>>
             }
-            _products.value = productsList
-        }
     }
 
     fun getProductById(productId: String): LiveData<Product?> {
         val productLiveData = MutableLiveData<Product?>()
 
-        productsCollection.document(productId).get().addOnSuccessListener { documentSnapshot ->
+        productsCollection.document(productId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
             Log.d(TAG, "Fetched product with ID: $documentSnapshot")
             val product = documentSnapshot.toObject(Product::class.java)
             productLiveData.value = product
@@ -69,7 +75,7 @@ class ProductViewModel : ViewModel() {
         return product?.price
     }
 
-    fun filterProductNames(products: List<Product>, query: String): List<Product> {
+    private fun filterProductNames(products: List<Product>, query: String): List<Product> {
         val queryLowercase = query.lowercase()  // Convert the query to lowercase for case-insensitive comparison
 
         return products.filter { product ->
@@ -79,7 +85,7 @@ class ProductViewModel : ViewModel() {
     }
 
 
-    fun fetchProductSuggestions(query: String): MutableLiveData<List<Product>> {
+    private fun fetchProductSuggestions(query: String): MutableLiveData<List<Product>> {
         val filteredProductsLiveData = MutableLiveData<List<Product>>()
 
         productsCollection
@@ -99,12 +105,13 @@ class ProductViewModel : ViewModel() {
         return filteredProductsLiveData
     }
 
-    fun searchProducts(query: String) : LiveData<List<Product>> {
+    fun searchProducts(query: String): LiveData<List<Product>> {
         val filteredProductsLiveData = MutableLiveData<List<Product>>()
 
         productsCollection
+            .whereEqualTo("active", true) // Ensure only active products are considered
             .whereGreaterThanOrEqualTo("productName", query)
-            .whereLessThanOrEqualTo("productName", query+ '\uf8ff')
+            .whereLessThanOrEqualTo("productName", query + '\uf8ff')
             .get()
             .addOnSuccessListener { snapshot ->
                 val products = snapshot.toObjects(Product::class.java)

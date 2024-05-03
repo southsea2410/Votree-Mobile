@@ -142,4 +142,19 @@ class ProductRepository(private val firestore: FirebaseFirestore) {
             0.0f
         }
     }
+
+    fun toggleProductVisibility(
+        product: Product,
+        onSuccess: (String) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val newVisibility = !product.active
+        firestore.collection("products").document(product.id).update("active", newVisibility)
+            .addOnSuccessListener {
+                onSuccess(product.id)
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+    }
 }

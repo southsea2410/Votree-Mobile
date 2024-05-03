@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    app:cardElevation="4dp"
+    app:cardElevation="5dp"
     app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/productImage_iv"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="150dp"
             android:contentDescription="Product Image"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/sample_plant" />
@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@color/md_theme_surface_mediumContrast"
             android:padding="4dp">
 
             <!-- Title, secondary and supporting text -->

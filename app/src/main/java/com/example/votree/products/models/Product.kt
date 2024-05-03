@@ -25,7 +25,8 @@ data class Product(
     val suitClimate: SuitClimate = SuitClimate.UNKNOWN,
     val saleOff: Double = 0.0,
     val createdAt: Date = Date(),
-    var updatedAt: Date = Date()
+    var updatedAt: Date = Date(),
+    var active: Boolean = true
 ) : Parcelable {
     override fun toString(): String {
         return "Product(id=$id, name='$productName', price=$price)"
