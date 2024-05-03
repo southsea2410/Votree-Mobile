@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class ProductViewModel : ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
@@ -186,7 +187,7 @@ class ProductViewModel : ViewModel() {
             .addOnSuccessListener { snapshot ->
                 val newProducts = snapshot.toObjects(Product::class.java)
                 Log.d(TAG, "Fetched ${newProducts.size} products")
-                // Log the fetched products
+
                 newProducts.forEach { product ->
                     Log.d(TAG, "Product Fetch: ${product.id} - ${product.productName}")
                 }
@@ -211,9 +212,12 @@ class ProductViewModel : ViewModel() {
             }
     }
 
-
-
-
+    suspend fun getProduct(productId: String): Product? {
+        return productsCollection.document(productId)
+            .get()
+            .await()
+            .toObject(Product::class.java)
+    }
 
     companion object {
         private const val TAG = "ProductViewModel"

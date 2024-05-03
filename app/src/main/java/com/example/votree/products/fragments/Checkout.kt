@@ -175,7 +175,7 @@ class Checkout : Fragment() {
     private fun setupRecyclerView() {
         binding.productsRv.layoutManager = LinearLayoutManager(context)
         binding.productsRv.adapter =
-            CheckoutProductAdapter(requireContext(), Cart(), productViewModel)
+            CheckoutProductAdapter(requireContext(), cart, productViewModel)
     }
 
     private fun updateAddressUI(address: ShippingAddress?) {

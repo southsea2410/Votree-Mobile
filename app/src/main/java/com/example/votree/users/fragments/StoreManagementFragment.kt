@@ -45,6 +45,7 @@ class StoreManagementFragment : Fragment() {
         _binding = FragmentStoreManagementBinding.inflate(inflater, container, false)
         products = mutableListOf()
         binding.addNewProductBtn.setOnClickListener { navigateToAddNewProductFragment() }
+        binding.orderManagementBtn.setOnClickListener { navigateToOrderManagementFragment() }
         return binding.root
     }
 
@@ -172,6 +173,10 @@ class StoreManagementFragment : Fragment() {
 
     private fun navigateToAddNewProductFragment() {
         findNavController().navigate(R.id.action_storeManagement2_to_addNewProduct2)
+    }
+
+    private fun navigateToOrderManagementFragment() {
+        findNavController().navigate(R.id.action_storeManagement2_to_orderManagementForStoreFragment)
     }
 
     override fun onDestroyView() {

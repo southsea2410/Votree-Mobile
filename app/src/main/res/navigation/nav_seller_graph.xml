@@ -116,6 +116,9 @@
         <action
             android:id="@+id/action_storeManagement2_to_productDetailFragmentForStore"
             app:destination="@id/productDetailFragmentForStore" />
+        <action
+            android:id="@+id/action_storeManagement2_to_orderManagementForStoreFragment"
+            app:destination="@id/orderManagementForStoreFragment" />
     </fragment>
     <fragment
         android:id="@+id/addNewProduct2"
@@ -230,5 +233,29 @@
         <action
             android:id="@+id/action_pointTransactionFragment_to_user_profile_fragment"
             app:destination="@id/user_profile_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderManagementForStoreFragment"
+        android:name="com.example.votree.users.fragments.OrderManagementForStoreFragment"
+        android:label="fragment_order_management_for_store"
+        tools:layout="@layout/fragment_order_management_for_store">
+        <action
+            android:id="@+id/action_orderManagementForStoreFragment_to_storeManagement2"
+            app:destination="@id/storeManagement2" />
+        <action
+            android:id="@+id/action_orderManagementForStoreFragment_to_orderDetailsFragment"
+            app:destination="@id/orderDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDetailsFragment"
+        android:name="com.example.votree.products.fragments.OrderDetailsFragment"
+        android:label="fragment_order_details"
+        tools:layout="@layout/fragment_order_details">
+        <action
+            android:id="@+id/action_orderDetailsFragment_to_orderManagementForStoreFragment"
+            app:destination="@id/orderManagementForStoreFragment" />
+        <argument
+            android:name="transaction"
+            app:argType="com.example.votree.products.models.Transaction" />
     </fragment>
 </navigation>
