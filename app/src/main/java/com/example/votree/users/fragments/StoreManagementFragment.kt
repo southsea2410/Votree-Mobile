@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.R
 import com.example.votree.databinding.FragmentStoreManagementBinding
 import com.example.votree.products.adapters.ProductAdapter
@@ -20,6 +21,7 @@ import com.example.votree.utils.GridSpacingItemDecoration
 import com.example.votree.utils.ToastType
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,6 +68,16 @@ class StoreManagementFragment : Fragment() {
 
             addItemDecoration(GridSpacingItemDecoration(numberOfColumns, 10, true))
         }
+
+        binding.storeManagementRecyclerView.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!recyclerView.canScrollVertically(1)) { // Check if the recycler view can scroll down
+                    loadProducts()
+                }
+            }
+        })
     }
 
     private fun calculateNoOfColumns(context: Context): Int {
@@ -121,17 +133,40 @@ class StoreManagementFragment : Fragment() {
         })
     }
 
+    private var lastVisibleProduct: DocumentSnapshot? = null
+    private val pageSize = 5
+
     private fun loadProducts() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         firestore.collection("users").document(userId).get()
             .addOnSuccessListener { document ->
                 val storeId = document.getString("storeId") ?: ""
-                productRepository.fetchProducts(storeId, onSuccess = { productList ->
-                    productAdapter.setData(productList)
-                }, onFailure = { exception ->
-                    Log.d("StoreManagementFragment", "Error getting documents: ", exception)
-                    CustomToast.show(requireContext(), "Error getting products", ToastType.FAILURE)
-                })
+                var query = firestore.collection("products")
+                    .whereEqualTo("storeId", storeId)
+                    .orderBy("createdAt")
+                    .limit(pageSize.toLong())
+
+                lastVisibleProduct?.let {
+                    query = query.startAfter(it)
+                }
+
+                query.get()
+                    .addOnSuccessListener { snapshot ->
+                        Log.d("StoreManagementFragment", "Products: ${snapshot.documents.size}")
+                        val newProducts = snapshot.toObjects(Product::class.java)
+                        if (newProducts.isNotEmpty()) {
+                            lastVisibleProduct = snapshot.documents[snapshot.size() - 1]
+                            productAdapter.setData(newProducts)
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d("StoreManagementFragment", "Error getting documents: ", exception)
+                        CustomToast.show(
+                            requireContext(),
+                            "Error getting products",
+                            ToastType.FAILURE
+                        )
+                    }
             }
     }
 

@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/productImage_iv"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="180dp"
             android:contentDescription="Product Image"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/sample_plant" />

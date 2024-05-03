@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.votree.products.models.Product
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -23,7 +24,7 @@ class ProductViewModel : ViewModel() {
         get() = _products
 
     init {
-        fetchProducts()
+//        fetchProducts()
     }
 
     private fun fetchProducts() {
@@ -165,6 +166,54 @@ class ProductViewModel : ViewModel() {
     fun sortProductsByCreationDate() {
         _products.value = _products.value?.sortedByDescending { it.createdAt }
     }
+
+    private val _lastVisibleProduct: MutableLiveData<DocumentSnapshot?> = MutableLiveData()
+    val lastVisibleProduct: LiveData<DocumentSnapshot?> = _lastVisibleProduct
+
+    fun fetchProductsPerPage(lastVisibleProduct: DocumentSnapshot?, pageSize: Int) {
+        var query = productsCollection
+            .whereEqualTo("active", true)
+            .orderBy("quantitySold", com.google.firebase.firestore.Query.Direction.DESCENDING)
+
+        lastVisibleProduct?.let {
+            query = query.startAfter(it)
+            Log.d(TAG, "Fetching next page of products after: ${it.id}")
+        }
+        query = query.limit(pageSize.toLong())
+        Log.d(TAG, "Fetch ${pageSize.toLong()} products")
+
+        query.get()
+            .addOnSuccessListener { snapshot ->
+                val newProducts = snapshot.toObjects(Product::class.java)
+                Log.d(TAG, "Fetched ${newProducts.size} products")
+                // Log the fetched products
+                newProducts.forEach { product ->
+                    Log.d(TAG, "Product Fetch: ${product.id} - ${product.productName}")
+                }
+
+                val currentProducts = _products.value ?: listOf()
+
+                val uniqueNewProducts = newProducts.filter { newProduct ->
+                    currentProducts.none { it.id == newProduct.id }
+                }
+
+                _products.value = currentProducts + uniqueNewProducts
+                Log.d(TAG, "Total products: ${_products.value?.size}")
+
+                if (!snapshot.isEmpty) {
+                    Log.d(TAG, "Setting last visible product")
+                    _lastVisibleProduct.value = snapshot.documents[snapshot.size() - 1]
+                }
+            }
+            .addOnFailureListener { error ->
+                Log.e(TAG, "Error fetching products: $error")
+                // Handle error
+            }
+    }
+
+
+
+
 
     companion object {
         private const val TAG = "ProductViewModel"

@@ -9,11 +9,11 @@
     android:layout_height="match_parent"
     tools:context=".products.fragments.ProductList">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_marginTop="64dp"
         app:layout_behavior="com.google.android.material.search.SearchBar$ScrollingViewBehavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -62,11 +62,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productList_rv"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:minHeight="400dp"
-                android:layout_weight="1"/>
+                android:layout_height="wrap_content" />
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -95,3 +93,4 @@
     </com.google.android.material.search.SearchView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
