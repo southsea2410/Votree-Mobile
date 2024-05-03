@@ -156,5 +156,8 @@ dependencies {
 
     // Slide bar for Filter price
 //    implementation("com.github.Jay-Goo:RangeSeekBar:v3.0.0")
+
+    // PhotoView
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
 }
 
