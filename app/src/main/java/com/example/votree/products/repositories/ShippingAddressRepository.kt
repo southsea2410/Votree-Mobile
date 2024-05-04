@@ -76,4 +76,9 @@ class ShippingAddressRepository @Inject constructor(
         return addressesCollection.get()
             .await().documents.mapNotNull { it.toObject(ShippingAddress::class.java) }
     }
+
+    suspend fun getDefaultShippingAddress(): ShippingAddress? {
+        return addressesCollection.whereEqualTo("default", true).get().await()
+            .documents.firstOrNull()?.toObject(ShippingAddress::class.java)
+    }
 }

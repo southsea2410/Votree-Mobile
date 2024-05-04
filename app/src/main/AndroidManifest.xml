@@ -15,6 +15,7 @@
         android:minSdkVersion="33" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application
@@ -27,6 +28,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
+        <activity
+            android:name=".users.activities.OrderManagementForStoreActivity"
+            android:exported="false" />
 
         <property
             android:name="android.adservices.AD_SERVICES_CONFIG"

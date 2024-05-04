@@ -14,6 +14,7 @@ import com.example.votree.products.activities.ProductReviewActivity
 import com.example.votree.products.models.Transaction
 import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.repositories.TransactionRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,7 @@ class OrderItemAdapter(
     private val firestore = FirebaseFirestore.getInstance()
     private val transactionRepository = TransactionRepository(firestore)
     private val productRepository = ProductRepository(firestore)
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
     class OrderItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val shopNameTv: TextView = view.findViewById(R.id.shopName_tv)
@@ -78,12 +80,21 @@ class OrderItemAdapter(
             }
         }
 
-        holder.reviewBtn.setOnClickListener {
-            // Start the ProductReviewActivity
-            val intent = Intent(holder.itemView.context, ProductReviewActivity::class.java)
-            // Pass the transaction ID to the ProductReviewActivity
-            intent.putExtra("transactionId", transaction.id)
-            holder.itemView.context.startActivity(intent)
+        coroutineScope.launch(Dispatchers.IO){
+            val isReviewed = transactionRepository.isReviewSubmitted(transaction.id, userId)
+            withContext(Dispatchers.Main){
+                if (isReviewed){
+                    holder.reviewBtn.text = "View Review"
+                } else {
+                    holder.reviewBtn.text = "Write Review"
+                }
+                holder.reviewBtn.setOnClickListener {
+                    val intent = Intent(holder.itemView.context, ProductReviewActivity::class.java)
+                    intent.putExtra("isSubmitted", isReviewed)
+                    intent.putExtra("transactionId", transaction.id)
+                    holder.itemView.context.startActivity(intent)
+                }
+            }
         }
     }
 

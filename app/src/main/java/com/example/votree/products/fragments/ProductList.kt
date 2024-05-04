@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.R
 import com.example.votree.databinding.FragmentProductListBinding
 import com.example.votree.products.adapters.ProductAdapter
@@ -52,6 +53,8 @@ class ProductList : Fragment() {
         setupSearchBar()
         setupSearchView()
         setupFilterObserver()
+
+        mFirebaseProductViewModel.fetchProductsPerPage(null, pageSize)
     }
 
     private fun setupSearchBar() {
@@ -120,13 +123,33 @@ class ProductList : Fragment() {
         return (screenWidthDp / columnWidthDp).toInt()
     }
 
-    private fun setUpRecyclerView(){
+    private val pageSize = 5
+    private var isLoading = false
+
+    private fun setUpRecyclerView() {
         val numberOfColumns = calculateNoOfColumns(requireContext())
         productAdapter = ProductAdapter()
         binding.productListRv.apply {
             adapter = productAdapter
             layoutManager = GridLayoutManager(requireContext(), numberOfColumns)
             setHasFixedSize(true)
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 0) {
+                        super.onScrolled(recyclerView, dx, dy)
+
+                        val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                        val visibleItemCount = layoutManager.childCount
+                        val totalItemCount = layoutManager.itemCount
+                        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                        if (visibleItemCount + firstVisibleItemPosition >= totalItemCount && firstVisibleItemPosition >= 0) {
+                            loadMoreData()
+                        }
+                    }
+                }
+            })
         }
 
         binding.productListRv.addItemDecoration(
@@ -138,9 +161,20 @@ class ProductList : Fragment() {
         )
     }
 
+    private fun loadMoreData() {
+        if (!isLoading) {
+            isLoading = true
+            mFirebaseProductViewModel.lastVisibleProduct.value?.let { lastVisible ->
+                mFirebaseProductViewModel.fetchProductsPerPage(lastVisible, pageSize)
+            }
+        }
+    }
+
     private fun setUpViewModel(){
         mFirebaseProductViewModel = ViewModelProvider(this).get(ProductViewModel::class.java)
         mFirebaseProductViewModel.products.observe(viewLifecycleOwner) { products ->
+            isLoading = false
+            Log.d("ProductList", "Products: $products")
             productAdapter.setData(products)
         }
     }

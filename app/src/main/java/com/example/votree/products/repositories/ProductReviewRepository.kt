@@ -7,32 +7,96 @@ import kotlinx.coroutines.tasks.await
 class ProductReviewRepository(private val db: FirebaseFirestore) {
 
     fun addProductReview(review: ProductReview, transactionId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        // Step 1: Add the ProductReview to the productReviews collection
+        addReviewToCollection(review, transactionId, onSuccess, onFailure)
+    }
+
+    private fun addReviewToCollection(review: ProductReview, transactionId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         db.collection("productReviews").add(review)
             .addOnSuccessListener { reviewDocumentRef ->
                 val reviewId = reviewDocumentRef.id
-                // Step 2: Retrieve the transaction to get all the products from productsMap
-                db.collection("transactions").document(transactionId).get()
-                    .addOnSuccessListener { transactionDocumentSnapshot ->
-                        val productsMap = transactionDocumentSnapshot.data?.get("productsMap") as? Map<String, Any> ?: return@addOnSuccessListener
-                        // Step 3: For each product in the productsMap, create a reviews subcollection under the products/productId document
-                        productsMap.forEach { (productId, _) ->
-                            db.collection("products").document(productId).collection("reviews").document(reviewId).set(review)
-                                .addOnSuccessListener {
-                                    onSuccess()
-                                }
-                                .addOnFailureListener { e ->
-                                    onFailure(e)
-                                }
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        onFailure(e)
-                    }
+                review.id = reviewId
+                updateReviewDocument(review, transactionId, onSuccess, onFailure)
             }
             .addOnFailureListener { e ->
                 onFailure(e)
             }
+    }
+
+    private fun updateReviewDocument(
+        review: ProductReview,
+        transactionId: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("productReviews").document(review.id).set(review)
+            .addOnSuccessListener {
+                updateTransactionWithReviewId(transactionId, review, onSuccess, onFailure)
+            }
+            .addOnFailureListener { e ->
+                onFailure(e)
+            }
+    }
+
+    private fun updateTransactionWithReviewId(
+        transactionId: String,
+        review: ProductReview,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("transactions").document(transactionId).update("reviewId", review.id)
+            .addOnSuccessListener {
+                retrieveTransactionToUpdateProducts(transactionId, review, onSuccess, onFailure)
+            }
+            .addOnFailureListener { e ->
+                onFailure(e)
+            }
+    }
+
+    private fun retrieveTransactionToUpdateProducts(
+        transactionId: String,
+        review: ProductReview,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("transactions").document(transactionId).get()
+            .addOnSuccessListener { transactionDocumentSnapshot ->
+                val productsMap = transactionDocumentSnapshot.data?.get("productsMap") as? Map<String, Any> ?: return@addOnSuccessListener
+                updateProductsReviews(productsMap, review, onSuccess, onFailure)
+            }
+            .addOnFailureListener { e ->
+                onFailure(e)
+            }
+    }
+
+    //    private fun updateProductsReviews(productsMap: Map<String, Any>, reviewId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+//        val productIds = productsMap.keys
+//        for (productId in productIds) {
+//            db.collection("products").document(productId).collection("reviews").document(reviewId).set(mapOf("reviewId" to reviewId))
+//                .addOnSuccessListener {
+//                    onSuccess()
+//                }
+//                .addOnFailureListener { e ->
+//                    onFailure(e)
+//                }
+//        }
+//    }
+    private fun updateProductsReviews(
+        productsMap: Map<String, Any>,
+        review: ProductReview,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val productIds = productsMap.keys
+        for (productId in productIds) {
+            db.collection("products").document(productId).collection("reviews").document(review.id)
+                .set(review)
+                .addOnSuccessListener {
+                    onSuccess()
+                }
+                .addOnFailureListener { e ->
+                    onFailure(e)
+                }
+        }
     }
 
     suspend fun getProductRating(productId: String): Float {
@@ -50,5 +114,24 @@ class ProductReviewRepository(private val db: FirebaseFirestore) {
         if (totalReviews == 0) return -1f
 
         return totalRating / totalReviews
+    }
+
+    suspend fun fetchReviewByTransactionId(transactionId: String, userId: String): ProductReview? {
+        val reviewSnapshot = db.collection("productReviews")
+            .whereEqualTo("transactionId", transactionId)
+            .whereEqualTo("userId", userId)
+            .get()
+            .await()
+        return reviewSnapshot.documents.firstOrNull()?.toObject(ProductReview::class.java)
+    }
+
+    fun updateReview(review: ProductReview, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection("productReviews").document(review.id).set(review)
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                onFailure(e)
+            }
     }
 }

@@ -15,6 +15,8 @@ import com.example.votree.products.repositories.PointTransactionRepository
 import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.repositories.TransactionRepository
 import com.example.votree.users.repositories.StoreRepository
+import com.example.votree.utils.CustomToast
+import com.example.votree.utils.ToastType
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
@@ -146,20 +148,21 @@ class CheckoutActivity : AppCompatActivity() {
     private fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
         when (paymentSheetResult) {
             is PaymentSheetResult.Completed -> {
-                Toast.makeText(this, "Payment succeeded", Toast.LENGTH_LONG).show()
+                CustomToast.show(this, "Payment Succeed", ToastType.SUCCESS)
                 handleSuccessfulPayment()
             }
 
             is PaymentSheetResult.Canceled -> {
-                Toast.makeText(this, "Payment canceled", Toast.LENGTH_LONG).show()
+                CustomToast.show(this, "Payment canceled", ToastType.FAILURE)
+                // Turn back
+                setResult(RESULT_CANCELED)
+                finish()
             }
 
             is PaymentSheetResult.Failed -> {
-                Toast.makeText(
-                    this,
-                    "Payment failed: ${paymentSheetResult.error.localizedMessage}",
-                    Toast.LENGTH_LONG
-                ).show()
+                CustomToast.show(this, "Payment canceled", ToastType.FAILURE)
+                // Turn back
+                setResult(RESULT_CANCELED)
             }
         }
     }
@@ -168,12 +171,27 @@ class CheckoutActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val cart = intent.getParcelableExtra<Cart>("cart")
             val receiver = intent.getParcelableExtra<ShippingAddress>("receiver")
-            cart?.let {
-                receiver?.let {
-                    updateProductInventory(cart)
-                    createTransactionFromCart(cart, receiver)
-                    updateProductSoldQuantity(cart)
-                    clearCartAfterCheckout(cart)
+
+            cart?.let { cartData ->
+                receiver?.let { receiverData ->
+                    // 1. Update product inventory
+                    updateProductInventory(cartData)
+
+                    // 2. Create a new transaction from the cart and get the earned points
+                    var earnedPoints = 0
+                    createTransactionFromCart(cartData, receiverData) { points ->
+                        earnedPoints = points
+                    }
+
+                    // 3. Update the sold quantity of the products
+                    updateProductSoldQuantity(cartData)
+
+                    // 4. Clear the cart after checkout
+                    clearCartAfterCheckout(cartData)
+
+                    // 5. Set the result and finish the activity
+                    intent.putExtra("points", earnedPoints)
+                    setResult(RESULT_OK, intent)
                     finish()
                 }
             }
@@ -204,15 +222,20 @@ class CheckoutActivity : AppCompatActivity() {
 
         functions.getHttpsCallable("sendNotification").call(data)
             .addOnSuccessListener {
+                // Log the success message response
                 Log.d(TAG, "Notification sent successfully")
             }
             .addOnFailureListener { e ->
-                Log.e(TAG, "Error sending notification", e)
+                Log.e(TAG, "Error sending notification ${e.message}", e)
             }
     }
 
     // Function to earn points after successful payment
-    private fun earnPointsAfterPayment(totalAmount: Double, storeId: String) {
+    private fun earnPointsAfterPayment(
+        totalAmount: Double,
+        storeId: String,
+        onPointsEarn: (Int) -> Unit
+    ) {
         val storeRepository = StoreRepository()
         CoroutineScope(lifecycleScope.coroutineContext).launch {
             val storeName = storeRepository.getStoreName(storeId)
@@ -229,11 +252,15 @@ class CheckoutActivity : AppCompatActivity() {
                 pointTransactionRepository.addPointTransaction(pointTransaction)
             }
         }
+        onPointsEarn(totalAmount.toInt())
     }
 
-    private fun createTransactionFromCart(cart: Cart, receiver: ShippingAddress) {
+    private fun createTransactionFromCart(
+        cart: Cart,
+        receiver: ShippingAddress,
+        onPointsEarn: (Int) -> Unit
+    ) {
         val currentDate = Date()
-
         val firstProduct = cart.productsMap.entries.firstOrNull()
         val productId = firstProduct?.key ?: ""
 
@@ -257,11 +284,16 @@ class CheckoutActivity : AppCompatActivity() {
                     val totalAmount =
                         transactionRepository.calculateTotalPrice(transaction.productsMap)
                     transaction.totalAmount = totalAmount + 10.0 // Add delivery fee
-                    transactionRepository.createAndUpdateTransaction(transaction)
+                    val generatedId = transactionRepository.createAndUpdateTransaction(transaction)
+                    Log.d(TAG, "Transaction ID: $generatedId")
+                    transaction.id = generatedId
+                    Log.d(TAG, "Transaction: $transaction")
                     notifyStoreAboutNewOrder(transaction)
 
                     // Earn points after successful payment
-                    earnPointsAfterPayment(totalAmount, storeId)
+                    earnPointsAfterPayment(totalAmount, storeId) {
+                        onPointsEarn(it)
+                    }
                 }
             }
     }

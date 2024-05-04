@@ -1,10 +1,11 @@
 package com.example.votree.products.fragments
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -12,11 +13,12 @@ import androidx.navigation.fragment.findNavController
 import com.example.votree.databinding.FragmentShippingAddressBinding
 import com.example.votree.products.models.ShippingAddress
 import com.example.votree.products.view_models.ShippingAddressViewModel
+import com.example.votree.users.activities.AddressActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 class ShippingAddressFragment : Fragment() {
-    private lateinit var binding: FragmentShippingAddressBinding // View Binding
+    private lateinit var binding: FragmentShippingAddressBinding
     private lateinit var viewModel: ShippingAddressViewModel
 
     override fun onCreateView(
@@ -24,10 +26,10 @@ class ShippingAddressFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentShippingAddressBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(ShippingAddressViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(ShippingAddressViewModel::class.java)
 
-        // Set up data observation and button listener
-        setUpObservers()
+        setupAddress()
+        setupObservers()
         binding.confirmBtn.setOnClickListener {
             onSaveAddress()
         }
@@ -35,13 +37,26 @@ class ShippingAddressFragment : Fragment() {
         return binding.root
     }
 
-    private fun setUpObservers() {
-        // Observe the selectedShippingAddress LiveData
-        viewModel.selectedShippingAddress.observe(viewLifecycleOwner) { address ->
+    private fun setupObservers() {
+        viewModel.shippingAddress.observe(viewLifecycleOwner) { address ->
             if (address != null) {
-                viewModel.prefillForm(address)
                 fillForm(address)
             }
+        }
+    }
+
+    private fun setupAddress() {
+        binding.recipentAddressEt.setOnClickListener {
+            val intent = Intent(requireContext(), AddressActivity::class.java)
+            startActivityForResult(intent, ADDRESS_REQUEST_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ADDRESS_REQUEST_CODE && resultCode == AppCompatActivity.RESULT_OK) {
+            val address = data?.getStringExtra("address")
+            binding.recipentAddressEt.setText(address)
         }
     }
 
@@ -57,13 +72,11 @@ class ShippingAddressFragment : Fragment() {
         val addressText = binding.recipentAddressEt.text.toString().trim()
         val isDefault = binding.setAsDefaultSwitch.isChecked
 
-        // Basic Input validation
         if (recipientName.isBlank() || phoneNumber.isBlank() || addressText.isBlank()) {
             Snackbar.make(binding.root, "Please fill all fields", Snackbar.LENGTH_SHORT).show()
             return
         }
 
-        // Create a ShippingAddress object
         val shippingAddress = ShippingAddress(
             recipientName = recipientName,
             recipientPhoneNumber = phoneNumber,
@@ -72,29 +85,13 @@ class ShippingAddressFragment : Fragment() {
         )
 
         lifecycleScope.launch {
-            try {
-                viewModel.saveShippingAddress(shippingAddress)
-                viewModel.isSaveAddressSuccessful.observe(viewLifecycleOwner) { isSuccessful ->
-                    if (isSuccessful) {
-                        Log.d(
-                            "ShippingAddressFragment",
-                            "Address saved successfully ${viewModel.selectedShippingAddress.value}"
-                        )
-                        Snackbar.make(
-                            binding.root,
-                            "Address saved successfully",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                        // Navigate back to the previous fragment
-                        findNavController().popBackStack()
-                    } else {
-                        Snackbar.make(binding.root, "Error saving address", Snackbar.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-            } catch (e: Exception) {
-                Snackbar.make(binding.root, "Error saving address", Snackbar.LENGTH_SHORT).show()
-            }
+            viewModel.saveShippingAddress(shippingAddress)
         }
+
+        findNavController().popBackStack()
+    }
+
+    companion object {
+        const val ADDRESS_REQUEST_CODE = 1111
     }
 }

@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import com.example.votree.products.models.Product
 import com.example.votree.products.models.ProductReview
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
@@ -86,27 +87,33 @@ class ProductRepository(private val firestore: FirebaseFirestore) {
     }
 
     fun deleteProduct(product: Product, onComplete: (Boolean) -> Unit) {
-        // First, delete the image from Firebase Storage
+        // First, delete all the images from Firebase Storage
         if (product.imageUrl.isNotEmpty()) {
-            val imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(product.imageUrl)
-            imageRef.delete().addOnSuccessListener {
-                // Case image is deleted, delete the product from Firestore
-                Log.d("ProductRepository", "Image deleted")
-                firestore.collection("products").document(product.id).delete()
-                    .addOnSuccessListener {
-                        Log.d("ProductRepository", "Product deleted")
-                        onComplete(true)
-                    }
-                    .addOnFailureListener {
-                        Log.e("ProductRepository", "Error deleting product", it)
-                        onComplete(false)
-                    }
-            }.addOnFailureListener {
-                Log.e("ProductRepository", "Error deleting image", it)
-                onComplete(false)
+            val deleteOperations = product.imageUrl.map { imageUrl ->
+                val imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
+                imageRef.delete()
             }
+
+            Tasks.whenAll(deleteOperations)
+                .addOnSuccessListener {
+                    // Case all images are deleted, delete the product from Firestore
+                    Log.d("ProductRepository", "Images deleted")
+                    firestore.collection("products").document(product.id).delete()
+                        .addOnSuccessListener {
+                            Log.d("ProductRepository", "Product deleted")
+                            onComplete(true)
+                        }
+                        .addOnFailureListener {
+                            Log.e("ProductRepository", "Error deleting product", it)
+                            onComplete(false)
+                        }
+                }
+                .addOnFailureListener {
+                    Log.e("ProductRepository", "Error deleting images", it)
+                    onComplete(false)
+                }
         } else {
-            // Case product doesn't have an image, delete the product from Firestore
+            // Case product doesn't have any images, delete the product from Firestore
             firestore.collection("products").document(product.id).delete()
                 .addOnSuccessListener {
                     onComplete(true)
@@ -141,5 +148,20 @@ class ProductRepository(private val firestore: FirebaseFirestore) {
         } else {
             0.0f
         }
+    }
+
+    fun toggleProductVisibility(
+        product: Product,
+        onSuccess: (String) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val newVisibility = !product.active
+        firestore.collection("products").document(product.id).update("active", newVisibility)
+            .addOnSuccessListener {
+                onSuccess(product.id)
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
     }
 }
