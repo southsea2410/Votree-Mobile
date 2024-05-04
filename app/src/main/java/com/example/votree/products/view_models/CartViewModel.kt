@@ -29,14 +29,17 @@ class CartViewModel : ViewModel() {
     private val currentUser = FirebaseAuth.getInstance().currentUser
     val groupedProducts: SingleLiveEvent<List<ProductItem>?> = SingleLiveEvent()
 
-    private val _isLoading: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    //    private val _isLoading: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    private val _toastMessage: SingleLiveEvent<String> = SingleLiveEvent()
+    //    private val _toastMessage: SingleLiveEvent<String> = SingleLiveEvent()
+    private val _toastMessage: MutableLiveData<String> = MutableLiveData()
     var toastMessage: LiveData<String> = _toastMessage
 
-    private val _cart: SingleLiveEvent<Cart?> = SingleLiveEvent()
+    //    private val _cart: MutableLiveData<Cart?> = SingleLiveEvent()
+    private val _cart: MutableLiveData<Cart?> = MutableLiveData()
     val cart: MutableLiveData<Cart?>
         get() = _cart
 
@@ -94,10 +97,14 @@ class CartViewModel : ViewModel() {
     fun calculateTotalProductsPrice(cart: Cart): LiveData<Double> {
         return liveData {
             val total = cart.productsMap.entries.sumByDouble { (productId, quantity) ->
-                val price = productViewModel.getProductPriceById(productId)
-                price?.times(quantity) ?: 0.0
+                val productRepository = ProductRepository(FirebaseFirestore.getInstance())
+                val product = productRepository.getProduct(productId)
+                val price = product.price
+                price.times(quantity) ?: 0.0
             }
+            Log.d("CartViewModel", "Total price: $total")
             emit(total)
+
         }
     }
 

@@ -15,48 +15,81 @@ class ProductReviewRepository(private val db: FirebaseFirestore) {
             .addOnSuccessListener { reviewDocumentRef ->
                 val reviewId = reviewDocumentRef.id
                 review.id = reviewId
-                updateReviewDocument(review, reviewId, transactionId, onSuccess, onFailure)
+                updateReviewDocument(review, transactionId, onSuccess, onFailure)
             }
             .addOnFailureListener { e ->
                 onFailure(e)
             }
     }
 
-    private fun updateReviewDocument(review: ProductReview, reviewId: String, transactionId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        db.collection("productReviews").document(reviewId).set(review)
+    private fun updateReviewDocument(
+        review: ProductReview,
+        transactionId: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("productReviews").document(review.id).set(review)
             .addOnSuccessListener {
-                updateTransactionWithReviewId(transactionId, reviewId, onSuccess, onFailure)
+                updateTransactionWithReviewId(transactionId, review, onSuccess, onFailure)
             }
             .addOnFailureListener { e ->
                 onFailure(e)
             }
     }
 
-    private fun updateTransactionWithReviewId(transactionId: String, reviewId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        db.collection("transactions").document(transactionId).update("reviewId", reviewId)
+    private fun updateTransactionWithReviewId(
+        transactionId: String,
+        review: ProductReview,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        db.collection("transactions").document(transactionId).update("reviewId", review.id)
             .addOnSuccessListener {
-                retrieveTransactionToUpdateProducts(transactionId, reviewId, onSuccess, onFailure)
+                retrieveTransactionToUpdateProducts(transactionId, review, onSuccess, onFailure)
             }
             .addOnFailureListener { e ->
                 onFailure(e)
             }
     }
 
-    private fun retrieveTransactionToUpdateProducts(transactionId: String, reviewId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    private fun retrieveTransactionToUpdateProducts(
+        transactionId: String,
+        review: ProductReview,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
         db.collection("transactions").document(transactionId).get()
             .addOnSuccessListener { transactionDocumentSnapshot ->
                 val productsMap = transactionDocumentSnapshot.data?.get("productsMap") as? Map<String, Any> ?: return@addOnSuccessListener
-                updateProductsReviews(productsMap, reviewId, onSuccess, onFailure)
+                updateProductsReviews(productsMap, review, onSuccess, onFailure)
             }
             .addOnFailureListener { e ->
                 onFailure(e)
             }
     }
 
-    private fun updateProductsReviews(productsMap: Map<String, Any>, reviewId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    //    private fun updateProductsReviews(productsMap: Map<String, Any>, reviewId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+//        val productIds = productsMap.keys
+//        for (productId in productIds) {
+//            db.collection("products").document(productId).collection("reviews").document(reviewId).set(mapOf("reviewId" to reviewId))
+//                .addOnSuccessListener {
+//                    onSuccess()
+//                }
+//                .addOnFailureListener { e ->
+//                    onFailure(e)
+//                }
+//        }
+//    }
+    private fun updateProductsReviews(
+        productsMap: Map<String, Any>,
+        review: ProductReview,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
         val productIds = productsMap.keys
         for (productId in productIds) {
-            db.collection("products").document(productId).collection("reviews").document(reviewId).set(mapOf("reviewId" to reviewId))
+            db.collection("products").document(productId).collection("reviews").document(review.id)
+                .set(review)
                 .addOnSuccessListener {
                     onSuccess()
                 }

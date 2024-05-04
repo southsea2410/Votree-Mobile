@@ -21,8 +21,7 @@
                 android:layout_width="30dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginStart="8dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
@@ -51,8 +50,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="Product Name"
-                    android:textAppearance="?attr/textAppearanceTitleMedium"
-                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                    android:textColor="@color/black"
                     android:maxLines="1" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -79,8 +78,10 @@
                         android:layout_gravity="center_vertical"
                         android:paddingTop="0dp"
                         android:paddingBottom="0dp"
+                        app:iconTint="@color/black"
                         app:cornerRadius="5dp"
                         app:icon="@drawable/ic_subtract"
+                        app:strokeWidth="2dp"
                         app:iconGravity="textTop"
                         app:iconPadding="0dp" />
 
@@ -117,6 +118,8 @@
                         android:paddingBottom="0dp"
                         app:cornerRadius="5dp"
                         app:icon="@drawable/baseline_add_24"
+                        app:iconTint="@color/black"
+                        app:strokeWidth="2dp"
                         app:iconGravity="textTop"
                         app:iconPadding="0dp" />
                 </LinearLayout>
@@ -136,6 +139,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     app:cornerRadius="5dp"
+                    app:strokeWidth="2dp"
                     app:icon="@drawable/bookmark_border_24px"
                     app:iconGravity="textEnd" />
 
@@ -148,6 +152,7 @@
                     app:cornerRadius="5dp"
                     app:icon="@drawable/delete_24px"
                     app:iconGravity="textEnd"
+                    app:strokeWidth="2dp"
                     app:iconPadding="0dp" />
             </LinearLayout>
 

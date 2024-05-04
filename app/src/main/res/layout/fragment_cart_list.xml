@@ -27,9 +27,6 @@
 
     </com.google.android.material.tabs.TabLayout>
 
-    <!-- fragment_cart_list.xml -->
-
-
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
