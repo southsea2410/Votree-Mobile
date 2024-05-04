@@ -8,9 +8,9 @@ import java.util.Date
 data class User(
     var id: String = "",
     var email: String = "",
-    val username: String = "",
+    var username: String = "",
     var fullName: String = "",
-    val password: String = "",
+    var password: String = "",
     val avatar: String = "",
     var phoneNumber: String = "",
     var address: String = "",
