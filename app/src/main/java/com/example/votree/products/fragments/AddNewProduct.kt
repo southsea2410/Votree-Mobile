@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.votree.databinding.FragmentAddNewProductBinding
@@ -51,6 +52,13 @@ class AddNewProduct : Fragment() {
         setupSpinners()
         setupSaveButton()
         setupAddImageButton()
+
+        // Set the navigation icon to the back button
+        binding.toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), com.example.votree.R.drawable.arrow_back_24px)
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        binding.toolbar.title = getString(com.example.votree.R.string.add_new_product)
 
         return binding.root
     }
@@ -169,6 +177,10 @@ class AddNewProduct : Fragment() {
             imageUri = data.data
             binding.productImageIv.setImageURI(imageUri)
         }
+    }
+
+    private fun onBackPressed() {
+        findNavController().popBackStack()
     }
 
     override fun onDestroyView() {

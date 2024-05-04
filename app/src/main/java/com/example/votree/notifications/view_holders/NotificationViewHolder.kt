@@ -86,7 +86,7 @@ class NotificationViewHolder(
 
     private fun updateNotificationBackground(notification: Notification) {
         if (notification.read) {
-            binding.notificationLayout.setBackgroundColor(Color.parseColor("#DEE5D8"))
+            binding.notificationLayout.setBackgroundColor(Color.parseColor("#F1F5EC"))
         } else {
             binding.notificationLayout.setBackgroundColor(Color.parseColor("#FFFFFF"))
         }

@@ -5,9 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.votree.R
 import com.example.votree.databinding.FragmentOrderManagementForStoreBinding
 import com.example.votree.products.models.Transaction
 import com.example.votree.products.repositories.TransactionRepository
@@ -18,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -62,6 +65,13 @@ class OrderManagementForStoreFragment : Fragment() {
                 setupOrderManagementAdapter(orders)
             }
         }
+
+        // Set the navigation icon to the back button
+        binding.toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), R.drawable.arrow_back_24px)
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        binding.toolbar.title = getString(R.string.order_management)
     }
 
     private fun setupOrderManagementAdapter(orders: List<Transaction>) {
@@ -92,5 +102,15 @@ class OrderManagementForStoreFragment : Fragment() {
                 transaction
             )
         findNavController().navigate(action)
+    }
+
+    private fun onBackPressed() {
+        // navigate back
+        findNavController().popBackStack()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        coroutineScope.cancel()
     }
 }

@@ -3,7 +3,7 @@ package com.example.votree.utils
 import androidx.recyclerview.widget.DiffUtil
 import com.example.votree.products.models.Product
 
-class ProductDiffCallback(private val oldList: List<Product>, private val newList: List<Product>) :
+class DiffCallback(private val oldList: List<Product>, private val newList: List<Product>) :
     DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldList.size
 
