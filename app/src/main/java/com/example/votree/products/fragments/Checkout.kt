@@ -87,10 +87,6 @@ class Checkout : Fragment() {
             if (binding.usePointsSw.isChecked) {
                 val pointTransactionRepository = PointTransactionRepository()
                 lifecycleScope.launch {
-                    pointTransactionRepository.redeemPoints(
-                        newAccumulatedPoints,
-                        "Redeem points for purchase"
-                    )
                     // Proceed to payment or place order without payment based on the payBeforeDeliverySwitch state
                     if (payBeforeDeliverySwitch.isChecked) {
                         proceedToPayment(cart, shippingAddress)
@@ -218,6 +214,14 @@ class Checkout : Fragment() {
         Log.d("Checkout", "onActivityResult: requestCode: $requestCode, resultCode: $resultCode")
         // If success result from CheckoutActivity, navigate to CheckoutResultFragment
         if (requestCode == 1 && resultCode == -1) {
+            lifecycleScope.launch {
+                val pointTransactionRepository = PointTransactionRepository()
+                pointTransactionRepository.redeemPoints(
+                    newAccumulatedPoints,
+                    "Redeem points for purchase"
+                )
+            }
+
             val action = CheckoutDirections.actionCheckoutToCheckoutResultFragment(
                 true,
                 newAccumulatedPoints,
