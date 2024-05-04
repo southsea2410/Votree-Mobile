@@ -11,7 +11,7 @@ import java.util.Date
 data class Product(
     var id: String = "", // Change id to String if you're using Firestore's auto-generated document ID
     val storeId: String = "",
-    var imageList: List<String>,
+    var imageUrl: List<String> = mutableListOf(),
     val productName: String = "",
     val shortDescription: String = "",
     val description: String = "",

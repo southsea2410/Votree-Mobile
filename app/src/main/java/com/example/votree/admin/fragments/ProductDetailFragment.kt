@@ -78,7 +78,7 @@ class ProductDetailFragment : Fragment() {
             val hideButton: Button? = view?.findViewById(R.id.hideButton)
             view?.findViewById<ImageView>(R.id.productImage)?.let { imageView ->
                 Glide.with(this)
-                    .load(nonNullProduct.imageList[0])
+                    .load(nonNullProduct.imageUrl[0])
                     .into(imageView)
             }
             view?.findViewById<TextView>(R.id.productName)?.text = nonNullProduct.productName

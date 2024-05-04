@@ -65,7 +65,7 @@ class ProductDetailFragmentForStore : Fragment() {
                 productSoldQuantity.text = product.quantitySold.toString()
 
                 Glide.with(this@ProductDetailFragmentForStore)
-                    .load(product.imageList[0])
+                    .load(product.imageUrl)
                     .centerCrop()
                     .placeholder(R.drawable.img_placeholder)
                     .into(productImage)

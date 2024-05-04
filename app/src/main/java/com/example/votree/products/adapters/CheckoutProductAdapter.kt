@@ -52,7 +52,7 @@ class CheckoutProductAdapter(
                     product?.let { context.getString(R.string.price_format, it.price) } ?: ""
                 productQuantityTextView.text = context.getString(R.string.quantity_format, quantity)
                 Glide.with(itemView)
-                    .load(product?.imageList?.get(0))
+                    .load(product?.imageUrl)
                     .into(productImageView)
             }
         }
