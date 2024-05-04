@@ -59,7 +59,11 @@
         android:name="com.example.votree.notifications.fragments.NotificationFragment"
         android:label="Notifications"
         tools:layout="@layout/fragment_notification"
-        />
+        >
+        <action
+            android:id="@+id/action_notifications_fragment_to_orderDetailsFragment"
+            app:destination="@id/orderDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/user_profile_fragment"
         android:name="com.example.votree.users.fragments.UserProfileFragment"
@@ -260,6 +264,9 @@
         <argument
             android:name="transaction"
             app:argType="com.example.votree.products.models.Transaction" />
+        <action
+            android:id="@+id/action_orderDetailsFragment_to_notifications_fragment"
+            app:destination="@id/notifications_fragment" />
     </fragment>
     <fragment
         android:id="@+id/checkoutResultFragment"

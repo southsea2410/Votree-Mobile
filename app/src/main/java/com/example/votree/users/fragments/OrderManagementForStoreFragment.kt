@@ -68,7 +68,6 @@ class OrderManagementForStoreFragment : Fragment() {
         val adapter = OrderManagementAdapter(orders, layoutInflater)
         adapter.setOnItemClickListener(object : OrderManagementAdapter.OnItemClickListener {
             override fun onItemClick(transaction: Transaction) {
-                // Handle the click event, e.g., navigate to the OrderDetailsFragment
                 navigateToOrderDetails(transaction)
             }
         })

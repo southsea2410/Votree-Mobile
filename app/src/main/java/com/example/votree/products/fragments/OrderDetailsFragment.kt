@@ -1,6 +1,7 @@
 package com.example.votree.products.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,9 @@ import com.example.votree.products.repositories.TransactionRepository
 import com.example.votree.products.view_models.ProductViewModel
 import com.example.votree.utils.ProgressDialogUtils
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.functions.FirebaseFunctions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,7 +64,6 @@ class OrderDetailsFragment : Fragment() {
         binding.userAddressTv.text = transaction.address
         binding.deliveryFeeTv.text = "$ +10"
         binding.totalAmountTv.text = "$ ${transaction.totalAmount}"
-        // Date format YYYY-MM-DD HH:MM:SS
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         binding.orderTimeTv.text = dateFormat.format(transaction.createdAt)
 
@@ -103,7 +105,6 @@ class OrderDetailsFragment : Fragment() {
         builder.setTitle("Deny Order")
         builder.setMessage("Are you sure you want to deny this order?")
         builder.setPositiveButton("Deny") { _, _ ->
-            // Deny the order
             denyOrder()
         }
         builder.setNegativeButton("Cancel") { dialog, _ ->
@@ -115,6 +116,9 @@ class OrderDetailsFragment : Fragment() {
     private fun denyOrder() {
         coroutineScope.launch(Dispatchers.IO) {
             transactionRepository.toggleOrderStatus(transaction.id, "denied")
+            val action = "Denied"
+            val message = "Your order has been denied by the store."
+            notificationAboutOrder(action, message)
             withContext(Dispatchers.Main) {
                 // Navigate back to the previous screen
                 findNavController().popBackStack()
@@ -125,10 +129,39 @@ class OrderDetailsFragment : Fragment() {
     private fun setupDeliverOrder() {
         coroutineScope.launch(Dispatchers.IO) {
             transactionRepository.toggleOrderStatus(transaction.id, "delivered")
+            val action = "Delivered"
+            val message = "Your order has been delivered by the store."
+            notificationAboutOrder(action, message)
             withContext(Dispatchers.Main) {
                 // Navigate back to the previous screen
                 findNavController().popBackStack()
             }
         }
+    }
+
+    private fun notificationAboutOrder(action: String, message: String){
+        // Send notification to the user about the denied order
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        val data = hashMapOf(
+            "senderId" to userId,
+            "receiverId" to transaction.customerId,
+            "collectionPath" to "users",
+            "title" to "Order $action",
+            "body" to message,
+            "data" to hashMapOf("orderId" to transaction.id)
+        )
+
+        val functions = FirebaseFunctions.getInstance()
+        functions.getHttpsCallable("sendNotification").call(data)
+            .addOnSuccessListener {
+                Log.d(TAG, "Notification sent successfully")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error sending notification ${e.message}", e)
+            }
+    }
+
+    companion object {
+        const val TAG = "OrderDetailsFragment"
     }
 }

@@ -8,12 +8,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.votree.databinding.FragmentNotificationBinding
 import com.example.votree.notifications.adapters.NotificationAdapter
 import com.example.votree.notifications.models.Notification
 import com.example.votree.notifications.view_models.NotificationViewModel
+import com.example.votree.products.repositories.TransactionRepository
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClickListener {
     private var _binding: FragmentNotificationBinding? = null
@@ -57,6 +64,20 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
         Log.d("NotificationFragment", "Notification clicked: $notification")
         if (!notification.read) {
             viewModel.updateNotificationReadStatus(notification.id, true)
+        }
+
+        // If notification.title == "New Order", navigate to OrderManagementForStoreFragment
+        if (notification.title == "New Order") {
+            CoroutineScope(Dispatchers.IO).launch {
+                val transactionRepository = TransactionRepository(FirebaseFirestore.getInstance())
+                val transaction = transactionRepository.getTransaction(notification.orderId)
+                withContext(Dispatchers.Main) {
+                    Log.d("NotificationFragment", "Transaction: $transaction")
+                    // Navigate to OrderManagementForStoreFragment
+                    val action = NotificationFragmentDirections.actionNotificationsFragmentToOrderDetailsFragment(transaction)
+                    findNavController().navigate(action)
+                }
+            }
         }
     }
 
