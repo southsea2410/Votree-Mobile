@@ -35,7 +35,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Extract orderId from the data payload
         val orderId = remoteMessage.data["orderId"] ?: ""
-        println("Order ID: $orderId") // For debugging
 
         val notification = Notification(
             title = remoteMessage.notification?.title ?: "No Title",
