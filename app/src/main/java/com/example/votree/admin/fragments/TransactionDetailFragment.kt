@@ -9,9 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.models.Product
@@ -59,9 +62,10 @@ class TransactionDetailFragment : Fragment() {
     }
 
     private fun updateUI() {
-        val viewStoreProfileButton = view?.findViewById<Button>(R.id.view_store_profile)
+//        val viewStoreProfileButton = view?.findViewById<Button>(R.id.view_store_profile)
         val customerDetailButton = view?.findViewById<FrameLayout>(R.id.frame_layout_transaction_customer)
         val productListButton = view?.findViewById<FrameLayout>(R.id.frame_layout_transaction_products)
+        val avatarClick: RelativeLayout? = view?.findViewById(R.id.avatarClick)
 
         if (currentTransactionId != "" && transaction != null) {
             productBoughtList = ""
@@ -114,6 +118,11 @@ class TransactionDetailFragment : Fragment() {
             .addOnSuccessListener { storeDocument ->
                 val store = storeDocument.toObject(Store::class.java)
                 if (store != null) {
+                    view?.findViewById<ImageView>(R.id.account_avatar).let {
+                        Glide.with(this)
+                            .load(store.storeAvatar)
+                            .into(it!!)
+                    }
                     view?.findViewById<TextView>(R.id.store_name)?.text = store.storeName
 
                     // Fetch the store owner data
@@ -123,7 +132,7 @@ class TransactionDetailFragment : Fragment() {
                             for (userDocument in userDocuments) {
                                 val owner = userDocument.toObject(User::class.java)
                                 if (owner.storeId == store.id) {
-                                    viewStoreProfileButton?.setOnClickListener {
+                                    avatarClick?.setOnClickListener {
                                         val fragment = AccountDetailFragment()
                                         val bundle = Bundle().apply {
                                             putParcelable("account", owner)
@@ -186,7 +195,7 @@ class TransactionDetailFragment : Fragment() {
                 transactionPaymentOption?.text = if (nonNullTransaction.remainPrice.compareTo(nonNullTransaction.totalAmount) < 0) "Prepay and Cash" else "Cash"
             }
 
-            transactionTotalPaymentValue?.text = formatPrice(nonNullTransaction.totalAmount.toString())
+            transactionTotalPaymentValue?.text = priceFormat(nonNullTransaction.totalAmount.toString())
 
         }
     }
@@ -200,16 +209,18 @@ class TransactionDetailFragment : Fragment() {
         return outputFormat.format(inputDate)
     }
 
-    private fun formatPrice(price: String): String {
-        val priceString = price.reversed()
-        var result = ""
-        for (i in priceString.indices) {
-            result += priceString[i]
-            if ((i + 1) % 3 == 0 && i != priceString.length - 1) {
-                result += "."
+    fun priceFormat(price: String): String {
+        val formattedPrice = StringBuilder()
+        val reversedPrice = price.reversed()
+
+        for (i in reversedPrice.indices) {
+            formattedPrice.append(reversedPrice[i])
+            if ((i + 1) % 3 == 0 && (i + 1) != reversedPrice.length) {
+                formattedPrice.append(',')
             }
         }
-        return "đ$result".reversed()
+
+        return "$${formattedPrice.reverse()}"
     }
 
     fun setTransactionId(transactionId: String) {

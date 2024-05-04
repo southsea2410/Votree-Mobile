@@ -4,7 +4,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -47,9 +49,8 @@ class AccountDetailFragment : Fragment() {
         val banButton = view.findViewById<Button>(R.id.banButton)
         val annouceButton = view.findViewById<Button>(R.id.annouceButton)
         val viewTransactionListButton = view.findViewById<TextView>(R.id.viewTransactionButton)
-////        val viewDiscountsButton = view.findViewById<Button>(R.id.viewDiscountsButton)
+//        val viewDiscountsButton = view.findViewById<Button>(R.id.viewDiscountsButton)
 //        val viewProductListButton = view.findViewById<Button>(R.id.viewProductListButton)
-//        val viewTipListButton = view.findViewById<Button>(R.id.viewTipListButton)
         val viewReportListButton = view.findViewById<TextView>(R.id.viewReportListButton)
         val topAppBar = (activity as AdminMainActivity).findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.topAppBar)
         topAppBar.title = "Account Detail"
@@ -151,25 +152,31 @@ class AccountDetailFragment : Fragment() {
             val copyPhone = view?.findViewById<TextView>(R.id.copy_phone)
             val copyEmail = view?.findViewById<TextView>(R.id.copy_email)
             val copyAddress = view?.findViewById<TextView>(R.id.copy_address)
+            val phoneIcon = view?.findViewById<ImageView>(R.id.account_phone_icon)
+            val emailIcon = view?.findViewById<ImageView>(R.id.account_email_icon)
+            val account_position_icon = view?.findViewById<ImageView>(R.id.account_position_icon)
+            val updatePointButton = view?.findViewById<ImageView>(R.id.point_icon)
+
             if (nonNullAccount.role.lowercase() == "user") {
                 storeInfoBtn?.setTextColor(resources.getColor(R.color.md_theme_gray_addition_2))
             } else {
                 storeInfoBtn?.setTextColor(resources.getColor(R.color.md_theme_primary))
-//                storeInfoBtn?.setOnClickListener {
-//                    val fragment = StoreDetailFragment()
-//                    db.collection("stores").document(nonNullAccount.storeId).get()
-//                        .addOnSuccessListener { document ->
-//                            if (document != null) {
-//                                val store = document.toObject(Store::class.java)
-//                                fragment.arguments = Bundle().apply {
-//                                    putParcelable("store", store)
-//                                }
-//                                val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-//                                (activity as AdminMainActivity).setCurrentFragment(StoreDetailFragment())
-//                                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("account_detail_fragment").commit()
-//                            }
-//                        }
-//                }
+                storeInfoBtn?.setOnClickListener {
+                    val fragment = StoreDetailFragment()
+                    db.collection("stores").document(nonNullAccount.storeId).get()
+                        .addOnSuccessListener { document ->
+                            if (document != null) {
+                                val store = document.toObject(Store::class.java)
+                                fragment.arguments = Bundle().apply {
+                                    putParcelable("store", store)
+                                    putString("userId", nonNullAccount.id)
+                                }
+                                val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+                                (activity as AdminMainActivity).setCurrentFragment(StoreDetailFragment())
+                                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("account_detail_fragment").commit()
+                            }
+                        }
+                }
             }
 
             val avatarImage = view?.findViewById<ImageView>(R.id.account_avatar)
@@ -197,6 +204,46 @@ class AccountDetailFragment : Fragment() {
                 view?.findViewById<TextView>(R.id.account_time_out_date)?.text = dateFormat(nonNullAccount.expireBanDate.toString())
             } else {
                 view?.findViewById<LinearLayout>(R.id.beBaned)?.visibility = View.GONE
+            }
+
+            phoneIcon?.setOnClickListener {
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.data = Uri.parse("tel:${nonNullAccount.phoneNumber}")
+                startActivity(intent)
+            }
+            emailIcon?.setOnClickListener {
+                val intent = Intent(Intent.ACTION_SENDTO)
+                intent.data = Uri.parse("mailto:${nonNullAccount.email}")
+                startActivity(intent)
+            }
+            account_position_icon?.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse("geo:0,0?q=${nonNullAccount.address}")
+                startActivity(intent)
+            }
+            updatePointButton?.setOnClickListener {
+                val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_update_point, null)
+                val alertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
+                    .setView(dialogView)
+                    .setTitle("Update Point")
+                val alertDialog = alertDialogBuilder.show()
+                val editTextFeedback = dialogView.findViewById<EditText>(R.id.editTextFeedback)
+                val buttonReject = dialogView.findViewById<Button>(R.id.buttonReject)
+                val buttonClose = dialogView.findViewById<Button>(R.id.buttonClose)
+
+                buttonReject.setOnClickListener {
+                    db.collection("users").document(nonNullAccount.id).update("accumulatePoint", editTextFeedback.text.toString().toInt())
+                        .addOnSuccessListener {
+                            activity?.supportFragmentManager?.popBackStack("account_list_fragment",
+                                FragmentManager.POP_BACK_STACK_INCLUSIVE
+                            )
+                        }
+                    alertDialog.dismiss()
+                }
+
+                buttonClose.setOnClickListener {
+                    alertDialog.dismiss()
+                }
             }
 
             copyUserNameBtn?.setOnClickListener {

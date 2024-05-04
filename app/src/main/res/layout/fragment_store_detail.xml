@@ -45,39 +45,38 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="10dp"-->
+<!--                            android:text="Store Information"-->
+<!--                            android:textColor="@color/md_theme_scrim"-->
+<!--                            android:textSize="21sp" />-->
+
                         <com.google.android.material.imageview.ShapeableImageView
                             app:shapeAppearanceOverlay="@style/circle_overlay"
-                            android:id="@+id/account_avatar"
+                            android:id="@+id/store_avatar"
                             android:scaleType="centerCrop"
                             android:layout_width="94dp"
                             android:layout_height="94dp"
                             android:layout_marginRight="20dp"
-                            android:layout_marginLeft="20dp"
-                            app:srcCompat="@drawable/shape_avatar" />
+                            android:layout_marginLeft="20dp" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal">
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/account_name"
+                                android:id="@+id/store_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="Huynh Si Kha"
+                                android:text="Store Name"
                                 android:textColor="@color/md_theme_primary"
                                 android:textSize="21sp"
                                 android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/account_role"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="User"
-                                android:textSize="14sp"
-                                android:textAllCaps="true" />
 
                         </LinearLayout>
 
@@ -181,15 +180,15 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/storeInfoBtn"
+                            android:id="@+id/listTipButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:gravity="center"
                             android:padding="13dp"
-                            android:text="Store"
+                            android:text="Tip"
                             android:textAllCaps="true"
-                            android:textColor="@color/md_theme_gray_addition_2"
+                            android:textColor="@color/md_theme_primary"
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
@@ -217,13 +216,13 @@
                             android:background="@color/md_theme_primary" />
 
                         <TextView
-                            android:id="@+id/viewReportListButton"
+                            android:id="@+id/viewProductListButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:gravity="center"
                             android:padding="13dp"
-                            android:text="Report"
+                            android:text="Product"
                             android:textAllCaps="true"
                             android:textColor="@color/md_theme_primary"
                             android:textSize="14sp"
@@ -238,60 +237,10 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <!--About Me Card-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/circular_border_solid"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="User Name"
-                                        android:textSize="17sp"
-                                        android:textColor="@color/md_theme_primary"
-                                        android:textStyle="bold" />
-
-                                    <Space
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1" />
-
-                                    <TextView
-                                        android:id="@+id/copy_user_name"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Copy"
-                                        android:textColor="@color/yellow"
-                                        android:textSize="14sp" />
-                                </LinearLayout>
-
-                                <TextView
-                                    android:id="@+id/account_username"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="10dp"
-                                    android:text="Kaishyh" />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
                         <!--Contact Details-->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
                             android:background="@drawable/circular_border_solid"
                             android:orientation="vertical"
                             android:padding="16dp">
@@ -456,191 +405,8 @@
 
 
                             </LinearLayout>
-                        </LinearLayout>
-
-                        <!--Skills Details-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/circular_border_solid"
-                            android:orientation="vertical"
-                            android:padding="16dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Accumulate Points"
-                                    android:textColor="@color/yellow"
-                                    android:textSize="17sp"
-                                    android:textStyle="bold" />
-
-                                <Space
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1" />
-
-
-                                <TextView
-                                    android:id="@+id/copy_point"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Copy"
-                                    android:textColor="#FFCF66"
-                                    android:textSize="14sp" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
-                                    android:paddingRight="8dp">
-
-                                    <ImageView
-                                        android:id="@+id/point_icon"
-                                        android:layout_width="40dp"
-                                        android:layout_height="40dp"
-                                        android:background="@drawable/circular_grey_bordersolid"
-                                        android:padding="10dp"
-                                        android:src="@drawable/sparkling" />
-
-                                    <TextView
-                                        android:id="@+id/account_accumulate_point"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="20dp"
-                                        android:text="100"
-                                        android:textColor="@color/md_theme_primary"
-                                        android:textSize="15sp"/>
-                                </LinearLayout>
-
-                            </LinearLayout>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/experience"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:id="@+id/beBaned"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/circular_border_solid"
-                            android:orientation="horizontal"
-                            android:padding="20dp">
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:gravity="center_vertical">
-
-                                <ImageView
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:padding="6dp"
-                                    android:src="@drawable/icon_ban" />
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="10dp"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textColor="@color/md_theme_error"
-                                        android:text="This account was banned"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="center_vertical">
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:text="Until"
-                                            android:textSize="12sp"
-                                            android:textStyle="bold" />
-
-                                        <TextView
-                                            android:id="@+id/account_time_out_date"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginStart="5dp"
-                                            android:text="Sep 2010 - Jan 2013"
-                                            android:textSize="12sp"
-                                            android:textColor="@color/md_theme_error"
-                                            android:textStyle="bold" />
-                                    </LinearLayout>
-                                </LinearLayout>
-                            </LinearLayout>
 
                         </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginLeft="20dp"
-                        android:orientation="horizontal"
-                        android:layout_weight="1"
-                        android:gravity="center">
-
-                        <Button
-                            android:id="@+id/annouceButton"
-                            style="@style/Widget.Material3.Button.IconButton.Filled"
-                            android:drawableLeft="@drawable/baseline_message_24"
-                            android:layout_width="140dp"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:backgroundTint="@color/yellow"
-                            android:text="Announce"
-                            android:textColor="@color/md_theme_onPrimary"
-                            android:textSize="16sp"
-                            android:textStyle="normal"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/option2_2"
-                            app:strokeColor="@color/yellow"
-                            app:strokeWidth="2dp"
-                            app:cornerRadius="8dp" />
-
-                        <Button
-                            android:id="@+id/banButton"
-                            style="@style/Widget.Material3.Button.IconButton.Filled"
-                            android:drawableLeft="@drawable/icon_ban_white"
-                            android:layout_width="140dp"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="@color/md_theme_error"
-                            android:textColor="@color/md_theme_onPrimary"
-                            android:layout_margin="10dp"
-                            android:text="Ban"
-                            android:textSize="16sp"
-                            app:layout_constraintBottom_toTopOf="@+id/saveButton"
-                            app:strokeColor="@color/md_theme_error"
-                            app:strokeWidth="2dp"
-                            app:cornerRadius="8dp" />
 
                     </LinearLayout>
 

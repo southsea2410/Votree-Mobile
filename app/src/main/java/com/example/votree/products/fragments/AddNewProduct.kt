@@ -116,7 +116,7 @@ class AddNewProduct : Fragment() {
                                 product = Product(
                                     id = "",
                                     storeId = storeId,
-                                    imageUrl = imageUrl,
+                                    imageList = listOf(imageUrl),
                                     productName = productName,
                                     shortDescription = shortDescription,
                                     description = longDescription,

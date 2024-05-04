@@ -32,7 +32,7 @@ class ProductBoughtListAdapter(private val listener: OnItemClickListener, privat
             super.bind(item)
 
             Glide.with(itemView.context)
-                .load(item.imageUrl)
+                .load(item.imageList[0])
                 .into(itemView.findViewById(R.id.product_list_item_avatar))
 
             itemView.findViewById<TextView>(R.id.product_name).text = item.productName

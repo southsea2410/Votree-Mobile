@@ -95,7 +95,7 @@ class ProductGroupAdapter(
                 binding.root.context.getString(R.string.price_format, item.product.price)
             binding.quantityEt.setText(item.quantity.toString())
             Glide.with(binding.root)
-                .load(item.product.imageUrl)
+                .load(item.product.imageList[0])
                 .placeholder(R.drawable.img_placeholder)
                 .into(binding.productImageIv)
 

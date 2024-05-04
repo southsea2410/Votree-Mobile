@@ -50,7 +50,7 @@ abstract class BaseDialogFragment<T> : DialogFragment(), OnItemClickListener {
 
     protected abstract fun createAdapter(listener: OnItemClickListener): BaseListAdapter<T>
 
-    protected abstract fun fetchDataFromFirestore(accountId: String?)
+    protected abstract fun fetchDataFromFirestore(id: String?)
 
     protected open fun onItemSelected(position: Int) { }
 

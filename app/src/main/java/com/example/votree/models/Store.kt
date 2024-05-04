@@ -15,8 +15,11 @@ data class Store (
     var storeLocation: String,
     var storeEmail: String,
     var storePhoneNumber: String,
+    var storeAvatar: String = "",
     var discountCodeIdList: List<String>,
-    var transactionIdList: List<String>
+    var transactionIdList: List<String>,
+    var createdAt: Date = Date(),
+    var updatedAt: Date = Date(),
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
@@ -24,11 +27,14 @@ data class Store (
         parcel.readString()!!,
         parcel.readString()!!,
         parcel.readString()!!,
+        parcel.readString()!!,
         parcel.createStringArrayList()!!,
-        parcel.createStringArrayList()!!
+        parcel.createStringArrayList()!!,
+        Date(parcel.readLong()),
+        Date(parcel.readLong()),
     )
 
-    constructor() : this("", "", "", "", "", emptyList(), emptyList())
+    constructor() : this("", "", "", "", "", "", emptyList(), emptyList(), Date(), Date())
 
     companion object : Parceler<Store> {
 
@@ -38,8 +44,11 @@ data class Store (
             parcel.writeString(storeLocation)
             parcel.writeString(storeEmail)
             parcel.writeString(storePhoneNumber)
+            parcel.writeString(storeAvatar)
             parcel.writeStringList(discountCodeIdList)
             parcel.writeStringList(transactionIdList)
+            parcel.writeLong(createdAt.time)
+            parcel.writeLong(updatedAt.time)
         }
 
         override fun create(parcel: Parcel): Store {

@@ -57,7 +57,7 @@ class CartAdapter(
                         product?.let { context.getString(R.string.price_format, it.price) } ?: ""
                     productQuantityTextView.text = quantity.toString()
                     Glide.with(itemView)
-                        .load(product?.imageUrl)
+                        .load(product?.imageList?.get(0))
                         .placeholder(R.drawable.img_placeholder)
                         .into(productImageView)
                 })

@@ -78,7 +78,7 @@ class ProductDetailFragment : Fragment() {
             val hideButton: Button? = view?.findViewById(R.id.hideButton)
             view?.findViewById<ImageView>(R.id.productImage)?.let { imageView ->
                 Glide.with(this)
-                    .load(nonNullProduct.imageUrl)
+                    .load(nonNullProduct.imageList[0])
                     .into(imageView)
             }
             view?.findViewById<TextView>(R.id.productName)?.text = nonNullProduct.productName
@@ -87,7 +87,6 @@ class ProductDetailFragment : Fragment() {
             view?.findViewById<TextView>(R.id.productSoldQuantity)?.text = nonNullProduct.quantitySold.toString()
             view?.findViewById<TextView>(R.id.description)?.text = nonNullProduct.description
             view?.findViewById<TextView>(R.id.transaction_list_item_title)?.text = "Price: ${nonNullProduct.price}"
-            Log.d("Hiii", nonNullProduct.isActive.toString())
 //            hideButton?.text = if (nonNullProduct.isActive) "  Hide this product" else "  Unhide this product"
 //            hideButton?.backgroundTintList = if (nonNullProduct.isActive) resources.getColorStateList(R.color.yellow) else resources.getColorStateList(R.color.md_theme_onSurfaceVariant)
             hideButton?.backgroundTintList = when (nonNullProduct.isActive) {
