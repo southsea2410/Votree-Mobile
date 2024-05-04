@@ -22,7 +22,7 @@
             app:cardCornerRadius="8dp">
 
             <ImageView
-                android:id="@+id/notification_iv"
+                android:id="@+id/notification_image_iv"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:scaleType="centerCrop" />
@@ -32,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
@@ -39,7 +40,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Notification Title"
-                android:layout_margin="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="2dp"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:maxLines="1" />
 
@@ -50,20 +53,20 @@
                 android:text="Notification Content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="2dp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/black"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/notification_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HH:MM DD/MM/YYYY"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="@color/black"/>
         </LinearLayout>
-
-<!--        <ImageButton-->
-<!--            android:id="@+id/gotoOrderDetails_btn"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginEnd="10dp"-->
-<!--            android:layout_gravity="center_vertical"-->
-<!--            android:background="@null"-->
-<!--            android:src="@drawable/ic_arrow_forward_24px" />-->
-
-
     </LinearLayout>
 
     <com.google.android.material.divider.MaterialDivider
