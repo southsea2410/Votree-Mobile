@@ -25,11 +25,10 @@ class ProductViewModel : ViewModel() {
         get() = _products
 
     init {
-//        fetchProducts()
+        fetchProducts()
     }
 
     private fun fetchProducts() {
-        // Assuming 'productsCollection' is already defined as a reference to the Firestore collection
         productsCollection
             .whereEqualTo("active", true)
             .addSnapshotListener { snapshot, error ->
