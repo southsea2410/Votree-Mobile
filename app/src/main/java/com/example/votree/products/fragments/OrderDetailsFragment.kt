@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.votree.databinding.FragmentOrderDetailsBinding
@@ -119,10 +118,6 @@ class OrderDetailsFragment : Fragment() {
             val action = "Denied"
             val message = "Your order has been denied by the store."
             notificationAboutOrder(action, message)
-            withContext(Dispatchers.Main) {
-                // Navigate back to the previous screen
-                findNavController().popBackStack()
-            }
         }
     }
 
@@ -132,33 +127,38 @@ class OrderDetailsFragment : Fragment() {
             val action = "Delivered"
             val message = "Your order has been delivered by the store."
             notificationAboutOrder(action, message)
-            withContext(Dispatchers.Main) {
-                // Navigate back to the previous screen
-                findNavController().popBackStack()
-            }
         }
     }
 
     private fun notificationAboutOrder(action: String, message: String){
         // Send notification to the user about the denied order
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-        val data = hashMapOf(
-            "senderId" to userId,
-            "receiverId" to transaction.customerId,
-            "collectionPath" to "users",
-            "title" to "Order $action",
-            "body" to message,
-            "data" to hashMapOf("orderId" to transaction.id)
-        )
+        CoroutineScope(Dispatchers.Main).launch {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+            val data = hashMapOf(
+                "senderId" to userId,
+                "receiverId" to transaction.customerId,
+                "collectionPath" to "users",
+                "title" to "Order $action",
+                "body" to message,
+                "data" to hashMapOf("orderId" to transaction.id)
+            )
+            // Show progress dialog
+            ProgressDialogUtils.showLoadingDialog(requireActivity())
 
-        val functions = FirebaseFunctions.getInstance()
-        functions.getHttpsCallable("sendNotification").call(data)
-            .addOnSuccessListener {
-                Log.d(TAG, "Notification sent successfully")
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error sending notification ${e.message}", e)
-            }
+            val functions = FirebaseFunctions.getInstance()
+            functions.getHttpsCallable("sendNotification").call(data)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Notification sent successfully")
+                    ProgressDialogUtils.hideLoadingDialog()
+                    // Navigate back to the previous screen
+                    requireActivity().onBackPressed()
+                }
+                .addOnFailureListener { e ->
+                    ProgressDialogUtils.hideLoadingDialog()
+                    Log.e(TAG, "Error sending notification ${e.message}", e)
+                }
+        }
+
     }
 
     companion object {

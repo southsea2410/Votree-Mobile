@@ -66,6 +66,11 @@ class NotificationViewModel : ViewModel() {
                 val notificationId = documentReference.id
                 db.collection("users/$userId/notifications").document(notificationId)
                     .update("id", notificationId).await()
+//                _notifications.postValue(_notifications.value?.plus(notification))
+                _notifications.value?.let {
+                    Log.d("NotificationViewModel", "Adding notification to list")
+                    _notifications.postValue(it.plus(notification))
+                }
             } catch (e: Exception) {
                 Log.d("NotificationViewModel", "Error saving notification", e)
                 // Handle exceptions
