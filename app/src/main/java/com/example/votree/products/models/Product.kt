@@ -9,7 +9,7 @@ import java.util.Date
 
 @Parcelize
 data class Product(
-    var id: String = "", // Change id to String if you're using Firestore's auto-generated document ID
+    var id: String = "",
     val storeId: String = "",
     var imageUrl: String = "",
     val productName: String = "",
@@ -25,7 +25,8 @@ data class Product(
     val suitClimate: SuitClimate = SuitClimate.UNKNOWN,
     val saleOff: Double = 0.0,
     val createdAt: Date = Date(),
-    var updatedAt: Date = Date()
+    var updatedAt: Date = Date(),
+    var active: Boolean = true
 ) : Parcelable {
     override fun toString(): String {
         return "Product(id=$id, name='$productName', price=$price)"

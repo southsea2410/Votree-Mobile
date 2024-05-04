@@ -17,10 +17,15 @@ import com.example.votree.databinding.FragmentProductDetailForStoreBinding
 import com.example.votree.products.adapters.UserReviewAdapter
 import com.example.votree.products.models.ProductReview
 import com.example.votree.products.repositories.ProductRepository
+import com.example.votree.users.repositories.StoreRepository
+import com.example.votree.utils.CustomToast
+import com.example.votree.utils.ToastType
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProductDetailFragmentForStore : Fragment() {
 
@@ -45,6 +50,7 @@ class ProductDetailFragmentForStore : Fragment() {
         setupButtons()
         setupReviewAdapter()
         fetchAndDisplayReviews()
+        displayShopDetails()
     }
 
     private fun displayProductDetails() {
@@ -63,15 +69,101 @@ class ProductDetailFragmentForStore : Fragment() {
                     .centerCrop()
                     .placeholder(R.drawable.img_placeholder)
                     .into(productImage)
+
+                if (!product.active) {
+                    hideBtn.text = "Unhide"
+                    hideBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unhide, 0, 0, 0)
+                }
             }
         }
+    }
+
+    private fun displayShopDetails() {
+        args.currentProduct.storeId.let { storeId ->
+            val storeRepository = StoreRepository()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val store = storeRepository.fetchStore(storeId)
+                    val numberOfProducts = storeRepository.getNumberOfProductsOfStore(storeId)
+                    val averageRating = storeRepository.getAverageProductRating(storeId)
+
+                    // Update the UI on the main thread
+                    withContext(Dispatchers.Main) {
+                        binding.storeName.text = store.storeName
+                        binding.storeSoldProductsTv.text = "$numberOfProducts"
+                        binding.storeRatingTv.text = averageRating.toString()
+                    }
+                } catch (e: Exception) {
+                    Log.e("ProductDetailFragment", "Error fetching store details", e)
+                    // Handle errors, possibly update the UI to show an error message
+                }
+            }
+        }
+
     }
 
     private fun setupButtons() {
         with(binding) {
             updateBtn.setOnClickListener { navigateToUpdateProduct() }
             deleteBtn.setOnClickListener { confirmProductDeletion() }
+            hideBtn.setOnClickListener {
+                val shouldHide = binding.hideBtn.text.toString() == "Hide"
+                toggleProductVisibility(shouldHide)
+            }
+
+            productDetailToolbar.setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+//            productDetailToolbar.setOnMenuItemClickListener {
+//                when(it.itemId){
+//                    R.id.productDetail_to_StoreReport -> {
+//                        val action = ProductDetailFragmentForStoreDirections.actionProductDetailToStoreReport(args.currentProduct.storeId)
+//                        findNavController().navigate(action)
+//                        true
+//                    }
+//                    R.id.productDetail_to_ProductReport -> {
+//                        val action = ProductDetailFragmentDirections.actionProductDetailToProductReport(args.currentProduct.id)
+//                        findNavController().navigate(action)
+//                        true
+//                    }
+//                    else -> false
+//                }
+//            }
+
+            viewAllReviewBtn.setOnClickListener {
+                gotoReviewsList()
+            }
+
+            storeInfo.setOnClickListener {
+                val directions =
+                    ProductDetailFragmentForStoreDirections.actionProductDetailFragmentForStoreToStoreProfile2(
+                        args.currentProduct.storeId
+                    )
+                findNavController().navigate(directions)
+            }
         }
+    }
+
+    private fun toggleProductVisibility(shouldHide: Boolean) {
+        val actionWord = if (shouldHide) "hide" else "unhide"
+        AlertDialog.Builder(requireContext())
+            .setTitle("${actionWord.capitalize()} Product")
+            .setMessage("Are you sure you want to $actionWord this product?")
+            .setPositiveButton("Accept") { _, _ ->
+                productRepository.toggleProductVisibility(args.currentProduct, onSuccess = {
+                    CustomToast.show(requireContext(), "Product ${actionWord}d", ToastType.SUCCESS)
+                    findNavController().popBackStack()
+                }, onFailure = {
+                    CustomToast.show(
+                        requireContext(),
+                        "Error ${actionWord}ing product",
+                        ToastType.FAILURE
+                    )
+                })
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun navigateToUpdateProduct() {
@@ -107,18 +199,41 @@ class ProductDetailFragmentForStore : Fragment() {
         // Go to the products/productId/reviews collection in Firestore
         firestore.collection("products").document(args.currentProduct.id).collection("reviews")
             .orderBy("rating", Query.Direction.DESCENDING)
-            .limit(2)
             .get()
             .addOnSuccessListener { reviewsSnapshot ->
                 for (reviewDocument in reviewsSnapshot.documents) {
                     val review = reviewDocument.toObject(ProductReview::class.java)
                     review?.let { reviews.add(it) }
                 }
-                userReviewAdapter = UserReviewAdapter(reviews, CoroutineScope(Dispatchers.Main))
+                // Only take the first 2 reviews to display
+                val reviewsToDisplay = reviews.take(2)
+                userReviewAdapter =
+                    UserReviewAdapter(reviewsToDisplay, CoroutineScope(Dispatchers.Main))
                 reviewRecyclerView.adapter = userReviewAdapter
+
+                binding.totalReviewTv.text = reviews.size.toString()
             }
             .addOnFailureListener { e ->
                 Log.e("ProductDetail", "Error fetching reviews", e)
             }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val productRepository = ProductRepository(firestore)
+            try {
+                val productRating =
+                    productRepository.getAverageProductRating(args.currentProduct.id)
+                withContext(Dispatchers.Main) {
+                    binding.totalRatingTv.text = productRating.toString()
+                }
+            } catch (e: Exception) {
+                Log.e("ProductDetailFragment", "Error fetching product details", e)
+            }
+        }
+    }
+
+    private fun gotoReviewsList() {
+        val action =
+            ProductDetailFragmentDirections.actionProductDetailToProductReviewListFragment(args.currentProduct)
+        findNavController().navigate(action)
     }
 }

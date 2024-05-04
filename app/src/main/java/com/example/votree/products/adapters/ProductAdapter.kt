@@ -30,6 +30,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(),
     private var productList = emptyList<Product>()
     private var filteredProductList = productList
     private var listener: OnProductClickListener? = null
+    private var products: MutableList<Product> = mutableListOf()
 
     fun setOnProductClickListener(listener: OnProductClickListener) {
         this.listener = listener
@@ -128,5 +129,11 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(),
         this.productList = product
         this.filteredProductList = product
         notifyDataSetChanged()
+    }
+
+    fun addData(newProducts: List<Product>) {
+        val currentSize = products.size
+        products.addAll(newProducts)
+        notifyItemRangeInserted(currentSize, newProducts.size)
     }
 }

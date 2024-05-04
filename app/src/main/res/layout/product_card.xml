@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    app:cardElevation="4dp"
+    app:cardElevation="5dp"
     app:cardBackgroundColor="@android:color/white">
 
     <LinearLayout
@@ -26,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@color/md_theme_surface_mediumContrast"
             android:padding="4dp">
 
             <!-- Title, secondary and supporting text -->
