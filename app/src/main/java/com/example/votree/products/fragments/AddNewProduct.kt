@@ -14,10 +14,12 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.votree.databinding.FragmentAddNewProductBinding
 import com.example.votree.products.adapters.ProductImageAdapter
+import com.example.votree.products.adapters.ProductImageAdapterUri
 import com.example.votree.products.data.productCatagories.PlantType
 import com.example.votree.products.data.productCatagories.SuitClimate
 import com.example.votree.products.data.productCatagories.SuitEnvironment
@@ -36,7 +38,7 @@ class AddNewProduct : Fragment() {
     private lateinit var firestore: FirebaseFirestore
 
     private val imageUris = mutableListOf<Uri>()
-    private lateinit var imageAdapter: ProductImageAdapter
+    private lateinit var imageAdapter: ProductImageAdapter<Uri>
 
     //    private lateinit var permissionManager: PermissionManager
     private var imageUri: Uri? = null
@@ -55,6 +57,15 @@ class AddNewProduct : Fragment() {
         setupSpinners()
         setupSaveButton()
         setupAddImageButton()
+
+        binding.toolbar.navigationIcon = ContextCompat.getDrawable(
+            requireContext(),
+            com.example.votree.R.drawable.arrow_back_24px
+        )
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.toolbar.title = getString(com.example.votree.R.string.add_new_product)
 
         return binding.root
     }
@@ -264,7 +275,7 @@ class AddNewProduct : Fragment() {
 
     private fun updateImageViewPager() {
         if (imageUris.isNotEmpty()) {
-            imageAdapter = ProductImageAdapter(imageUris)
+            imageAdapter = ProductImageAdapterUri(imageUris)
             binding.productImageViewPager.adapter = imageAdapter
         }
     }

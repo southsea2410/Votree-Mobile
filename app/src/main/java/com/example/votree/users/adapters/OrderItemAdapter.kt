@@ -74,7 +74,7 @@ class OrderItemAdapter(
                 holder.productPriceTv.text = product.price.toString()
                 // Load the product image
                  Glide.with(holder.itemView)
-                     .load(product.imageUrl)
+                     .load(product.imageUrl[0])
                      .placeholder(R.drawable.img_placeholder)
                      .into(holder.productImageIv)
             }
