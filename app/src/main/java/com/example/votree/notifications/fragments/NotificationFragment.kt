@@ -1,5 +1,6 @@
 package com.example.votree.notifications.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.example.votree.notifications.adapters.NotificationAdapter
 import com.example.votree.notifications.models.Notification
 import com.example.votree.notifications.view_models.NotificationViewModel
 import com.example.votree.products.repositories.TransactionRepository
+import com.example.votree.users.activities.OrderHistoryActivity
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -78,6 +80,11 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
                     findNavController().navigate(action)
                 }
             }
+        }
+        else if (notification.title == "Order Delivered" || notification.title == "Order Denied") {
+            // start intent OrderHistoryActivity
+            val intent = Intent(context, OrderHistoryActivity::class.java)
+            startActivity(intent)
         }
     }
 
