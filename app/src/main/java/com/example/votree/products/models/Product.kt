@@ -11,7 +11,7 @@ import java.util.Date
 data class Product(
     var id: String = "",
     val storeId: String = "",
-    var imageUrl: String = "",
+    var imageUrl: List<String> = mutableListOf(),
     val productName: String = "",
     val shortDescription: String = "",
     val description: String = "",

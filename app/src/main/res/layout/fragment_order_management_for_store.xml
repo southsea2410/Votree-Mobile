@@ -8,6 +8,13 @@
     android:orientation="vertical"
     tools:context=".users.fragments.OrderManagementForStoreFragment">
 
+    <Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/orderFilter_tl"
         android:layout_width="match_parent"

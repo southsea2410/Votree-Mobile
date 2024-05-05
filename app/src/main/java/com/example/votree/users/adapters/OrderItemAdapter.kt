@@ -1,5 +1,6 @@
 package com.example.votree.users.adapters
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ import kotlinx.coroutines.withContext
 
 class OrderItemAdapter(
     var transactions: List<Transaction>,
-    private val coroutineScope: CoroutineScope // Pass a CoroutineScope from the Activity or Fragment
+    private val coroutineScope: CoroutineScope
 ) : RecyclerView.Adapter<OrderItemAdapter.OrderItemViewHolder>() {
 
     private val firestore = FirebaseFirestore.getInstance()
@@ -53,6 +54,7 @@ class OrderItemAdapter(
         val transaction = transactions[position]
 
         // Set the status and total price
+        setStatusTextColor(holder.statusTv, transaction.status)
         holder.statusTv.text = transaction.status
 
         // Use a coroutine to fetch the shop name and calculate the total quantity
@@ -74,7 +76,7 @@ class OrderItemAdapter(
                 holder.productPriceTv.text = product.price.toString()
                 // Load the product image
                  Glide.with(holder.itemView)
-                     .load(product.imageUrl)
+                     .load(product.imageUrl[0])
                      .placeholder(R.drawable.img_placeholder)
                      .into(holder.productImageIv)
             }
@@ -95,6 +97,21 @@ class OrderItemAdapter(
                     holder.itemView.context.startActivity(intent)
                 }
             }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateTransactions(newTransactions: List<Transaction>) {
+        this.transactions = newTransactions
+        notifyDataSetChanged()
+    }
+
+    private fun setStatusTextColor(statusTv: TextView, status: String) {
+        when (status) {
+            "pending" -> statusTv.setTextColor(statusTv.context.getColor(R.color.md_theme_secondaryContainer))
+            "denied" -> statusTv.setTextColor(statusTv.context.getColor(R.color.md_theme_errorContainer_mediumContrast))
+            "delivered" -> statusTv.setTextColor(statusTv.context.getColor(R.color.md_theme_primary_opacity_12))
+            else -> statusTv.setTextColor(statusTv.context.getColor(R.color.md_theme_onSurface_mediumContrast))
         }
     }
 

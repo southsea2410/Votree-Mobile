@@ -129,26 +129,27 @@
                 android:layout_width="60dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center_vertical"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:padding="10dp">
 
-                <Button
-                    android:id="@+id/favorite_btn"
-                    style="@style/Widget.Material3.Button.IconButton.Outlined"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    app:cornerRadius="5dp"
-                    app:strokeWidth="2dp"
-                    app:icon="@drawable/bookmark_border_24px"
-                    app:iconGravity="textEnd" />
+                <!--                <Button-->
+                <!--                    android:id="@+id/favorite_btn"-->
+                <!--                    style="@style/Widget.Material3.Button.IconButton.Outlined"-->
+                <!--                    android:layout_width="40dp"-->
+                <!--                    android:layout_height="40dp"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    app:cornerRadius="5dp"-->
+                <!--                    app:strokeWidth="2dp"-->
+                <!--                    app:icon="@drawable/bookmark_border_24px"-->
+                <!--                    app:iconGravity="textEnd" />-->
 
                 <Button
                     android:id="@+id/remove_btn"
                     style="@style/Widget.Material3.Button.IconButton.Outlined"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
                     app:cornerRadius="5dp"
                     app:icon="@drawable/delete_24px"
                     app:iconGravity="textEnd"
