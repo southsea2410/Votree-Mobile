@@ -60,7 +60,7 @@ class ProfileFragment : Fragment() {
         with(binding) {
             Glide.with(this@ProfileFragment)
                 .load(user.avatar)
-                .placeholder(R.drawable.avatar_default)
+                .placeholder(R.drawable.avatar_default_2)
                 .into(productImageView)
             userNameEt.setText(user.username)
             fullNameEt.setText(user.fullName)

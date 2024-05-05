@@ -131,51 +131,79 @@ class TipListFragment : BaseListFragment<Tip>(), OnItemClickListener {
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.fragment_list
+    override fun getLayoutId(): Int = R.layout.fragment_list_with_filter
 
     private var isFetchingData = false // Flag to prevent concurrent fetch operations
 
+//    public override fun fetchDataFromFirestore() {
+//        super.fetchDataFromFirestore()
+//        if (currentUserId != "") {
+//            db.collection(collectionName)
+//                .whereEqualTo("userId", currentUserId)
+//                .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+//                .addSnapshotListener { snapshots, e ->
+//                    if (e != null) {
+//                        Log.w("TipListFragment", "listen:error", e)
+//                        return@addSnapshotListener
+//                    }
+//
+//                    itemList.clear()
+//                    for (doc in snapshots!!) {
+//                        val tip = doc.toObject(Tip::class.java)
+//                        tip.id = doc.id
+//                        itemList.add(tip)
+//                    }
+//                    adapter.setData(itemList)
+//                }
+//        } else {
+//            db.collection(collectionName)
+//                .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+//                .addSnapshotListener { snapshots, e ->
+//                    if (e != null) {
+//                        Log.w("TipListFragment", "listen:error", e)
+//                        return@addSnapshotListener
+//                    }
+//
+//                    itemList.clear()
+//                    tempList.clear()
+//                    for (doc in snapshots!!) {
+//                        val tip = doc.toObject(Tip::class.java)
+//                        tip.id = doc.id
+//                        itemList.add(tip)
+//                    }
+//                    tempList.addAll(itemList)
+//                    adapter.setData(itemList)
+//                }
+//        }
+//    }
+
     public override fun fetchDataFromFirestore() {
         super.fetchDataFromFirestore()
-        if (currentUserId != "") {
-            db.collection(collectionName)
-                .whereEqualTo("userId", currentUserId)
-                .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                .addSnapshotListener { snapshots, e ->
-                    if (e != null) {
-                        Log.w("TipListFragment", "listen:error", e)
-                        return@addSnapshotListener
-                    }
 
-                    itemList.clear()
-                    for (doc in snapshots!!) {
-                        val tip = doc.toObject(Tip::class.java)
-                        tip.id = doc.id
-                        itemList.add(tip)
-                    }
-                    adapter.setData(itemList)
-                }
-        } else {
-            db.collection(collectionName)
-                .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                .addSnapshotListener { snapshots, e ->
-                    if (e != null) {
-                        Log.w("TipListFragment", "listen:error", e)
-                        return@addSnapshotListener
-                    }
+        val query = db.collection(collectionName)
+            .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
 
-                    itemList.clear()
-                    tempList.clear()
-                    for (doc in snapshots!!) {
-                        val tip = doc.toObject(Tip::class.java)
-                        tip.id = doc.id
-                        itemList.add(tip)
-                    }
-                    tempList.addAll(itemList)
-                    adapter.setData(itemList)
-                }
+        if (currentUserId.isNotEmpty()) {
+            query.whereEqualTo("userId", currentUserId)
+        }
+
+        query.addSnapshotListener { snapshots, e ->
+            if (e != null) {
+                Log.w("TipListFragment", "listen:error", e)
+                return@addSnapshotListener
+            }
+
+            val tempList = mutableListOf<Tip>()
+            snapshots?.forEach { doc ->
+                val tip = doc.toObject(Tip::class.java)
+                tip.id = doc.id
+                tempList.add(tip)
+            }
+
+            adapter.setData(tempList)
         }
     }
+
 
 //    override fun fetchDataFromFirestore(queryString: String?) {
 //        if (isFetchingData) {

@@ -49,7 +49,7 @@ class UserProfileFragment : Fragment() {
                 binding.userRoleTv.text = user.role
                 Glide.with(requireContext())
                     .load(user.avatar)
-                    .placeholder(R.drawable.avatar_default)
+                    .placeholder(R.drawable.avatar_default_2)
                     .into(binding.userAvatarIv)
 
                 if (user.role == "store") {

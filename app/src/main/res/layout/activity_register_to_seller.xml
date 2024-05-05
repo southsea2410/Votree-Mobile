@@ -45,7 +45,8 @@
                         android:id="@+id/shopAvatar_iv"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
-                        android:src="@drawable/avatar_default"/>
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/avatar_default_2"/>
                 </androidx.cardview.widget.CardView>
 
 

@@ -1,7 +1,9 @@
 package com.example.votree.admin.activities
 
 import DialogFragmentListener
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +14,8 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -41,6 +45,7 @@ import java.util.Locale
 @Suppress("DEPRECATION")
 class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.OnQueryTextListener, NavigationView.OnNavigationItemSelectedListener, DialogFragmentListener {
 
+    private val CALL_PHONE_PERMISSION_REQUEST_CODE = 1
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var topAppBar: MaterialToolbar
     private val db = Firebase.firestore
@@ -56,6 +61,22 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_admin)
+
+        // Check for CALL_PHONE permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Permission is not granted
+            // Request the permission
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.CALL_PHONE),
+                CALL_PHONE_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            // Permission has already been granted
+            // You can now use CALL_PHONE
+        }
 
         drawerLayout = findViewById(R.id.mainLayout)
         topAppBar = findViewById(R.id.topAppBar)
@@ -148,6 +169,28 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
             .commit()
 
         supportFragmentManager.addOnBackStackChangedListener(backStackListener)
+    }
+
+    // Handle permission request result
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            CALL_PHONE_PERMISSION_REQUEST_CODE -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // Permission granted
+                    // You can now use CALL_PHONE
+                } else {
+                    // Permission denied
+                    // You may inform the user or handle this case as needed
+                }
+                return
+            }
+        }
     }
 
     override fun onDestroy() {

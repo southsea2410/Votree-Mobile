@@ -13,8 +13,6 @@ import com.example.votree.models.Report
 class ReportListAdapter(private val listener: OnItemClickListener, private val isDialog: Boolean = false) :
     BaseListAdapter<Report>(listener) {
 
-        private val DEFAULT_IMAGE = "https://firebasestorage.googleapis.com/v0/b/votree-mobile-app.appspot.com/o/defaults%2Freport.png?alt=media&token=774f01dd-df88-4462-bd5a-7c5d84691132"
-
     override var singleitem_selection_position = -1
 
     override fun getLayoutId(): Int = R.layout.item_report
@@ -34,7 +32,7 @@ class ReportListAdapter(private val listener: OnItemClickListener, private val i
                     .into(itemView.findViewById(R.id.report_list_item_image))
             } else {
                 Glide.with(itemView.context)
-                    .load(DEFAULT_IMAGE)
+                    .load(R.drawable.report_default)
                     .into(itemView.findViewById(R.id.report_list_item_image))
             }
 
