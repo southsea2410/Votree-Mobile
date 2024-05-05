@@ -34,9 +34,9 @@ class ReportDialogFragment : BaseDialogFragment<Report>() {
         return ReportListAdapter(listener, true)
     }
 
-    override fun fetchDataFromFirestore(accountId: String?) {
+    override fun fetchDataFromFirestore(id: String?) {
         val reportList = mutableListOf<Report>()
-        db.collection(collectionName).whereEqualTo("userId", accountId)
+        db.collection(collectionName).whereEqualTo("userId", id)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("ReportListActivity", "listen:error", e)
@@ -52,7 +52,7 @@ class ReportDialogFragment : BaseDialogFragment<Report>() {
                 adapter.setData(reportList)
             }
 
-        db.collection(collectionName).whereEqualTo("reporterId", accountId)
+        db.collection(collectionName).whereEqualTo("reporterId", id)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("ReportListActivity", "listen:error", e)
