@@ -74,7 +74,7 @@ class ReportListFragment : BaseListFragment<Report>(), OnItemClickListener {
         when (clickedButton) {
             pendingButton -> {
                 // Handle pending button click
-                tempList = itemList.filter { it.processingState.lowercase() == "pending" }.toMutableList()
+                tempList = itemList.filter { it.processingState.lowercase() == "pending" || it.processingState.lowercase() == "" }.toMutableList()
                 adapter.setData(tempList)
             }
             approvedButton -> {
@@ -135,7 +135,7 @@ class ReportListFragment : BaseListFragment<Report>(), OnItemClickListener {
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.fragment_list
+    override fun getLayoutId(): Int = R.layout.fragment_list_with_filter
 
     private var isFetchingData = false
 

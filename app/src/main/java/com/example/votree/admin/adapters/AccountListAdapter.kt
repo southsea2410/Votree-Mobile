@@ -1,5 +1,6 @@
 package com.example.votree.admin.adapters
 
+import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -22,10 +23,15 @@ class AccountListAdapter(private var listener: OnItemClickListener) :
 
         override fun bind(item: User) {
             super.bind(item)
-
-            Glide.with(itemView.context)
-                .load(item.avatar)
-                .into(itemView.findViewById(R.id.account_list_item_avatar))
+            if (Patterns.WEB_URL.matcher(item.avatar).matches()) {
+                Glide.with(itemView.context)
+                    .load(item.avatar)
+                    .into(itemView.findViewById(R.id.account_list_item_avatar))
+            } else {
+                Glide.with(itemView.context)
+                    .load(R.drawable.avatar_default_2)
+                    .into(itemView.findViewById(R.id.account_list_item_avatar))
+            }
 
             itemView.findViewById<TextView>(R.id.account_list_item_name).text = item.username
             itemView.findViewById<TextView>(R.id.account_list_item_role).text = item.role

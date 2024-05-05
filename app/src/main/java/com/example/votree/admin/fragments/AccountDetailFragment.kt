@@ -9,6 +9,7 @@ import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,7 @@ import java.util.Locale
 @Suppress("DEPRECATION")
 class AccountDetailFragment : Fragment() {
 
+    private val DEFAULT_IMAGE = "https://firebasestorage.googleapis.com/v0/b/votree-mobile-app.appspot.com/o/defaults%2Favatar.png?alt=media&token=b6579c37-112f-4ad9-8a69-f8c11dc2dfcd"
     private val db = Firebase.firestore
     private var account: User? = null
 
@@ -202,14 +204,25 @@ class AccountDetailFragment : Fragment() {
 
             val avatarImage = view?.findViewById<ImageView>(R.id.account_avatar)
             avatarImage?.let {
-                Glide.with(this)
-                    .load(nonNullAccount.avatar)
-                    .into(it)
+
+                if (Patterns.WEB_URL.matcher(nonNullAccount.avatar).matches()) {
+                    Glide.with(this)
+                        .load(nonNullAccount.avatar)
+                        .into(it)
+                } else {
+                    Glide.with(this)
+                        .load(R.drawable.avatar_default_2)
+                        .into(it)
+                }
             }
 
             avatarImage?.setOnClickListener {
                 val bundle = Bundle()
-                bundle.putString("imageUrl", nonNullAccount.avatar)
+                if (Patterns.WEB_URL.matcher(nonNullAccount.avatar).matches()) {
+                    bundle.putString("imageUrl", nonNullAccount.avatar)
+                } else {
+                    bundle.putString("imageUrl", DEFAULT_IMAGE)
+                }
 
                 val fragment = ImageFragment()
                 fragment.arguments = bundle

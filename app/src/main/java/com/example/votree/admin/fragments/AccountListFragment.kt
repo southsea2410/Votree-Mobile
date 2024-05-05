@@ -120,7 +120,7 @@ class AccountListFragment : BaseListFragment<User>() {
         }
     }
 
-    override fun getLayoutId(): Int = R.layout.fragment_list
+    override fun getLayoutId(): Int = R.layout.fragment_list_with_filter
 
 //    private var isFetchingData = false
 

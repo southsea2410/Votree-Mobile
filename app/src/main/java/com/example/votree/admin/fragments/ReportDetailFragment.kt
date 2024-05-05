@@ -5,6 +5,7 @@ import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -123,7 +124,7 @@ class ReportDetailFragment : Fragment() {
             val editTextFeedback = dialogView.findViewById<EditText>(R.id.editTextFeedback)
             val buttonReject = dialogView.findViewById<Button>(R.id.buttonReject)
             val buttonClose = dialogView.findViewById<Button>(R.id.buttonClose)
-            buttonReject.text = "Mark as Resolved"
+            buttonReject.text = "Resolved"
 
 
             buttonReject.setOnClickListener {
@@ -230,42 +231,60 @@ class ReportDetailFragment : Fragment() {
                     }
             } else {
                 val fragment = AccountDetailFragment()
-                db.collection("users").document(nonNullReport.userId).get()
+                db.collection("stores").document(nonNullReport.userId).get()
                     .addOnSuccessListener { document ->
                         if (document != null) {
-                            viewDetailButton?.setOnClickListener {
-                                val bundle = Bundle().apply {
-                                    putParcelable("account", document.toObject(User::class.java))
+                            val store = document.toObject(Store::class.java)
+                            db.collection("users").whereEqualTo("storeId", store?.id).get()
+                                .addOnSuccessListener { documents ->
+                                    if (documents != null) {
+                                        for (doc in documents) {
+                                            val user = doc.toObject(User::class.java)
+                                            user.id = doc.id
+                                            viewDetailButton?.setOnClickListener {
+                                                val bundle = Bundle().apply {
+                                                    putParcelable("account", user)
+                                                }
+                                                fragment.arguments = bundle
+
+                                                val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+
+                                                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
+                                            }
+                                        }
+                                    }
                                 }
-                                fragment.arguments = bundle
-
-                                val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-
-                                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
-                            }
                         }
                     }
             }
 
             val reportImage = view?.findViewById<ImageView>(R.id.reportImage)
-            reportImage?.let { imageView ->
-                Glide.with(this)
-                    .load(nonNullReport.imageList[0])
-                    .into(imageView)
-            }
 
+            if (nonNullReport.imageList.isNotEmpty() && Patterns.WEB_URL.matcher(nonNullReport.imageList[0]).matches()) {
+                reportImage?.let { imageView ->
+                    Glide.with(this)
+                        .load(nonNullReport.imageList[0])
+                        .into(imageView)
+                }
+                reportImage?.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putString("imageUrl", nonNullReport.imageList[0])
 
-            reportImage?.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putString("imageUrl", nonNullReport.imageList[0])
+                    val fragment = ImageFragment()
+                    fragment.arguments = bundle
 
-                val fragment = ImageFragment()
-                fragment.arguments = bundle
-
-                (activity as AdminMainActivity).supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit()
+                    (activity as AdminMainActivity).supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
+            } else {
+                reportImage?.let { imageView ->
+                    Glide.with(this)
+                        .load(R.drawable.report_default)
+                        .into(imageView)
+                }
+                reportImage?.visibility = View.GONE
             }
 
             if (nonNullReport.tipId != null && nonNullReport.tipId != "") {

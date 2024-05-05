@@ -38,7 +38,7 @@ class ProductDialogFragment : BaseDialogFragment<Product>() {
         db.collection(collectionName).whereEqualTo("storeId", id)
             .addSnapshotListener { snapshots2, e2 ->
                 if (e2 != null) {
-                    Log.w("ProductListActivity", "listen:error", e2)
+                    Log.w("ProductDialogFragment", "listen:error", e2)
                     return@addSnapshotListener
                 }
 
@@ -46,9 +46,10 @@ class ProductDialogFragment : BaseDialogFragment<Product>() {
                 for (doc2 in snapshots2!!) {
                     val product = doc2.toObject(Product::class.java)
                     product.id = doc2.id
-                    Log.d("ProductListActivity", "product: ${doc2.toObject(Product::class.java)}")
+                    Log.d("ProductDialogFragment", "product: ${doc2.toObject(Product::class.java)}")
                     productList.add(product)
                 }
+                Log.d("ProductDialogFragment", "productList: $productList")
                 adapter.setData(productList.sortedByDescending { it.createdAt })
             }
     }

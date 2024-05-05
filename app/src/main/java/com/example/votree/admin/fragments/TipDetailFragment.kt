@@ -49,9 +49,6 @@ class TipDetailFragment : Fragment() {
                 .setMessage("Are you sure you want to approve this tip?")
                 .setPositiveButton("Yes") { _, _ ->
                     db.collection("ProductTip").document(tip!!.id).update("approvalStatus", 1)
-                        .addOnSuccessListener {
-                            activity?.supportFragmentManager?.popBackStack("tip_list_fragment", POP_BACK_STACK_INCLUSIVE)
-                        }
                 }
                 .setNegativeButton("No") { _, _ -> }
                 .show()
@@ -80,7 +77,7 @@ class TipDetailFragment : Fragment() {
                         // Dismiss the dialog
                         alertDialog.dismiss()
                         // Pop back to tip list fragment
-                        activity?.supportFragmentManager?.popBackStack("tip_list_fragment", POP_BACK_STACK_INCLUSIVE)
+//                        activity?.supportFragmentManager?.popBackStack("tip_list_fragment", POP_BACK_STACK_INCLUSIVE)
                     }
             }
 

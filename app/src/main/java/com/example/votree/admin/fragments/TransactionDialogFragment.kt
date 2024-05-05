@@ -80,7 +80,10 @@ class TransactionDialogFragment : BaseDialogFragment<Transaction>() {
                                     val transaction =
                                         transactionDoc.toObject(Transaction::class.java)
                                     transactionList.add(transaction)
+                                    Log.d("transactionList.size", "transactionList.size: ${transactionList.size}")
+                                    Log.d("store.transactionIdList.size", "store.transactionIdList.size: ${store.transactionIdList.size}")
                                     if (transactionList.size == store.transactionIdList.size) {
+                                        Log.d("YES", "YES")
                                         adapter.setData(transactionList.sortedByDescending { it.createdAt })
                                     }
                                 }
