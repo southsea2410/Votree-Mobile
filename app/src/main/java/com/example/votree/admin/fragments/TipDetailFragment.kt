@@ -39,7 +39,7 @@ class TipDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_tip_detail, container, false)
+        val view = inflater.inflate(R.layout.fragment_tip_detail_admin, container, false)
         val approveButton = view?.findViewById<Button>(R.id.approveButton)
         val rejectButton = view?.findViewById<Button>(R.id.rejectButton)
 
