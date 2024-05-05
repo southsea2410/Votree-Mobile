@@ -7,8 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -41,12 +45,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        enableEdgeToEdge()
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(binding.root.id)) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(systemBars.left, 25, systemBars.right, 0)
-//            insets
-//        }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_activity_layout)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            insets
+        }
 
         val adView = findViewById<AdView>(R.id.adView)
         AdManager.loadBannerAd(adView)
@@ -58,11 +61,15 @@ class MainActivity : AppCompatActivity() {
 
         RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
             role = it ?: ""
-            setupNavigation()
-
             when (it) {
-                "user" -> Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
-                "store" -> Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
+                "user" -> {
+                    Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
+                    setupNavigation()
+                }
+                "store" -> {
+                    Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
+                    setupNavigation()
+                }
                 "admin" -> {
                     val intent = Intent(this, AdminMainActivity::class.java)
                     startActivity(intent)

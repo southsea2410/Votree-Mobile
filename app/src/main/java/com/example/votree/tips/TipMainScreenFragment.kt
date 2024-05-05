@@ -1,3 +1,4 @@
+
 package com.example.votree.tips
 
 import android.content.Intent
@@ -9,11 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.votree.R
 import com.example.votree.databinding.FragmentTipMainScreenBinding
 import com.example.votree.tips.adapters.TipAdapter
 import com.example.votree.tips.adapters.TipCarouselAdapter
+import com.example.votree.tips.models.ProductTip
 import com.example.votree.tips.view_models.TipsViewModel
 import com.example.votree.utils.AuthHandler
 import com.example.votree.utils.RoleManagement
@@ -21,10 +25,14 @@ import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.CarouselSnapHelper
 import com.google.android.material.carousel.HeroCarouselStrategy
 
-class TipMainScreenFragment : Fragment() {
+interface onProductTipClickListener {
+    fun onProductTipClick(productTip: ProductTip)
+}
+
+class TipMainScreenFragment : Fragment(), onProductTipClickListener {
     private val viewModel: TipsViewModel by viewModels()
-    private val adapter = TipAdapter()
-    private val carouselAdapter = TipCarouselAdapter()
+    private lateinit var adapter :  TipAdapter
+    private lateinit var carouselAdapter : TipCarouselAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,12 +57,14 @@ class TipMainScreenFragment : Fragment() {
     }
 
     private fun setupRecyclerView(binding: FragmentTipMainScreenBinding) {
+        adapter = TipAdapter(this)
         binding.tipRecyclerView.adapter = adapter
         binding.tipRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
     }
 
     private fun setupCarousel(binding: FragmentTipMainScreenBinding) {
+        carouselAdapter = TipCarouselAdapter(this)
         val carouselRecyclerView = binding.carouselRecyclerView
         carouselRecyclerView.layoutManager = CarouselLayoutManager(HeroCarouselStrategy())
         carouselRecyclerView.adapter = carouselAdapter
@@ -133,5 +143,10 @@ class TipMainScreenFragment : Fragment() {
         super.onResume()
         viewModel.queryAllTips(viewModel.sortDirection.value ?: TipsViewModel.SORT_BY_NEWEST)
         viewModel.queryTopTips()
+    }
+
+    override fun onProductTipClick(productTip: ProductTip) {
+        val destination = TipMainScreenFragmentDirections.actionMainTipFragmentToTipDetailFragment2(productTip)
+        findNavController().navigate(destination)
     }
 }

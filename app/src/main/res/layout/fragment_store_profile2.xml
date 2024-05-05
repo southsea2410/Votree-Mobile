@@ -79,6 +79,7 @@
             android:text="Store Products"/>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/store_profile_2_products_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         </LinearLayout>

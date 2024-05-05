@@ -11,28 +11,39 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentStoreProfile2Binding
+import com.example.votree.products.adapters.ProductAdapter
+import com.example.votree.products.view_models.ProductViewModel
 import com.example.votree.users.view_models.ProfileViewModel
+import com.example.votree.utils.GridSpacingItemDecoration
 import java.text.SimpleDateFormat
+import com.example.votree.utils.uiUtils.Companion.calculateNoOfColumns
 import java.util.Locale
 
 class StoreProfile2 : Fragment() {
     private lateinit var binding: FragmentStoreProfile2Binding
-    private val viewModel : ProfileViewModel by viewModels()
-    val args : StoreProfile2Args by navArgs()
+    private val profileViewModel : ProfileViewModel by viewModels()
+    private val productViewModel : ProductViewModel by viewModels()
+    private val args : StoreProfile2Args by navArgs()
+    private val pageSize = 5
+    private var isLoading = false
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStoreProfile2Binding.inflate(inflater, container, false)
-        setupData(binding)
+        setupProfileData()
+        setupProductData()
         setupToolbar()
         return binding.root
     }
-    private fun setupData(binding: FragmentStoreProfile2Binding) {
+    private fun setupProfileData() {
         val storeId = args.storeId
         Log.d("StoreProfile2", "Store ID: $storeId")
         binding.storeProfile2Toolbar.setNavigationOnClickListener {
@@ -41,7 +52,7 @@ class StoreProfile2 : Fragment() {
         val formatter = SimpleDateFormat("dd/mm/yyyy", Locale.getDefault())
 
         // Query user from database
-        viewModel.queryStore(storeId).observe(viewLifecycleOwner) { userStore ->
+        profileViewModel.queryStore(storeId).observe(viewLifecycleOwner) { userStore ->
             binding.storeProfile2Name.text = userStore.store.storeName
             Glide.with(requireActivity())
                 .load(userStore.user.avatar)
@@ -81,4 +92,46 @@ class StoreProfile2 : Fragment() {
             }
         }
     }
+
+    private fun setupProductData() {
+        val numberOfColumns = calculateNoOfColumns(requireContext())
+        binding.storeProfile2ProductsList.apply {
+            adapter = ProductAdapter()
+            layoutManager = GridLayoutManager(requireContext(), numberOfColumns)
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 0) {
+                        super.onScrolled(recyclerView, dx, dy)
+
+                        val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                        val visibleItemCount = layoutManager.childCount
+                        val totalItemCount = layoutManager.itemCount
+                        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+                        if (visibleItemCount + firstVisibleItemPosition + 4 >= totalItemCount && firstVisibleItemPosition >= 0) {
+                            loadMoreData()
+                        }
+                    }
+                }
+            })
+        }
+
+        binding.storeProfile2ProductsList.addItemDecoration(
+            GridSpacingItemDecoration(
+                numberOfColumns,
+                10,
+                true
+            )
+        )
+    }
+    private fun loadMoreData() {
+        if (!isLoading) {
+            isLoading = true
+            productViewModel.lastVisibleProduct.value?.let { lastVisible ->
+                productViewModel.fetchProductsPerPage(lastVisible, pageSize)
+            }
+        }
+    }
+
 }
