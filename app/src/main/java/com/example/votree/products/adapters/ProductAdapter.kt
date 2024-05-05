@@ -115,7 +115,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(),
             holder.productPrice.text = currentItem.price.toString()
             holder.quantityOfSold.text = currentItem.quantitySold.toString()
             Glide.with(this)
-                .load(currentItem.imageUrl)
+                .load(currentItem.imageUrl[0])
                 .placeholder(R.drawable.img_placeholder)
                 .into(holder.productImage)
         }

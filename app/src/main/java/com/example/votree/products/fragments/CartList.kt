@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -39,8 +40,20 @@ class CartList : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        setupToolbar()
         observeCart()
         gotoCheckout()
+    }
+
+    private fun setupToolbar() {
+        binding.toolbar.navigationIcon = ContextCompat.getDrawable(
+            requireContext(),
+            com.example.votree.R.drawable.arrow_back_24px
+        )
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.toolbar.title = getString(com.example.votree.R.string.cart)
     }
 
     private fun setupRecyclerView() {

@@ -10,9 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentProductDetailBinding
+import com.example.votree.products.adapters.ProductImageAdapterString
 import com.example.votree.products.adapters.UserReviewAdapter
 import com.example.votree.products.models.Cart
 import com.example.votree.products.models.ProductReview
@@ -78,11 +78,9 @@ class ProductDetailFragment : Fragment() {
                 suitClimate.text = product.suitClimate.toString()
                 productSoldQuantity.text = product.quantitySold.toString()
 
-                Glide.with(this@ProductDetailFragment)
-                    .load(product.imageUrl)
-                    .centerCrop()
-                    .placeholder(R.drawable.img_placeholder)
-                    .into(productImage)
+                val imageUris = product.imageUrl
+                val imageAdapter = ProductImageAdapterString(imageUris)
+                productImageViewPager.adapter = imageAdapter
             }
         }
     }
