@@ -162,7 +162,6 @@
     <string name="order_history">Order History</string>
     <string name="order_management">Order Management</string>
     <string name="add_new_product">Add New Product</string>
-    <string name="add_new_product">Add New Product</string>
     <string name="cart">Your Cart</string>
     <string-array name="tips_report_reasons">
         <item>Spam</item>

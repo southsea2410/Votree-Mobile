@@ -9,7 +9,11 @@
         android:id="@+id/main_tip_fragment"
         android:name="com.example.votree.tips.TipMainScreenFragment"
         android:label="Tips Main Screen"
-        tools:layout="@layout/fragment_tip_main_screen" />
+        tools:layout="@layout/fragment_tip_main_screen" >
+        <action
+            android:id="@+id/action_main_tip_fragment_to_tipDetailFragment2"
+            app:destination="@id/tipDetailFragment2" />
+    </fragment>
 
     <fragment
         android:id="@+id/productList"
@@ -286,5 +290,18 @@
             android:name="cart"
             app:argType="com.example.votree.products.models.Cart"
             app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/tipDetailFragment2"
+        android:name="com.example.votree.tips.TipDetailFragment"
+        android:label="TipDetailFragment" >
+        <argument
+            android:name="tipData"
+            app:argType="com.example.votree.tips.models.ProductTip" />
+        <action
+            android:id="@+id/action_tipDetailFragment2_to_storeProfile2"
+            app:destination="@id/storeProfile2"
+            app:enterAnim="@anim/fui_slide_in_right"
+            app:exitAnim="@anim/fui_slide_out_left" />
     </fragment>
 </navigation>
