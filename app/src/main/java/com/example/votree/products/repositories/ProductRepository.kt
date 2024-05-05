@@ -8,6 +8,9 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class ProductRepository(private val firestore: FirebaseFirestore) {
     suspend fun updateProductInventory(productId: String, quantityPurchased: Int) {
@@ -54,6 +57,34 @@ class ProductRepository(private val firestore: FirebaseFirestore) {
             onFailure(exception)
         }
     }
+
+    private suspend fun uploadProductOneImage(imageUri: Uri): String {
+        return suspendCoroutine { continuation ->
+            val formatter = java.text.SimpleDateFormat("yyyyMMdd_HHmmss")
+            val now = java.util.Calendar.getInstance().time
+            val fileName = formatter.format(now)
+            val storageRef =
+                FirebaseStorage.getInstance().reference.child("images/products/$fileName")
+
+            storageRef.putFile(imageUri).addOnSuccessListener {
+                storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    continuation.resume(uri.toString())
+                }
+            }.addOnFailureListener { exception ->
+                continuation.resumeWithException(exception)
+            }
+        }
+    }
+
+    suspend fun uploadProductImages(imageUris: List<Uri>): List<String> {
+        val imageUrls = mutableListOf<String>()
+        for (imageUri in imageUris) {
+            val imageUrl = uploadProductOneImage(imageUri)
+            imageUrls.add(imageUrl)
+        }
+        return imageUrls
+    }
+
 
     fun addProduct(product: Product, onSuccess: (String) -> Unit, onFailure: (Exception) -> Unit) {
         firestore.collection("products").add(product)

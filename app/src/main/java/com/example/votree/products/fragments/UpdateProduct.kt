@@ -221,6 +221,127 @@ class UpdateProduct : Fragment() {
         }
     }
 
+    //    private fun setupSaveButton() {
+//        binding.saveProductBtn.setOnClickListener {
+//            viewLifecycleOwner.lifecycleScope.launch {
+//                try {
+//                    ProgressDialogUtils.showLoadingDialog(requireContext())
+//                    val productName = binding.productNameEt.text.toString()
+//                    val shortDescription = binding.shortDescriptionEt.text.toString()
+//                    val description = binding.descriptionEt.text.toString()
+//                    val price = binding.priceEt.text.toString().toDouble()
+//                    val inventory = binding.quantityEt.text.toString().toInt()
+//                    val type = binding.typeSpinner.text.toString().let { PlantType.valueOf(it) }
+//                    val suitEnvironment = binding.suitEnvironmentSpinner.text.toString()
+//                        .let { SuitEnvironment.valueOf(it) }
+//                    val suitClimate =
+//                        binding.suitClimateSpinner.text.toString().let { SuitClimate.valueOf(it) }
+//                    val saleOff = binding.saleOffEt.text.toString().toDouble()
+//
+//                    // Create updated product with all fields of the args.currentProduct
+//                    var updatedProduct = args.currentProduct.copy()
+//
+//                    if (imageUris.isNotEmpty() && imageUris != args.currentProduct.imageUrl.map {
+//                            Uri.parse(
+//                                it
+//                            )
+//                        }) {
+//                        withContext(Dispatchers.IO) {
+//                            var count = 0
+//                            val imageUrls = mutableListOf<String>()
+//                            for (imageUri in imageUris) {
+//                                val imageUrl = productRepository.uploadProductImage(imageUri,
+//                                    onSuccess = { url ->
+//                                        imageUrls.add(url)
+//                                        count++
+//                                    },
+//                                    onFailure = { e ->
+//                                        Log.e(
+//                                            "UpdateProduct",
+//                                            "Error uploading image: ${e.message}",
+//                                            e
+//                                        )
+//                                    }
+//                                )
+//
+//                                if (count == imageUris.size) {
+//                                    updatedProduct = updatedProduct.copy(
+//                                        storeId = args.currentProduct.storeId,
+//                                        imageUrl = imageUrls,
+//                                        productName = productName,
+//                                        shortDescription = shortDescription,
+//                                        description = description,
+//                                        price = price,
+//                                        inventory = inventory,
+//                                        type = type,
+//                                        suitEnvironment = suitEnvironment,
+//                                        suitClimate = suitClimate,
+//                                        saleOff = saleOff
+//                                    )
+//                                    productRepository.updateProduct(updatedProduct,
+//                                        onSuccess = {
+//                                            Log.d("UpdateProduct", "Product updated successfully")
+//
+//                                        },
+//                                        onFailure = { e ->
+//                                            Toast.makeText(
+//                                                requireContext(),
+//                                                "Error: ${e.message}",
+//                                                Toast.LENGTH_SHORT
+//                                            ).show()
+//                                            Log.e(
+//                                                "UpdateProduct",
+//                                                "Error updating product: ${e.message}",
+//                                                e
+//                                            )
+//                                        }
+//                                    )
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        updatedProduct = updatedProduct.copy(
+//                            productName = productName,
+//                            shortDescription = shortDescription,
+//                            description = description,
+//                            price = price,
+//                            inventory = inventory,
+//                            type = type,
+//                            suitEnvironment = suitEnvironment,
+//                            suitClimate = suitClimate,
+//                            saleOff = saleOff
+//                        )
+//                        productRepository.updateProduct(updatedProduct,
+//                            onSuccess = {
+//                                Log.d("UpdateProduct", "Product updated successfully")
+//
+//                            },
+//                            onFailure = { e ->
+//                                Toast.makeText(
+//                                    requireContext(),
+//                                    "Error: ${e.message}",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                                Log.e("UpdateProduct", "Error updating product: ${e.message}", e)
+//                            }
+//                        )
+//                    }
+//                    ProgressDialogUtils.hideLoadingDialog()
+//
+//                    Toast.makeText(
+//                        requireContext(),
+//                        "Product updated successfully",
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                    findNavController().popBackStack()
+//                } catch (e: Exception) {
+//                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT)
+//                        .show()
+//                    Log.e("UpdateProduct", "Error updating product: ${e.message}", e)
+//                }
+//            }
+//        }
+//    }
     private fun setupSaveButton() {
         binding.saveProductBtn.setOnClickListener {
             viewLifecycleOwner.lifecycleScope.launch {
@@ -246,81 +367,22 @@ class UpdateProduct : Fragment() {
                                 it
                             )
                         }) {
-                        withContext(Dispatchers.IO) {
-//                            val imageUrls = uploadImages(imageUris)
-//                            updatedProduct = updatedProduct.copy(
-//                                storeId = args.currentProduct.storeId,
-//                                imageUrl = imageUrls,
-//                                productName = productName,
-//                                shortDescription = shortDescription,
-//                                description = description,
-//                                price = price,
-//                                inventory = inventory,
-//                                type = type,
-//                                suitEnvironment = suitEnvironment,
-//                                suitClimate = suitClimate,
-//                                saleOff = saleOff
-//                            )
-//                            productRepository.updateProduct(updatedProduct,
-//                                onSuccess = {
-//                                    Log.d("UpdateProduct", "Product updated successfully")
-//
-//                                },
-//                                onFailure = { e ->
-//                                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-//                                    Log.e("UpdateProduct", "Error updating product: ${e.message}", e)
-//                                }
-//                            )
-                            val imageUrls = mutableListOf<String>()
-                            for (imageUri in imageUris) {
-                                val imageUrl = productRepository.uploadProductImage(imageUri,
-                                    onSuccess = { url ->
-                                        imageUrls.add(url)
-                                    },
-                                    onFailure = { e ->
-                                        Log.e(
-                                            "UpdateProduct",
-                                            "Error uploading image: ${e.message}",
-                                            e
-                                        )
-                                    }
-                                )
-
-                                if (imageUrls.size == imageUris.size) {
-                                    updatedProduct = updatedProduct.copy(
-                                        storeId = args.currentProduct.storeId,
-                                        imageUrl = imageUrls,
-                                        productName = productName,
-                                        shortDescription = shortDescription,
-                                        description = description,
-                                        price = price,
-                                        inventory = inventory,
-                                        type = type,
-                                        suitEnvironment = suitEnvironment,
-                                        suitClimate = suitClimate,
-                                        saleOff = saleOff
-                                    )
-                                    productRepository.updateProduct(updatedProduct,
-                                        onSuccess = {
-                                            Log.d("UpdateProduct", "Product updated successfully")
-
-                                        },
-                                        onFailure = { e ->
-                                            Toast.makeText(
-                                                requireContext(),
-                                                "Error: ${e.message}",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            Log.e(
-                                                "UpdateProduct",
-                                                "Error updating product: ${e.message}",
-                                                e
-                                            )
-                                        }
-                                    )
-                                }
-                            }
+                        val imageUrls = withContext(Dispatchers.IO) {
+                            productRepository.uploadProductImages(imageUris)
                         }
+                        updatedProduct = updatedProduct.copy(
+                            storeId = args.currentProduct.storeId,
+                            imageUrl = imageUrls,
+                            productName = productName,
+                            shortDescription = shortDescription,
+                            description = description,
+                            price = price,
+                            inventory = inventory,
+                            type = type,
+                            suitEnvironment = suitEnvironment,
+                            suitClimate = suitClimate,
+                            saleOff = saleOff
+                        )
                     } else {
                         updatedProduct = updatedProduct.copy(
                             productName = productName,
@@ -333,10 +395,12 @@ class UpdateProduct : Fragment() {
                             suitClimate = suitClimate,
                             saleOff = saleOff
                         )
+                    }
+
+                    withContext(Dispatchers.IO) {
                         productRepository.updateProduct(updatedProduct,
                             onSuccess = {
                                 Log.d("UpdateProduct", "Product updated successfully")
-
                             },
                             onFailure = { e ->
                                 Toast.makeText(
@@ -348,8 +412,8 @@ class UpdateProduct : Fragment() {
                             }
                         )
                     }
-                    ProgressDialogUtils.hideLoadingDialog()
 
+                    ProgressDialogUtils.hideLoadingDialog()
                     Toast.makeText(
                         requireContext(),
                         "Product updated successfully",
@@ -357,6 +421,7 @@ class UpdateProduct : Fragment() {
                     ).show()
                     findNavController().popBackStack()
                 } catch (e: Exception) {
+                    ProgressDialogUtils.hideLoadingDialog()
                     Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT)
                         .show()
                     Log.e("UpdateProduct", "Error updating product: ${e.message}", e)
@@ -364,6 +429,7 @@ class UpdateProduct : Fragment() {
             }
         }
     }
+
 
     private fun uploadImages(imageUris: List<Uri>): List<String> {
         val imageUrls = mutableListOf<String>()
