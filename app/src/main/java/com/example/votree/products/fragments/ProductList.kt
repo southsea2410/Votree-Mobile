@@ -119,7 +119,7 @@ class ProductList : Fragment() {
     private fun calculateNoOfColumns(context: Context): Int {
         val displayMetrics = context.resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
-        val columnWidthDp = 180 // Assume each item in the grid takes up 180dp
+        val columnWidthDp = 180
         return (screenWidthDp / columnWidthDp).toInt()
     }
 
@@ -222,6 +222,8 @@ class ProductList : Fragment() {
                 }
                 else if (tab?.position == 3) {
                     showProductFilterBottomSheet()
+                } else {
+                    resetProductList()
                 }
             }
         })

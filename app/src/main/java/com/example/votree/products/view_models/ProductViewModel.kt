@@ -25,7 +25,7 @@ class ProductViewModel : ViewModel() {
         get() = _products
 
     init {
-        fetchProducts()
+//        fetchProducts()
     }
 
     private fun fetchProducts() {
@@ -110,13 +110,13 @@ class ProductViewModel : ViewModel() {
         val filteredProductsLiveData = MutableLiveData<List<Product>>()
 
         productsCollection
-            .whereEqualTo("active", true) // Ensure only active products are considered
-            .whereGreaterThanOrEqualTo("productName", query)
-            .whereLessThanOrEqualTo("productName", query + '\uf8ff')
+            .whereEqualTo("active", true)
             .get()
             .addOnSuccessListener { snapshot ->
                 val products = snapshot.toObjects(Product::class.java)
-                filteredProductsLiveData.value = products
+                val filteredProduct = filterProductNames(products, query)
+                filteredProductsLiveData.value = filteredProduct
+                Log.d(TAG, "Fetched ${filteredProduct.size} products")
             }
             .addOnFailureListener { error ->
                 Log.e(TAG, "Error fetching filtered product: $error")
@@ -207,7 +207,6 @@ class ProductViewModel : ViewModel() {
             }
             .addOnFailureListener { error ->
                 Log.e(TAG, "Error fetching products: $error")
-                // Handle error
             }
     }
 
