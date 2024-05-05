@@ -21,7 +21,7 @@ class CheckoutResultFragment : Fragment() {
     private var autoNavigateHandler: Handler? = null
     private var autoNavigateRunnable: Runnable? = null
     private var countdownSeconds = 5
-    private var isCountdownActive = true
+    private var isCountdownActive = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +35,7 @@ class CheckoutResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         updateUI()
-        if (isCountdownActive) {
+        if (!isCountdownActive) {
             startAutoNavigateTimer()
         } else {
             val action =
@@ -50,7 +50,14 @@ class CheckoutResultFragment : Fragment() {
             binding.productImageIv.setImageResource(R.drawable.ic_checkout_sc)
             binding.pointsTv.text = "+ ${args.points} Points"
             binding.orderHistoryBtn.setOnClickListener {
+                stopAutoNavigateTimer()
                 startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
+            }
+            binding.productListBtn.setOnClickListener {
+                stopAutoNavigateTimer()
+                val action =
+                    CheckoutResultFragmentDirections.actionCheckoutResultFragmentToProductList()
+                findNavController().navigate(action)
             }
         } else {
             // Payment failed
@@ -58,13 +65,15 @@ class CheckoutResultFragment : Fragment() {
             binding.thankYouTv.text = "Payment Failed"
             binding.orderHistoryBtn.text = "Checkout Again"
             binding.orderHistoryBtn.setOnClickListener {
+                stopAutoNavigateTimer()
                 val action =
                     CheckoutResultFragmentDirections.actionCheckoutResultFragmentToCheckout(args.cart)
                 findNavController().navigate(action)
             }
+
         }
         // Update the countdown text
-        if (isCountdownActive) {
+        if (!isCountdownActive) {
             binding.countdownTv.text = "Redirecting to Product List in $countdownSeconds seconds"
         } else {
             binding.countdownTv.visibility = View.GONE
@@ -97,7 +106,7 @@ class CheckoutResultFragment : Fragment() {
 
     private fun stopAutoNavigateTimer() {
         autoNavigateHandler?.removeCallbacks(autoNavigateRunnable!!)
-        isCountdownActive = false
+        isCountdownActive = true
     }
 
     override fun onDestroyView() {

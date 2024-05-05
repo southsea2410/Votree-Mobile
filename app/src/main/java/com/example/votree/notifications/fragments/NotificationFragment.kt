@@ -41,7 +41,6 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("NotificationFragment", "onViewCreated")
         setupRecyclerView()
         observeNotifications()
     }
@@ -56,9 +55,13 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
                 observeNotifications()
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
         })
     }
 

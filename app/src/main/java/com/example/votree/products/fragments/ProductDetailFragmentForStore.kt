@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentProductDetailForStoreBinding
+import com.example.votree.products.adapters.ProductImageAdapterString
 import com.example.votree.products.adapters.UserReviewAdapter
 import com.example.votree.products.models.ProductReview
 import com.example.votree.products.repositories.ProductRepository
@@ -56,6 +57,7 @@ class ProductDetailFragmentForStore : Fragment() {
     private fun displayProductDetails() {
         with(binding) {
             args.currentProduct.let { product ->
+                productName.text = product.productName
                 productPrice.text = getString(R.string.price_format, product.price)
                 description.text = product.description
                 productType.text = product.type.toString()
@@ -64,11 +66,9 @@ class ProductDetailFragmentForStore : Fragment() {
                 productRating.text = product.averageRate.toString()
                 productSoldQuantity.text = product.quantitySold.toString()
 
-                Glide.with(this@ProductDetailFragmentForStore)
-                    .load(product.imageUrl)
-                    .centerCrop()
-                    .placeholder(R.drawable.img_placeholder)
-                    .into(productImage)
+                val imageUris = product.imageUrl
+                val imageAdapter = ProductImageAdapterString(imageUris)
+                productImageViewPager.adapter = imageAdapter
 
                 if (!product.active) {
                     hideBtn.text = "Unhide"
@@ -93,6 +93,12 @@ class ProductDetailFragmentForStore : Fragment() {
                         binding.storeName.text = store.storeName
                         binding.storeSoldProductsTv.text = "$numberOfProducts"
                         binding.storeRatingTv.text = averageRating.toString()
+
+                        Glide.with(this@ProductDetailFragmentForStore)
+                            .load(store.storeAvatar)
+                            .centerCrop()
+                            .placeholder(R.drawable.img_placeholder)
+                            .into(binding.storeAvatarIv)
                     }
                 } catch (e: Exception) {
                     Log.e("ProductDetailFragment", "Error fetching store details", e)
@@ -115,21 +121,6 @@ class ProductDetailFragmentForStore : Fragment() {
             productDetailToolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
-//            productDetailToolbar.setOnMenuItemClickListener {
-//                when(it.itemId){
-//                    R.id.productDetail_to_StoreReport -> {
-//                        val action = ProductDetailFragmentForStoreDirections.actionProductDetailToStoreReport(args.currentProduct.storeId)
-//                        findNavController().navigate(action)
-//                        true
-//                    }
-//                    R.id.productDetail_to_ProductReport -> {
-//                        val action = ProductDetailFragmentDirections.actionProductDetailToProductReport(args.currentProduct.id)
-//                        findNavController().navigate(action)
-//                        true
-//                    }
-//                    else -> false
-//                }
-//            }
 
             viewAllReviewBtn.setOnClickListener {
                 gotoReviewsList()

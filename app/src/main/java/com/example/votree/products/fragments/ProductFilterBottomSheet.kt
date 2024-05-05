@@ -68,6 +68,7 @@ class ProductFilterBottomSheet : BottomSheetDialogFragment() {
             viewModel.resetFilters()
             // Reset the price range slider to the full range
             priceRangeSlider.setValues(priceRangeSlider.valueFrom, priceRangeSlider.valueTo)
+            dismiss()
         }
 
         binding.btnApply.setOnClickListener {
