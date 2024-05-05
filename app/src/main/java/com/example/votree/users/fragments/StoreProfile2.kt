@@ -30,7 +30,7 @@ class StoreProfile2 : Fragment() {
     private val profileViewModel : ProfileViewModel by viewModels()
     private val productViewModel : ProductViewModel by viewModels()
     private val args : StoreProfile2Args by navArgs()
-    private val pageSize = 5
+    private val pageSize = 6
     private var isLoading = false
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -52,20 +52,15 @@ xmlns:tools="http://schemas.android.com/tools"
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/order_history_rv"
+        android:layout_weight="1"
         android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="16dp" />
 
     <include
+        android:visibility="gone"
         layout="@layout/ad_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/nav_seller" />
 </LinearLayout>
