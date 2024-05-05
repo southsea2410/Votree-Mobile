@@ -26,6 +26,7 @@ import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.admin.activities.AdminMainActivity
+import com.example.votree.models.Report
 import com.example.votree.models.Store
 import com.example.votree.models.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -80,6 +81,19 @@ class AccountDetailFragment : Fragment() {
 //            }
 //        }
 //
+//        .setOnClickListener {
+//            val fragment = ReportListFragment()
+//            val bunviewReportListButtondle = Bundle().apply {
+//                putString("userId", account?.id)
+//            }
+//            fragment.arguments = bundle
+//            val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+//            topAppBar.menu.findItem(R.id.search).isVisible = true
+//            topAppBar.menu.findItem(R.id.more).isVisible = false
+//            (activity as? AdminMainActivity)?.setCurrentFlag(2)
+//            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("account_detail_fragment").commit()
+//        }
+
         viewReportListButton.setOnClickListener {
             val accountId = account?.id
             accountId?.let { id ->
@@ -87,6 +101,13 @@ class AccountDetailFragment : Fragment() {
                 dialogFragment.show(parentFragmentManager, "ReportDialogFragment")
             }
         }
+
+//            val accountId = account?.id
+//            accountId?.let { id ->
+//                val dialogFragment = ReportDialogFragment.newInstance(id)
+//                dialogFragment.show(parentFragmentManager, "ReportDialogFragment")
+//            }
+//        }
 
         banButton?.setOnClickListener {
             val accountId = account?.id

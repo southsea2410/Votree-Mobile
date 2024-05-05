@@ -1,6 +1,7 @@
 package com.example.votree.admin.adapters
 
 import android.annotation.SuppressLint
+import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -11,6 +12,8 @@ import com.example.votree.models.Report
 @Suppress("DEPRECATION")
 class ReportListAdapter(private val listener: OnItemClickListener, private val isDialog: Boolean = false) :
     BaseListAdapter<Report>(listener) {
+
+        private val DEFAULT_IMAGE = "https://firebasestorage.googleapis.com/v0/b/votree-mobile-app.appspot.com/o/defaults%2Freport.png?alt=media&token=774f01dd-df88-4462-bd5a-7c5d84691132"
 
     override var singleitem_selection_position = -1
 
@@ -25,9 +28,15 @@ class ReportListAdapter(private val listener: OnItemClickListener, private val i
         override fun bind(item: Report) {
             super.bind(item)
 
-            Glide.with(itemView.context)
-                .load(item.imageList[0])
-                .into(itemView.findViewById(R.id.report_list_item_image))
+            if (item.imageList.isNotEmpty() && Patterns.WEB_URL.matcher(item.imageList[0]).matches()) {
+                Glide.with(itemView.context)
+                    .load(item.imageList[0])
+                    .into(itemView.findViewById(R.id.report_list_item_image))
+            } else {
+                Glide.with(itemView.context)
+                    .load(DEFAULT_IMAGE)
+                    .into(itemView.findViewById(R.id.report_list_item_image))
+            }
 
             itemView.findViewById<TextView>(R.id.report_list_item_short_description).text =
                 item.shortDescription

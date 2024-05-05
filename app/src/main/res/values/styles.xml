@@ -42,6 +42,10 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="square_overlay">
+        <item name="cornerSize">10%</item>
+    </style>
+
     <style name="rounded_overlay">
         <item name="cornerSize">12dp</item>
     </style>
