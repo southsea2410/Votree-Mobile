@@ -19,6 +19,7 @@ import com.example.votree.products.models.ProductReview
 import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.view_models.CartViewModel
 import com.example.votree.users.repositories.StoreRepository
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope
@@ -135,6 +136,7 @@ class ProductDetailFragment : Fragment() {
             }
             addToCartBtn.setOnClickListener {
                 cartViewModel.addProductToCart(args.currentProduct.id, 1)
+                showSnackbar("Product added to cart")
             }
 
             viewAllReviewBtn.setOnClickListener {
@@ -146,6 +148,15 @@ class ProductDetailFragment : Fragment() {
                 findNavController().navigate(directions)
             }
         }
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+            .setAction("View Cart") {
+                val action = ProductDetailFragmentDirections.actionProductDetailToCartList()
+                findNavController().navigate(action)
+            }
+            .show()
     }
 
     private fun setupReviewAdapter() {

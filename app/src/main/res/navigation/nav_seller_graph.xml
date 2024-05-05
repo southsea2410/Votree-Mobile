@@ -57,6 +57,9 @@
         <action
             android:id="@+id/action_productDetail_to_productReport"
             app:destination="@id/productReport" />
+        <action
+            android:id="@+id/action_productDetail_to_cartList"
+            app:destination="@id/cartList" />
     </fragment>
     <fragment
         android:id="@+id/notifications_fragment"

@@ -45,8 +45,8 @@ class ProductFilterBottomSheet : BottomSheetDialogFragment() {
 
     private fun setupObservers() {
         lifecycleScope.launch {
+            productViewModel.fetchProducts()
             productViewModel.products.observe(viewLifecycleOwner) { products ->
-                // Correctly use map instead of flatMap
                 val plantTypes = products.map { it.type }.toSet()
                 val climates = products.map { it.suitClimate }.toSet()
                 val environments = products.map { it.suitEnvironment }.toSet()
