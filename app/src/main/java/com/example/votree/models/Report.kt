@@ -17,7 +17,8 @@ data class Report (
     var shortDescription: String,
     var content: String,
     var processStatus: Boolean,
-    var processingMethod: String,
+    var processingState: String,
+    var processingContent: String,
     var imageList: List<String>,
     var createdAt: Date = Date(),
     var updatedAt: Date = Date()
@@ -32,12 +33,13 @@ data class Report (
         parcel.readString()!!,
         parcel.readBoolean(),
         parcel.readString()!!,
+        parcel.readString()!!,
         parcel.createStringArrayList()!!,
         Date(parcel.readLong()),
         Date(parcel.readLong())
     )
 
-    constructor() : this("", "", "", "", "", "", "", false, "", emptyList(), Date(), Date())
+    constructor() : this("", "", "", "", "", "", "", false, "", "", emptyList(), Date(), Date())
 
     companion object : Parceler<Report> {
 
@@ -50,7 +52,8 @@ data class Report (
             parcel.writeString(shortDescription)
             parcel.writeString(content)
             parcel.writeBoolean(processStatus)
-            parcel.writeString(processingMethod)
+            parcel.writeString(processingState)
+            parcel.writeString(processingContent)
             parcel.writeStringList(imageList)
             parcel.writeLong(createdAt.time)
             parcel.writeLong(updatedAt.time)

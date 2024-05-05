@@ -332,7 +332,7 @@ class AdminMainActivity : AppCompatActivity(), OnItemClickListener, SearchView.O
         }
     }
 
-    private fun setCurrentFlag(currentFlag: Int) {
+    fun setCurrentFlag(currentFlag: Int) {
         val sharedPreferences = getSharedPreferences(SharedPrefs, MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("currentFlag", currentFlag)

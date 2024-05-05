@@ -145,6 +145,7 @@
     <color name="md_theme_surfaceContainerHighest_highContrast">#E0E4DB</color>
     <color name="md_theme_pending">#B6C324</color>
     <color name="md_theme_gray_addition">#828282</color>
+    <color name="md_theme_gray_addition_2">#E9EAEE</color>
 
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>

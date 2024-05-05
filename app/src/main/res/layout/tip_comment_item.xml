@@ -13,7 +13,7 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         app:shapeAppearanceOverlay="@style/circle_overlay"
-    android:id="@+id/tip_comment_avatar"
+        android:id="@+id/tip_comment_avatar"
         android:scaleType="centerCrop"
         android:layout_marginTop="8dp"
         android:layout_width="40dp"

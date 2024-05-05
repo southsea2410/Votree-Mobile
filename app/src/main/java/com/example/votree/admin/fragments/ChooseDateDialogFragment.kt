@@ -8,10 +8,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.R
 import com.example.votree.admin.adapters.DialogDateListAdapter
 import com.example.votree.admin.interfaces.OnItemClickListener
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ChooseDateDialogFragment : DialogFragment(), OnItemClickListener {
 
@@ -40,23 +42,20 @@ class ChooseDateDialogFragment : DialogFragment(), OnItemClickListener {
         adapter.setData(dates)
 
         rvDates.findViewById<RecyclerView>(R.id.dateRecyclerViewFragment).adapter = adapter
-        rvDates.findViewById<RecyclerView>(R.id.dateRecyclerViewFragment).layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+        rvDates.findViewById<RecyclerView>(R.id.dateRecyclerViewFragment).layoutManager = LinearLayoutManager(requireContext())
 
-        return activity?.let {
-            val builder = AlertDialog.Builder(it)
-            builder.setView(rvDates).setTitle("Ban Duration")
-                .setPositiveButton("Save") { _, _ ->
-                    val single_item_selection_position = adapter.getSelectedPosition()
-                    listener?.updateExpireBanDateToFirestore(days[single_item_selection_position], reporterId!!)
-                    Toast.makeText(context, "Ban successfully", Toast.LENGTH_SHORT).show()
-                }
-                .setNegativeButton("Cancel") { _, _ ->
-                    null
-                }
-
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
+        return MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Ban Duration")
+            .setView(rvDates)
+            .setPositiveButton("Save") { _, _ ->
+                val singleItemSelectionPosition = adapter.getSelectedPosition()
+                listener?.updateExpireBanDateToFirestore(days[singleItemSelectionPosition], reporterId!!)
+                Toast.makeText(context, "Ban successfully", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
     }
+
 
     // Attach the listener when the fragment is attached to the activity
     override fun onAttach(context: Context) {
