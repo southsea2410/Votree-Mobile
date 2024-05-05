@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentProductDetailBinding
 import com.example.votree.products.adapters.ProductImageAdapterString
@@ -101,6 +102,11 @@ class ProductDetailFragment : Fragment() {
                         binding.storeName.text = store.storeName
                         binding.storeSoldProductsTv.text = "$numberOfProducts"
                         binding.storeRatingTv.text = averageRating.toString()
+
+                        Glide.with(requireContext())
+                            .load(store.storeAvatar)
+                            .placeholder(R.drawable.img_placeholder)
+                            .into(binding.storeAvatarIv)
                     }
                 } catch (e: Exception) {
                     Log.e("ProductDetailFragment", "Error fetching store details", e)

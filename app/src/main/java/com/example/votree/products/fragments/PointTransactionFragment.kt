@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.votree.R
 import com.example.votree.databinding.FragmentPointTransactionBinding
 import com.example.votree.products.adapters.PointTransactionAdapter
 import com.example.votree.products.repositories.PointTransactionRepository
@@ -35,6 +38,17 @@ class PointTransactionFragment : Fragment() {
         setupRecyclerView()
         setupView()
         loadPointTransactions()
+        setupNavigation()
+    }
+
+    private fun setupNavigation() {
+        // Set the navigation icon to the back button
+        binding.toolbar.navigationIcon =
+            ContextCompat.getDrawable(requireContext(), R.drawable.arrow_back_24px)
+        binding.toolbar.title = getString(R.string.user_profile_setting)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     private fun setupRecyclerView() {

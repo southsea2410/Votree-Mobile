@@ -7,11 +7,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -121,7 +119,15 @@ class MainActivity : AppCompatActivity() {
         if (role != "store") {
             bottomNavigation.menu.removeItem(R.id.storeManagement2)
         }
-        val showDestinations = setOf(R.id.productList, R.id.main_tip_fragment, R.id.user_profile_fragment, R.id.notifications_fragment, R.id.storeManagement2, R.id.pointTransactionFragment, R.id.orderDetailsFragment, R.id.orderManagementForStoreFragment)
+        val showDestinations = setOf(
+            R.id.productList,
+            R.id.main_tip_fragment,
+            R.id.user_profile_fragment,
+            R.id.notifications_fragment,
+            R.id.storeManagement2,
+            R.id.orderDetailsFragment,
+            R.id.orderManagementForStoreFragment
+        )
         navController.addOnDestinationChangedListener { _ , destination, _  ->
             if(destination.id in showDestinations) {
                 bottomNavigation.visibility = View.VISIBLE

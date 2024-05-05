@@ -73,15 +73,19 @@ class ProductRepository(private val firestore: FirebaseFirestore) {
             }
     }
 
-    fun updateProduct(product: Product, onComplete: () -> Unit) {
+    fun updateProduct(
+        product: Product,
+        onSuccess: (String) -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
         product.id.takeIf { it.isNotEmpty() }?.let { productId ->
             firestore.collection("products").document(productId).set(product)
                 .addOnSuccessListener {
-                    onComplete()
+                    onSuccess(productId)
                 }
                 .addOnFailureListener {
                     Log.e("ProductRepository", "Error updating product", it)
-                    onComplete()
+                    onFailure(it)
                 }
         }
     }

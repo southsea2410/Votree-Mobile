@@ -166,6 +166,8 @@
     <string name="cart">Your Cart</string>
     <string name="user_profile_setting">User Profile</string>
     <string name="order_details">Order Details</string>
+    <string name="product_reviews">Product Review</string>
+    <string name="update_product">Update Product</string>
     <string-array name="tips_report_reasons">
         <item>Spam</item>
         <item>Offensive</item>
