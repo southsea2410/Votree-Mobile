@@ -5,11 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.votree.R
 import com.example.votree.databinding.FragmentProductReviewListBinding
 import com.example.votree.products.adapters.UserReviewAdapter
 import com.example.votree.products.factories.ProductReviewListViewModelFactory
@@ -56,6 +59,16 @@ class ProductReviewListFragment : Fragment(), OnRatingSelectedListener {
         setUpRecyclerView()
         setupTabLayout()
         observeViewModel()
+        setupNavigation()
+    }
+
+    private fun setupNavigation() {
+        binding.toolbar.navigationIcon =
+            ContextCompat.getDrawable(requireContext(), R.drawable.arrow_back_24px)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.toolbar.title = getString(R.string.product_reviews)
     }
 
     private fun setUpRecyclerView() {

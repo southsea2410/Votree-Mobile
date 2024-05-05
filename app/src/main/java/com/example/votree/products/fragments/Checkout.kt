@@ -41,7 +41,7 @@ class Checkout : Fragment() {
 
     private var newAccumulatedPoints = 0
     private var earnPoints = 0
-    private var totalAmountWithoutFee = 0
+    private var skipPayment = true
     private val args: CheckoutArgs by navArgs()
 
     override fun onCreateView(
@@ -69,13 +69,16 @@ class Checkout : Fragment() {
     private fun setupObservers() {
         val placeOrderButton: Button = binding.placeOrderBtn
         val payBeforeDeliverySwitch: MaterialSwitch = binding.paidBeforeDeliverySw
+        payBeforeDeliverySwitch.setOnCheckedChangeListener { _, isChecked ->
+            skipPayment = !isChecked
+        }
 
         placeOrderButton.setOnClickListener {
             val intent = Intent(activity, CheckoutActivity::class.java)
             intent.putExtra("totalAmount", binding.totalAmountTv.text.toString())
             intent.putExtra("cart", cart)
             intent.putExtra("receiver", shippingAddress)
-            intent.putExtra("skipPayment", true)
+            intent.putExtra("skipPayment", skipPayment)
             startActivityForResult(intent, 1)
         }
 
@@ -204,6 +207,7 @@ class Checkout : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        skipPayment = false
         _binding = null
     }
 }

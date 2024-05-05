@@ -39,6 +39,7 @@ class CheckoutActivity : AppCompatActivity() {
     private val productRepository = ProductRepository(FirebaseFirestore.getInstance())
     private val transactionRepository = TransactionRepository(FirebaseFirestore.getInstance())
     private lateinit var userId: String
+    private var skipPayment = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +49,8 @@ class CheckoutActivity : AppCompatActivity() {
 
         // Initialize Firebase Functions
         functions = FirebaseFunctions.getInstance()
-
-        if (intent.hasExtra("skipPayment")) {
+        skipPayment = intent.getBooleanExtra("skipPayment", false)
+        if (skipPayment) {
             handleSuccessfulPayment()
         } else {
             // Initialize Stripe PaymentConfiguration with your publishable key
@@ -274,6 +275,7 @@ class CheckoutActivity : AppCompatActivity() {
         FirebaseFirestore.getInstance().collection("products").document(productId).get()
             .addOnSuccessListener { productDocument ->
                 val storeId = productDocument.getString("storeId") ?: ""
+
                 val transaction = Transaction(
                     id = "",
                     customerId = userId,
@@ -290,6 +292,9 @@ class CheckoutActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     val totalAmount =
                         transactionRepository.calculateTotalPrice(transaction.productsMap)
+                    if (skipPayment) {
+                        transaction.remainPrice = cart.totalPrice
+                    }
                     transaction.totalAmount = totalAmount + 10.0 // Add delivery fee
                     val generatedId = transactionRepository.createAndUpdateTransaction(transaction)
                     Log.d(TAG, "Transaction ID: $generatedId")

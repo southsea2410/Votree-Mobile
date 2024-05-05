@@ -133,6 +133,9 @@
         <action
             android:id="@+id/action_storeManagement2_to_orderManagementForStoreFragment"
             app:destination="@id/orderManagementForStoreFragment" />
+        <action
+            android:id="@+id/action_storeManagement2_self"
+            app:destination="@id/storeManagement2" />
     </fragment>
     <fragment
         android:id="@+id/addNewProduct2"
@@ -154,6 +157,9 @@
         <action
             android:id="@+id/action_updateProduct_to_productDetailFragmentForStore"
             app:destination="@id/productDetailFragmentForStore" />
+        <action
+            android:id="@+id/action_updateProduct_to_storeManagement2"
+            app:destination="@id/storeManagement2" />
     </fragment>
     <fragment
         android:id="@+id/productDetailFragmentForStore"

@@ -19,17 +19,19 @@ import com.example.votree.R
 import com.example.votree.databinding.FragmentStoreProfile2Binding
 import com.example.votree.products.adapters.ProductAdapter
 import com.example.votree.products.view_models.ProductViewModel
+import com.example.votree.tips.AdManager
 import com.example.votree.users.view_models.ProfileViewModel
 import com.example.votree.utils.GridSpacingItemDecoration
 import java.text.SimpleDateFormat
 import com.example.votree.utils.uiUtils.Companion.calculateNoOfColumns
+import com.google.android.gms.ads.AdView
 import java.util.Locale
 
 class StoreProfile2 : Fragment() {
     private lateinit var binding: FragmentStoreProfile2Binding
-    private val profileViewModel : ProfileViewModel by viewModels()
-    private val productViewModel : ProductViewModel by viewModels()
-    private val args : StoreProfile2Args by navArgs()
+    private val profileViewModel: ProfileViewModel by viewModels()
+    private val productViewModel: ProductViewModel by viewModels()
+    private val args: StoreProfile2Args by navArgs()
     private val pageSize = 5
     private var isLoading = false
     override fun onCreateView(
@@ -41,8 +43,12 @@ class StoreProfile2 : Fragment() {
         setupProfileData()
         setupProductData()
         setupToolbar()
+
+        val adView = binding.root.findViewById<AdView>(R.id.adView)
+        AdManager.addAdView(adView, requireActivity())
         return binding.root
     }
+
     private fun setupProfileData() {
         val storeId = args.storeId
         Log.d("StoreProfile2", "Store ID: $storeId")
@@ -66,9 +72,18 @@ class StoreProfile2 : Fragment() {
             addProfileField(binding, "Join Date", formatter.format(userStore.user.createdAt))
         }
     }
-    private fun addProfileField(binding: FragmentStoreProfile2Binding, label: String, value: String) {
-        fun ProfileField(label: String, value: String) : LinearLayout {
-            val baseLayout = layoutInflater.inflate(R.layout.profile_information_item, binding.storeProfile2InfoContainer, false)
+
+    private fun addProfileField(
+        binding: FragmentStoreProfile2Binding,
+        label: String,
+        value: String
+    ) {
+        fun ProfileField(label: String, value: String): LinearLayout {
+            val baseLayout = layoutInflater.inflate(
+                R.layout.profile_information_item,
+                binding.storeProfile2InfoContainer,
+                false
+            )
             baseLayout.findViewById<TextView>(R.id.store_profile_2_field_label).text = label
             baseLayout.findViewById<TextView>(R.id.store_profile_2_field_value).text = value
             return baseLayout as LinearLayout
@@ -84,10 +99,12 @@ class StoreProfile2 : Fragment() {
         binding.storeProfile2Toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.storeProfile2_to_StoreReport -> {
-                    val action = StoreProfile2Directions.actionStoreProfile2ToStoreReport(args.storeId)
+                    val action =
+                        StoreProfile2Directions.actionStoreProfile2ToStoreReport(args.storeId)
                     findNavController().navigate(action)
                     true
                 }
+
                 else -> false
             }
         }
@@ -125,6 +142,7 @@ class StoreProfile2 : Fragment() {
             )
         )
     }
+
     private fun loadMoreData() {
         if (!isLoading) {
             isLoading = true
@@ -133,5 +151,4 @@ class StoreProfile2 : Fragment() {
             }
         }
     }
-
 }

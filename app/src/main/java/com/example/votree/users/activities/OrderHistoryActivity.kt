@@ -52,7 +52,7 @@ class OrderHistoryActivity : AppCompatActivity(), CoroutineScope {
         binding.toolbar.title = getString(R.string.order_history)
 
         val adView = findViewById<AdView>(R.id.adView)
-        AdManager.loadBannerAd(adView)
+        AdManager.addAdView(adView, this)
     }
 
     override fun onBackPressed() {
