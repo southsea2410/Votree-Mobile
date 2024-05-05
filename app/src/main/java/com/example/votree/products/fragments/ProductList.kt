@@ -117,6 +117,13 @@ class ProductList : Fragment() {
 
     }
 
+    private fun calculateNoOfColumns(context: Context): Int {
+        val displayMetrics = context.resources.displayMetrics
+        val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
+        val columnWidthDp = 180
+        return (screenWidthDp / columnWidthDp).toInt()
+    }
+
     private val pageSize = 5
     private var isLoading = false
 
@@ -126,6 +133,7 @@ class ProductList : Fragment() {
         binding.productListRv.apply {
             adapter = productAdapter
             layoutManager = GridLayoutManager(requireContext(), numberOfColumns)
+            setHasFixedSize(true)
 
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -215,6 +223,8 @@ class ProductList : Fragment() {
                 }
                 else if (tab?.position == 3) {
                     showProductFilterBottomSheet()
+                } else {
+                    resetProductList()
                 }
             }
         })

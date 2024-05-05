@@ -5,9 +5,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.votree.R
 import com.example.votree.databinding.FragmentOrderDetailsBinding
 import com.example.votree.products.adapters.OrderManagementProductAdapter
 import com.example.votree.products.models.Transaction
@@ -55,6 +58,17 @@ class OrderDetailsFragment : Fragment() {
                 ProgressDialogUtils.hideLoadingDialog()
             }
         }
+
+        setupNavigation()
+    }
+
+    private fun setupNavigation() {
+        binding.toolbar.navigationIcon =
+            ContextCompat.getDrawable(requireContext(), R.drawable.arrow_back_24px)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.toolbar.title = getString(R.string.order_details)
     }
 
     private fun updateUI(transaction: Transaction) {
