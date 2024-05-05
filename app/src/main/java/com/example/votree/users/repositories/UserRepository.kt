@@ -1,7 +1,9 @@
 package com.example.votree.users.repositories
 
+import android.net.Uri
 import com.example.votree.users.models.User
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 
 class UserRepository(private val db: FirebaseFirestore) {
@@ -17,6 +19,25 @@ class UserRepository(private val db: FirebaseFirestore) {
     }
 
     suspend fun updateAvatar(userId: String, avatarUrl: String) {
+        usersCollection.document(userId).update("avatar", avatarUrl).await()
+    }
+
+    suspend fun uploadAvatar(userId: String, avatarUri: Uri): String? {
+        return try {
+            val storageRef = FirebaseStorage.getInstance().reference.child("avatars/$userId.jpg")
+            val uploadTask = storageRef.putFile(avatarUri)
+            val snapshot = uploadTask.await()
+            val downloadUrl = snapshot.metadata?.reference?.downloadUrl?.await()
+            downloadUrl?.toString()?.also { avatarUrl ->
+                saveAvatar(userId, avatarUrl)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private suspend fun saveAvatar(userId: String, avatarUrl: String) {
         usersCollection.document(userId).update("avatar", avatarUrl).await()
     }
 

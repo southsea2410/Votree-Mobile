@@ -28,7 +28,7 @@ class ProductViewModel : ViewModel() {
 //        fetchProducts()
     }
 
-    private fun fetchProducts() {
+     fun fetchProducts() {
         productsCollection
             .whereEqualTo("active", true)
             .addSnapshotListener { snapshot, error ->
