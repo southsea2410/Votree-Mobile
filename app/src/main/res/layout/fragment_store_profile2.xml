@@ -1,102 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".users.fragments.StoreProfile2">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
+        android:layout_height="match_parent"
+        tools:context=".users.fragments.StoreProfile2">
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="92dp"
-            android:paddingHorizontal="24dp"
-            android:orientation="vertical">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/store_profile_2_avatar"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:scaleType="centerCrop"
-                    app:shapeAppearanceOverlay="@style/circle_overlay" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="92dp">
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:id="@+id/store_profile_2_name"
-                        style="?attr/textAppearanceHeadlineLarge"
-                        android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/store_profile_2_avatar"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/circle_overlay" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Store Name"/>
-                    <TextView
-                        style="?attr/textAppearanceTitleSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="?attr/colorSecondary"
-                        android:text="Store"/>
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/store_profile_2_name"
+                            style="?attr/textAppearanceHeadlineLarge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Store Name" />
+
+                        <TextView
+                            style="?attr/textAppearanceTitleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Store"
+                            android:textColor="?attr/colorSecondary" />
+                    </LinearLayout>
                 </LinearLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp" />
+
+                <TextView
+                    style="?attr/textAppearanceTitleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="4dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:text="Profile Information" />
+
+                <LinearLayout
+                    android:id="@+id/store_profile_2_info_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"></LinearLayout>
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp" />
+
+                <TextView
+                    style="?attr/textAppearanceTitleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="4dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:text="Store Products" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/store_profile_2_products_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
-        <com.google.android.material.divider.MaterialDivider
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp" />
+            app:liftOnScroll="true">
 
-        <TextView
-            style="?attr/textAppearanceTitleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="4dp"
-            android:color="?attr/colorOnSurfaceVariant"
-            android:text="Profile Information"/>
-        <LinearLayout
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/store_profile_2_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:menu="@menu/store_profile_2_menu"
+                app:navigationIcon="@drawable/icon_back"
+                app:title="Store Profile" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Ad Banner included at the bottom -->
+        <include
+            layout="@layout/ad_banner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/store_profile_2_info_container">
-        </LinearLayout>
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp" />
+            android:layout_gravity="bottom"/>
 
-        <TextView
-            style="?attr/textAppearanceTitleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="4dp"
-            android:color="?attr/colorOnSurfaceVariant"
-            android:text="Store Products"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/store_profile_2_products_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-    <com.google.android.material.appbar.AppBarLayout
-        app:liftOnScroll="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/store_profile_2_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            app:title="Store Profile"
-            app:menu="@menu/store_profile_2_menu"
-            app:navigationIcon="@drawable/icon_back" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

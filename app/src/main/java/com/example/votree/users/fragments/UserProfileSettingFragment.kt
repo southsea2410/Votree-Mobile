@@ -12,6 +12,8 @@ import com.example.votree.R
 import com.example.votree.databinding.FragmentUserProfileSettingBinding
 import com.example.votree.products.fragments.PasswordFragment
 import com.example.votree.products.fragments.ProfileFragment
+import com.example.votree.tips.AdManager
+import com.google.android.gms.ads.AdView
 import com.google.android.material.tabs.TabLayoutMediator
 
 class UserProfileSettingFragment : Fragment() {
@@ -27,6 +29,9 @@ class UserProfileSettingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentUserProfileSettingBinding.inflate(inflater, container, false)
+
+        val adView = binding.root.findViewById<AdView>(R.id.adView)
+        AdManager.addAdView(adView, requireActivity())
         return binding.root
     }
 

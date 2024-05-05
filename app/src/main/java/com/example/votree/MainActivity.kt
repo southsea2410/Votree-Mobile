@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val adView = findViewById<AdView>(R.id.adView)
-        AdManager.loadBannerAd(adView)
+        AdManager.addAdView(adView, this)
 
         permissionManager = PermissionManager(this)
         permissionManager.checkPermissions()

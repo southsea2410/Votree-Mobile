@@ -109,7 +109,7 @@ class CartViewModel : ViewModel() {
     }
 
     // Make sure this function is a suspending function
-    suspend fun groupProductsByShopId(cart: Cart) {
+    private suspend fun groupProductsByShopId(cart: Cart) {
         _isLoading.postValue(true)
 
         val firestore = FirebaseFirestore.getInstance()

@@ -41,7 +41,7 @@ class SignInActivity : AppCompatActivity() {
         setupUIListeners()
 
         val adView = findViewById<AdView>(R.id.adView)
-        AdManager.loadBannerAd(adView)
+        AdManager.addAdView(adView, this)
     }
 
     private fun setupFirebaseAuth() {

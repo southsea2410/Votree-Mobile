@@ -5,7 +5,9 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.votree.R
 import com.example.votree.databinding.ActivityRegisterToSellerBinding
+import com.example.votree.tips.AdManager
 import com.example.votree.users.models.Store
 import com.example.votree.users.repositories.StoreRepository
 import com.example.votree.users.repositories.UserRepository
@@ -13,6 +15,7 @@ import com.example.votree.utils.CustomToast
 import com.example.votree.utils.ProgressDialogUtils
 import com.example.votree.utils.ToastType
 import com.example.votree.utils.ValidationUtils
+import com.google.android.gms.ads.AdView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -35,6 +38,9 @@ class RegisterToSeller : AppCompatActivity() {
 
         setupButton()
         setupAddress()
+
+        val adView = findViewById<AdView>(R.id.adView)
+        AdManager.addAdView(adView, this)
     }
 
     // Handle the address result from AddressActivity

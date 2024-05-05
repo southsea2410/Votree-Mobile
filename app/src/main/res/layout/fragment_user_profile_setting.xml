@@ -1,43 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    tools:context=".users.fragments.UserProfileSettingFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/md_theme_surface"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".users.fragments.UserProfileSettingFragment">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/profile_tl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabGravity="fill"
-        android:background="@color/md_theme_surface"
-        app:tabInlineLabel="true"
-        app:tabMode="fixed">
-        <com.google.android.material.tabs.TabItem
+        <Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/md_theme_surface"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/profile_tl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Profile" />
-        <com.google.android.material.tabs.TabItem
+            app:tabGravity="fill"
+            android:background="@color/md_theme_surface"
+            app:tabInlineLabel="true"
+            app:tabMode="fixed">
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profile" />
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Password" />
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Password" />
-    </com.google.android.material.tabs.TabLayout>
+            android:layout_height="0dp"
+            android:padding="16dp"
+            android:layout_weight="1" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:padding="16dp"
-        android:layout_weight="1" />
-
-</LinearLayout>
+        <include
+            layout="@layout/ad_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</layout>
