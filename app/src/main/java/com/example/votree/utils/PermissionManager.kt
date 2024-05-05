@@ -17,12 +17,14 @@ class PermissionManager(private val activity: FragmentActivity) {
     private val requiredPermissions = arrayOf(
         Manifest.permission.READ_MEDIA_IMAGES,
         Manifest.permission.READ_MEDIA_VIDEO,
-        Manifest.permission.READ_MEDIA_AUDIO
+        Manifest.permission.READ_MEDIA_AUDIO,
+        Manifest.permission.POST_NOTIFICATIONS
     )
 
     private var isStorageImagePermitted: Boolean = false
     private var isStorageVideoPermitted: Boolean = false
     private var isStorageAudioPermitted: Boolean = false
+    private var isNotificationPermitted: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun checkPermissions() {
@@ -50,7 +52,7 @@ class PermissionManager(private val activity: FragmentActivity) {
                 activity,
                 requiredPermissions[0]
             ) -> {
-                sendToSettingDialog()
+//                sendToSettingDialog()
             }
 
             else -> {
@@ -69,7 +71,7 @@ class PermissionManager(private val activity: FragmentActivity) {
                 }
             } else {
                 isStorageImagePermitted = false
-                sendToSettingDialog()
+//                sendToSettingDialog()
             }
         }
 
@@ -91,7 +93,7 @@ class PermissionManager(private val activity: FragmentActivity) {
                 activity,
                 requiredPermissions[1]
             ) -> {
-                sendToSettingDialog()
+//                sendToSettingDialog()
             }
 
             else -> {
@@ -101,6 +103,7 @@ class PermissionManager(private val activity: FragmentActivity) {
     }
 
     // Implement requestPermissionLauncherStorageVideos and requestPermissionStorageAudios in similar manner
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     val requestPermissionLauncherStorageVideos =
         activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
@@ -110,10 +113,11 @@ class PermissionManager(private val activity: FragmentActivity) {
                 }
             } else {
                 isStorageVideoPermitted = false
-                sendToSettingDialog()
+//                sendToSettingDialog()
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun requestPermissionStorageAudios() {
         // Similar implementation as requestPermissionStorageImages
         when {
@@ -124,6 +128,7 @@ class PermissionManager(private val activity: FragmentActivity) {
                 isStorageAudioPermitted = true
                 if (!allPermissionsGranted()) {
                     // All permissions are granted
+                    requestPermissionNotifications()
                 }
             }
 
@@ -131,7 +136,7 @@ class PermissionManager(private val activity: FragmentActivity) {
                 activity,
                 requiredPermissions[2]
             ) -> {
-                sendToSettingDialog()
+//                sendToSettingDialog()
             }
 
             else -> {
@@ -140,22 +145,64 @@ class PermissionManager(private val activity: FragmentActivity) {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     val requestPermissionLauncherStorageAudios =
         activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 isStorageAudioPermitted = true
                 if (!allPermissionsGranted()) {
-                    // All permissions are granted
+                    requestPermissionStorageAudios()
                 }
             } else {
                 isStorageAudioPermitted = false
-                sendToSettingDialog()
+//                sendToSettingDialog()
             }
         }
 
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestPermissionNotifications() {
+        when {
+            ContextCompat.checkSelfPermission(
+                activity,
+                requiredPermissions[3]
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                isNotificationPermitted = true
+                if (!allPermissionsGranted()) {
+                    sendToSettingDialog()
+                }
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                activity,
+                requiredPermissions[3]
+            ) -> {
+                
+            }
+
+            else -> {
+                requestPermissionLauncherNotifications.launch(requiredPermissions[3])
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    val requestPermissionLauncherNotifications =
+        activity.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                isNotificationPermitted = true
+                if (!allPermissionsGranted()) {
+                    // All permissions are granted
+                    sendToSettingDialog()
+                }
+            } else {
+                isNotificationPermitted = false
+//                sendToSettingDialog()
+            }
+        }
+
     fun allPermissionsGranted(): Boolean {
-        return isStorageImagePermitted && isStorageVideoPermitted && isStorageAudioPermitted
+        return isStorageImagePermitted && isStorageVideoPermitted && isStorageAudioPermitted && isNotificationPermitted
     }
 
     private fun sendToSettingDialog() {
