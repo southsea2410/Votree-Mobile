@@ -23,6 +23,7 @@ import com.example.votree.products.models.Product
 import com.example.votree.products.view_models.ProductFilterViewModel
 import com.example.votree.products.view_models.ProductViewModel
 import com.example.votree.utils.GridSpacingItemDecoration
+import com.example.votree.utils.uiUtils.Companion.calculateNoOfColumns
 import com.google.android.material.tabs.TabLayout
 
 class ProductList : Fragment() {
@@ -119,7 +120,7 @@ class ProductList : Fragment() {
     private fun calculateNoOfColumns(context: Context): Int {
         val displayMetrics = context.resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
-        val columnWidthDp = 180 // Assume each item in the grid takes up 180dp
+        val columnWidthDp = 180
         return (screenWidthDp / columnWidthDp).toInt()
     }
 
@@ -222,6 +223,8 @@ class ProductList : Fragment() {
                 }
                 else if (tab?.position == 3) {
                     showProductFilterBottomSheet()
+                } else {
+                    resetProductList()
                 }
             }
         })

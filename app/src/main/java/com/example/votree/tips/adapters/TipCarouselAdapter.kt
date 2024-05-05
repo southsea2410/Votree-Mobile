@@ -11,11 +11,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.votree.R
-import com.example.votree.tips.TipDetailActivity
+import com.example.votree.tips.onProductTipClickListener
 import com.example.votree.tips.models.ProductTip
 import com.google.android.material.textview.MaterialTextView
 
-class TipCarouselAdapter : ListAdapter<ProductTip, TipCarouselAdapter.TipCarouselViewHolder>(TipCarouselItemComparators()) {
+class TipCarouselAdapter(
+    private val listener: onProductTipClickListener
+) : ListAdapter<ProductTip, TipCarouselAdapter.TipCarouselViewHolder>(TipCarouselItemComparators()) {
     inner class TipCarouselViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.carousel_image_view)
         val titleView: MaterialTextView = itemView.findViewById(R.id.carousel_item_text)
@@ -38,11 +40,8 @@ class TipCarouselAdapter : ListAdapter<ProductTip, TipCarouselAdapter.TipCarouse
             .into(holder.imageView)
         holder.titleView.text = tip.title
 
-        val intent = Intent(holder.itemView.context, TipDetailActivity::class.java)
-        intent.putExtra("tipData", tip)
         holder.itemView.setOnClickListener {
-            Log.d("TipCarouselAdapter", "Item clicked: ${tip.title}")
-            holder.itemView.context.startActivity(intent)
+            listener.onProductTipClick(tip)
         }
     }
 

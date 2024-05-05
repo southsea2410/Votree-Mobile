@@ -30,6 +30,13 @@
             android:scaleType="centerCrop" />
     </androidx.cardview.widget.CardView>
 
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:elevation="10dp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -261,7 +268,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:hint="Sale Off"
+                        android:hint="Sale Off (%)"
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText

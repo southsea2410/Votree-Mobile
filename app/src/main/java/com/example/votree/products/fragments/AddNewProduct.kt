@@ -14,10 +14,12 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.votree.databinding.FragmentAddNewProductBinding
 import com.example.votree.products.adapters.ProductImageAdapter
+import com.example.votree.products.adapters.ProductImageAdapterUri
 import com.example.votree.products.data.productCatagories.PlantType
 import com.example.votree.products.data.productCatagories.SuitClimate
 import com.example.votree.products.data.productCatagories.SuitEnvironment
@@ -36,7 +38,7 @@ class AddNewProduct : Fragment() {
     private lateinit var firestore: FirebaseFirestore
 
     private val imageUris = mutableListOf<Uri>()
-    private lateinit var imageAdapter: ProductImageAdapter
+    private lateinit var imageAdapter: ProductImageAdapter<Uri>
 
     //    private lateinit var permissionManager: PermissionManager
     private var imageUri: Uri? = null
@@ -55,6 +57,13 @@ class AddNewProduct : Fragment() {
         setupSpinners()
         setupSaveButton()
         setupAddImageButton()
+
+        // Set the navigation icon to the back button
+        binding.toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), com.example.votree.R.drawable.arrow_back_24px)
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        binding.toolbar.title = getString(com.example.votree.R.string.add_new_product)
 
         return binding.root
     }
@@ -90,77 +99,6 @@ class AddNewProduct : Fragment() {
             getImageFromDevice()
         }
     }
-
-//    private fun setupSaveButton() {
-//        binding.saveProductBtn.setOnClickListener {
-//            val productName = binding.productNameEt.text.toString()
-//            val shortDescription = binding.shortDescriptionEt.text.toString()
-//            val longDescription = binding.descriptionEt.text.toString()
-//            val price = binding.priceEt.text.toString()
-//            val quantity = binding.quantityEt.text.toString()
-//            val type = binding.typeSpinner.text.toString()
-//            val suitEnvironment = binding.suitEnvironmentSpinner.text.toString()
-//            val suitClimate = binding.suitClimateSpinner.text.toString()
-//            val saleOff = binding.saleOffEt.text.toString()
-//
-//            if (imageUri != null) {
-//                productRepository.uploadProductImage(imageUri!!, onSuccess = { imageUrl ->
-//                    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-//                    Log.d("AddNewProduct", "User ID: $userId")
-//                    firestore.collection("users").document(userId).get()
-//                        .addOnSuccessListener { document ->
-//                            Log.d("AddNewProduct", "DocumentSnapshot data: ${document.data}")
-//                            if (document != null) {
-//                                val storeId = document.getString("storeId") ?: ""
-//                                product = Product(
-//                                    id = "",
-//                                    storeId = storeId,
-//                                    imageUrl = imageUris.map { it.toString() },
-//                                    productName = productName,
-//                                    shortDescription = shortDescription,
-//                                    description = longDescription,
-//                                    averageRate = 0.0,
-//                                    quantityOfRate = 0,
-//                                    price = price.toDouble(),
-//                                    inventory = quantity.toInt(),
-//                                    quantitySold = 0,
-//                                    type = PlantType.valueOf(type),
-//                                    suitEnvironment = SuitEnvironment.valueOf(suitEnvironment),
-//                                    suitClimate = SuitClimate.valueOf(suitClimate),
-//                                    saleOff = saleOff.toDouble()
-//                                )
-//
-//                                productRepository.addProduct(product, onSuccess = { productId ->
-//                                    findNavController().popBackStack()
-//                                }, onFailure = { exception ->
-//                                    Toast.makeText(
-//                                        requireContext(),
-//                                        "Error: ${exception.message}",
-//                                        Toast.LENGTH_SHORT
-//                                    ).show()
-//                                })
-//                            } else {
-//                                Log.d("AddNewProduct", "No such document")
-//                            }
-//                        }
-//                        .addOnFailureListener { exception ->
-//                            Log.d("AddNewProduct", "get failed with ", exception)
-//                        }
-//                }, onFailure = { exception ->
-//                    Toast.makeText(
-//                        requireContext(),
-//                        "Error uploading image: ${exception.message}",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                    Log.d("AddNewProduct", "Error uploading image: ${exception.message}")
-//                })
-//            } else {
-//                Toast.makeText(requireContext(), "Please select an image", Toast.LENGTH_SHORT)
-//                    .show()
-//                Log.d("AddNewProduct", "Image URI is null")
-//            }
-//        }
-//    }
 
     private fun setupSaveButton() {
         binding.saveProductBtn.setOnClickListener {
@@ -264,7 +202,7 @@ class AddNewProduct : Fragment() {
 
     private fun updateImageViewPager() {
         if (imageUris.isNotEmpty()) {
-            imageAdapter = ProductImageAdapter(imageUris)
+            imageAdapter = ProductImageAdapterUri(imageUris)
             binding.productImageViewPager.adapter = imageAdapter
         }
     }
@@ -275,6 +213,10 @@ class AddNewProduct : Fragment() {
 //            binding.productImageViewPager.adapter = imageAdapter
 //        }
 //    }
+
+    private fun onBackPressed() {
+        findNavController().popBackStack()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

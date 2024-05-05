@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.votree.R
 
-class ProductImageAdapter(private val imageUris: List<Uri>) :
+abstract class ProductImageAdapter<T>(protected val items: List<T>) :
     RecyclerView.Adapter<ProductImageAdapter.ImageViewHolder>() {
+
+    abstract fun bindImage(imageView: ImageView, item: T)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -18,18 +21,30 @@ class ProductImageAdapter(private val imageUris: List<Uri>) :
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.bind(imageUris[position])
+        bindImage(holder.imageView, items[position])
     }
 
     override fun getItemCount(): Int {
-        return imageUris.size
+        return items.size
     }
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageView: ImageView = itemView.findViewById(R.id.productImageView)
+        val imageView: ImageView = itemView.findViewById(R.id.productImageView)
+    }
+}
 
-        fun bind(imageUri: Uri) {
-            imageView.setImageURI(imageUri)
-        }
+class ProductImageAdapterUri(imageUris: List<Uri>) : ProductImageAdapter<Uri>(imageUris) {
+    override fun bindImage(imageView: ImageView, item: Uri) {
+        imageView.setImageURI(item)
+    }
+}
+
+class ProductImageAdapterString(imageUrls: List<String>) : ProductImageAdapter<String>(imageUrls) {
+    override fun bindImage(imageView: ImageView, item: String) {
+        Glide.with(imageView.context)
+            .load(item)
+            .centerCrop()
+            .placeholder(R.drawable.img_placeholder)
+            .into(imageView)
     }
 }

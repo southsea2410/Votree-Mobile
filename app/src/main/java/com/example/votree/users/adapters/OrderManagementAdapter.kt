@@ -91,7 +91,7 @@ class OrderManagementAdapter(
                     withContext(Dispatchers.Main) {
                         binding.orderNameTv.text = product.productName
                         Glide.with(binding.root.context)
-                            .load(product.imageUrl)
+                            .load(product.imageUrl[0])
                             .into(binding.orderImageIv)
                     }
                 }

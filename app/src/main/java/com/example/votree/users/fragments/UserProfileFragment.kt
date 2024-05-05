@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentUserProfileBinding
 import com.example.votree.users.activities.OrderHistoryActivity
@@ -46,6 +47,10 @@ class UserProfileFragment : Fragment() {
             user?.let {
                 binding.userfullNameTv.text = user.fullName
                 binding.userRoleTv.text = user.role
+                Glide.with(requireContext())
+                    .load(user.avatar)
+                    .placeholder(R.drawable.avatar_default)
+                    .into(binding.userAvatarIv)
 
                 if (user.role == "store") {
                     disableBecomeSeller()

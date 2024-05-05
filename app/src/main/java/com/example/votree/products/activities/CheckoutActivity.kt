@@ -16,6 +16,7 @@ import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.repositories.TransactionRepository
 import com.example.votree.users.repositories.StoreRepository
 import com.example.votree.utils.CustomToast
+import com.example.votree.utils.ProgressDialogUtils
 import com.example.votree.utils.ToastType
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -48,14 +49,18 @@ class CheckoutActivity : AppCompatActivity() {
         // Initialize Firebase Functions
         functions = FirebaseFunctions.getInstance()
 
-        // Initialize Stripe PaymentConfiguration with your publishable key
-        initializeStripePaymentConfiguration()
+        if (intent.hasExtra("skipPayment")) {
+            handleSuccessfulPayment()
+        } else {
+            // Initialize Stripe PaymentConfiguration with your publishable key
+            initializeStripePaymentConfiguration()
 
-        // Initialize PaymentSheet
-        initializePaymentSheet()
+            // Initialize PaymentSheet
+            initializePaymentSheet()
 
-        // Fetch or create a Stripe customer
-        fetchOrCreateStripeCustomer()
+            // Fetch or create a Stripe customer
+            fetchOrCreateStripeCustomer()
+        }
     }
 
     private fun initializeStripePaymentConfiguration() {
@@ -169,6 +174,7 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun handleSuccessfulPayment() {
         lifecycleScope.launch {
+            ProgressDialogUtils.showLoadingDialog(this@CheckoutActivity)
             val cart = intent.getParcelableExtra<Cart>("cart")
             val receiver = intent.getParcelableExtra<ShippingAddress>("receiver")
 
@@ -188,12 +194,13 @@ class CheckoutActivity : AppCompatActivity() {
 
                     // 4. Clear the cart after checkout
                     clearCartAfterCheckout(cartData)
-
+                    ProgressDialogUtils.hideLoadingDialog()
                     // 5. Set the result and finish the activity
                     intent.putExtra("points", earnedPoints)
                     setResult(RESULT_OK, intent)
                     finish()
                 }
+                ProgressDialogUtils.hideLoadingDialog()
             }
         }
     }
