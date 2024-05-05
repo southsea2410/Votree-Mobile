@@ -102,7 +102,6 @@ class ProductFilterBottomSheet : BottomSheetDialogFragment() {
     private fun setupPriceRangeSlider() {
         // Observe the product list to find the min and max prices
         productViewModel.products.observe(viewLifecycleOwner) { products ->
-            // Find the minimum and maximum price from the product list
             val minPrice = products.minByOrNull { it.price }?.price ?: 0f
             val maxPrice = products.maxByOrNull { it.price }?.price ?: 100f
 

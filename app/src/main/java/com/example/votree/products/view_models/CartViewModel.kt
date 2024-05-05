@@ -28,16 +28,13 @@ class CartViewModel : ViewModel() {
     private val currentUser = FirebaseAuth.getInstance().currentUser
     val groupedProducts: MutableLiveData<List<ProductItem>?> = MutableLiveData()
 
-    //        private val _isLoading: SingleLiveEvent<Boolean> = SingleLiveEvent()
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    //        private val _toastMessage: SingleLiveEvent<String> = SingleLiveEvent()
     private val _toastMessage: MutableLiveData<String> = MutableLiveData()
     var toastMessage: LiveData<String> = _toastMessage
 
-    //        private val _cart: SingleLiveEvent<Cart?> = SingleLiveEvent()
     private val _cart: MutableLiveData<Cart?> = MutableLiveData()
     val cart: MutableLiveData<Cart?>
         get() = _cart
@@ -119,8 +116,7 @@ class CartViewModel : ViewModel() {
         return withContext(Dispatchers.IO) {
             if (cart.productsMap.isEmpty()) {
                 Log.d("CartViewModel", "Cart is empty")
-//                groupedProducts.postValue(emptyList())
-                groupedProducts.value = emptyList()
+                groupedProducts.postValue(emptyList())
                 _isLoading.postValue(false)
                 return@withContext
             }

@@ -293,6 +293,9 @@
             android:name="cart"
             app:argType="com.example.votree.products.models.Cart"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_checkoutResultFragment_to_productList"
+            app:destination="@id/productList" />
     </fragment>
     <fragment
         android:id="@+id/tipDetailFragment2"
