@@ -11,7 +11,7 @@ data class User(
     var username: String = "",
     var fullName: String = "",
     var password: String = "",
-    val avatar: String = "",
+    var avatar: String = "",
     var phoneNumber: String = "",
     var address: String = "",
     val role: String = "",
