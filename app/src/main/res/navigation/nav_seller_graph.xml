@@ -126,6 +126,9 @@
         <action
             android:id="@+id/action_storeManagement2_to_orderManagementForStoreFragment"
             app:destination="@id/orderManagementForStoreFragment" />
+        <action
+            android:id="@+id/action_storeManagement2_to_revenueStatisticsFragment"
+            app:destination="@id/revenueStatisticsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addNewProduct2"
@@ -287,4 +290,9 @@
             app:argType="com.example.votree.products.models.Cart"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/revenueStatisticsFragment"
+        android:name="com.example.votree.users.fragments.RevenueStatisticsFragment"
+        android:label="fragment_revenue_statistics"
+        tools:layout="@layout/fragment_revenue_statistics" />
 </navigation>

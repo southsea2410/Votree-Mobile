@@ -40,6 +40,7 @@ class StoreManagementFragment : Fragment() {
         products = mutableListOf()
         binding.addNewProductBtn.setOnClickListener { navigateToAddNewProductFragment() }
         binding.orderManagementBtn.setOnClickListener { navigateToOrderManagementFragment() }
+        binding.revenueStatisticsBtn.setOnClickListener { navigateToRevenueStatisticsFragment() }
         return binding.root
     }
 
@@ -128,6 +129,11 @@ class StoreManagementFragment : Fragment() {
 
     private fun navigateToOrderManagementFragment() {
         val action = StoreManagementFragmentDirections.actionStoreManagement2ToOrderManagementForStoreFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToRevenueStatisticsFragment() {
+        val action = StoreManagementFragmentDirections.actionStoreManagement2ToRevenueStatisticsFragment()
         findNavController().navigate(action)
     }
 

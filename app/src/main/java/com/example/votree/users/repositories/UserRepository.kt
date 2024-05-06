@@ -12,6 +12,11 @@ class UserRepository(private val db: FirebaseFirestore) {
         return snapshot.toObject(User::class.java)
     }
 
+    suspend fun getStoreId(userId: String): String {
+        val snapshot = usersCollection.document(userId).get().await()
+        return snapshot.getString("storeId") ?:""
+    }
+
     suspend fun updateUser(userId: String, user: User) {
         usersCollection.document(userId).set(user).await()
     }

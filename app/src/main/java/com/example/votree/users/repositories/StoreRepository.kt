@@ -3,8 +3,16 @@ package com.example.votree.users.repositories
 import android.util.Log
 import com.example.votree.products.repositories.ProductReviewRepository
 import com.example.votree.users.models.Store
+import com.github.mikephil.charting.data.BarEntry
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.Date
+
 
 class StoreRepository {
     private val db = FirebaseFirestore.getInstance()
@@ -96,5 +104,67 @@ class StoreRepository {
     suspend fun getStoreName(storeId: String): String {
         val document = storeCollection.document(storeId).get().await()
         return document.getString("storeName") ?: ""
+    }
+
+    suspend fun getWeeklyRevenue(storeId: String, startDate: LocalDate, endDate: LocalDate): Pair<Long, Int> {
+        val collection = db.collection("transactions")
+        val start = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        val end = Date.from(endDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
+
+        val query = collection
+            .whereEqualTo("storeId", storeId)
+            .whereGreaterThanOrEqualTo("createdAt", start)
+            .whereLessThan("createdAt", end)
+
+        val snapshot = query.get().await()
+        var totalRevenue = 0L
+        var totalOrders = 0
+
+        for (document in snapshot.documents) {
+            val revenue = document.getLong("totalAmount") ?: 0L
+            totalRevenue += revenue
+            totalOrders++
+        }
+
+        return Pair(totalRevenue,totalOrders)
+    }
+
+    suspend fun getDailyRevenueList (storeId: String, startDate: LocalDate, endDate: LocalDate) : List<BarEntry> {
+        val start = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        val end = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        val collection = db.collection("transactions")
+        val dayIndices = FloatArray(7) { 0f }
+
+        val dates = (0..6).map { startDate.plusDays(it.toLong()) }
+        val dayMap = dates.mapIndexed { index, date -> date to index }.toMap()
+
+        try {
+            val query: Query = collection
+                .whereEqualTo("storeId", storeId)
+                .whereGreaterThanOrEqualTo("createdAt", start)
+                .whereLessThanOrEqualTo("createdAt", end)
+
+            val result = query.get().await()
+
+            for (document in result.documents) {
+                val timestamp = document.getTimestamp("createdAt") ?: continue
+                val localDateTime = LocalDateTime.ofInstant(timestamp.toDate().toInstant(), ZoneId.systemDefault())
+                val date = localDateTime.toLocalDate()
+
+                val dayIndex = dayMap[date] ?: continue
+
+                val value = document.getDouble("totalAmount") ?: 0.0
+                dayIndices[dayIndex] += value.toFloat()
+            }
+        } catch (e: Exception) {
+            Log.e("StoreRepository", "Fail to get daily revenue: ${e.message}")
+        }
+
+        val barEntries = mutableListOf<BarEntry>()
+        for (i in 0 until dayIndices.size) {
+            barEntries.add(BarEntry(i.toFloat(), dayIndices[i])) // Create BarEntry with the appropriate value
+        }
+
+        return barEntries
     }
 }

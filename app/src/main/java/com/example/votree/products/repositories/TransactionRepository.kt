@@ -4,12 +4,19 @@ import android.util.Log
 import com.example.votree.products.models.Transaction
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class TransactionRepository(private val db: FirebaseFirestore) {
     suspend fun createAndUpdateTransaction(transaction: Transaction): String {
@@ -73,7 +80,7 @@ class TransactionRepository(private val db: FirebaseFirestore) {
     }
 
     suspend fun calculateTotalPrice(productsMap: MutableMap<String, Int>): Double {
-        return productsMap.entries.sumByDouble { (productId, quantity) ->
+        return productsMap.entries.sumOf { (productId, quantity) ->
             val productDoc = db.collection("products").document(productId).get().await()
             val price = productDoc.getDouble("price") ?: 0.0
             price * quantity
@@ -142,5 +149,32 @@ class TransactionRepository(private val db: FirebaseFirestore) {
 
             transactionsCollection.document(transactionId).update("status", status).await()
         }
+    }
+
+    suspend fun getTransactionDate(storeId: String): Timestamp {
+        val transactionsCollection = db.collection("transactions")
+
+        val calendar = Calendar.getInstance()
+        val currentYear = calendar.get(Calendar.YEAR)
+
+        val dateString = "31/12/${currentYear - 1}"
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val lastDayOfPreviousYear = dateFormat.parse(dateString)
+
+        val lastDayTimestamp = Timestamp(lastDayOfPreviousYear)
+
+        val firstDateDoc = transactionsCollection
+            .whereEqualTo("storeId", storeId)
+            .whereGreaterThan("createdAt", lastDayTimestamp)
+            .orderBy("createdAt", Query.Direction.ASCENDING)
+            .limit(1)
+            .get()
+            .await()
+            .documents
+            .firstOrNull()
+
+        val firstDate = firstDateDoc?.getTimestamp("date") ?: Timestamp(Date(0))
+
+        return firstDate
     }
 }
