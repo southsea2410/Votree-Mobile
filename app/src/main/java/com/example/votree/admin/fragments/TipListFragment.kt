@@ -254,6 +254,7 @@ class TipListFragment : BaseListFragment<Tip>(), OnItemClickListener {
 
     override fun onTipItemClicked(view: View?, position: Int) {
         (activity as AdminMainActivity).onTipItemClicked(view, position)
+        val tipIdDelete: String = adapter.getItem(position).id
         val topAppBar: MaterialToolbar = (activity as AdminMainActivity).findViewById(R.id.topAppBar)
         topAppBar.menu.findItem(R.id.more).title = "Delete Tip"
         topAppBar.setOnMenuItemClickListener { menuItem ->
@@ -263,9 +264,9 @@ class TipListFragment : BaseListFragment<Tip>(), OnItemClickListener {
                         .setTitle("Delete Tip")
                         .setMessage("Are you sure you want to delete this tip?")
                         .setPositiveButton("Yes") { _, _ ->
-                            db.collection(collectionName).document(adapter.getItem(position).id).delete()
+                            db.collection(collectionName).document(tipIdDelete).delete()
                                 .addOnSuccessListener {
-                                    db.collection("checkContent").whereEqualTo("tipId", adapter.getItem(position).id).get().addOnSuccessListener { documents ->
+                                    db.collection("checkContent").whereEqualTo("tipId", tipIdDelete).get().addOnSuccessListener { documents ->
                                         for (doc in documents) {
                                             db.collection("checkContent").document(doc.id).delete()
                                         }
