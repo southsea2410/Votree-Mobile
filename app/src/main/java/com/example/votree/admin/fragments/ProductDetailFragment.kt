@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import com.bumptech.glide.Glide
 import com.example.votree.R
+import com.example.votree.admin.activities.AdminMainActivity
 import com.example.votree.models.Product
 import com.example.votree.models.Store
 import com.google.firebase.firestore.ktx.firestore
@@ -75,19 +76,14 @@ class ProductDetailFragment : Fragment() {
             }
 
         product?.let { nonNullProduct ->
+            val productImage = view?.findViewById<ImageView>(R.id.productImage)
             val hideButton: Button? = view?.findViewById(R.id.hideButton)
-            view?.findViewById<ImageView>(R.id.productImage)?.let { imageView ->
-                Glide.with(this)
-                    .load(nonNullProduct.imageUrl)
-                    .into(imageView)
-            }
             view?.findViewById<TextView>(R.id.productName)?.text = nonNullProduct.productName
             view?.findViewById<RatingBar>(R.id.productRating_rb)?.rating = nonNullProduct.averageRate.toFloat()
             view?.findViewById<TextView>(R.id.productRating)?.text = nonNullProduct.averageRate.toString()
             view?.findViewById<TextView>(R.id.productSoldQuantity)?.text = nonNullProduct.quantitySold.toString()
             view?.findViewById<TextView>(R.id.description)?.text = nonNullProduct.description
             view?.findViewById<TextView>(R.id.transaction_list_item_title)?.text = "Price: ${nonNullProduct.price}"
-            Log.d("Hiii", nonNullProduct.isActive.toString())
 //            hideButton?.text = if (nonNullProduct.isActive) "  Hide this product" else "  Unhide this product"
 //            hideButton?.backgroundTintList = if (nonNullProduct.isActive) resources.getColorStateList(R.color.yellow) else resources.getColorStateList(R.color.md_theme_onSurfaceVariant)
             hideButton?.backgroundTintList = when (nonNullProduct.isActive) {
@@ -108,6 +104,23 @@ class ProductDetailFragment : Fragment() {
                     .addOnFailureListener { e ->
                         e.printStackTrace()
                     }
+            }
+            view?.findViewById<ImageView>(R.id.productImage)?.let {
+                Glide.with(this)
+                    .load(nonNullProduct.imageUrl[0])
+                    .into(it)
+            }
+            productImage?.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putString("imageUrl", nonNullProduct.imageUrl[0])
+
+                val fragment = ImageFragment()
+                fragment.arguments = bundle
+
+                (activity as AdminMainActivity).supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit()
             }
         }
     }

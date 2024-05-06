@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StrikethroughSpan
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -29,7 +30,7 @@ class ProductListAdapter(private val listener: OnItemClickListener, private val 
             super.bind(item)
 
             Glide.with(itemView.context)
-                .load(item.imageUrl)
+                .load(item.imageUrl[0])
                 .into(itemView.findViewById(R.id.product_list_item_avatar))
 
             itemView.findViewById<TextView>(R.id.product_name).text = item.productName

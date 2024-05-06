@@ -15,7 +15,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 abstract class BaseListFragment<T> : Fragment(), OnItemClickListener {
-    private val userList = mutableListOf<User>()
+    val userList = mutableListOf<User>()
 
     protected abstract val adapter: BaseListAdapter<T>
     protected abstract val itemList: MutableList<T>

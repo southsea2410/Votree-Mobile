@@ -20,7 +20,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         setContentView(R.layout.activity_forgot_password)
 
         val adView = findViewById<AdView>(R.id.adView)
-        AdManager.loadBannerAd(adView)
+        AdManager.addAdView(adView, this)
 
         // Initialize the AuthHandler
         auth = AuthHandler.firebaseAuth

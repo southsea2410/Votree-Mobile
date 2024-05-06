@@ -44,6 +44,7 @@ class ReviewFilterBottomSheetFragment : BottomSheetDialogFragment() {
         binding.btnResetAll.setOnClickListener {
             binding.radioGroup.clearCheck()
             selectedRatings.clear()
+            dismiss()
         }
         binding.btnApply.setOnClickListener {
             val result = Bundle().apply {

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.example.votree.databinding.NotificationAdapterBinding
 import com.example.votree.notifications.models.Notification
 import com.example.votree.notifications.view_holders.NotificationViewHolder
+import com.example.votree.notifications.view_models.NotificationViewModel
 
 
 class NotificationAdapter(private val listener: OnNotificationClickListener) :
@@ -18,7 +19,9 @@ class NotificationAdapter(private val listener: OnNotificationClickListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         val binding = NotificationAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return NotificationViewHolder(binding, listener)
+        val notificationViewModel = NotificationViewModel()
+        val viewLifecycleOwner = listener as androidx.lifecycle.LifecycleOwner
+        return NotificationViewHolder(binding, listener, notificationViewModel, viewLifecycleOwner)
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
@@ -36,3 +39,4 @@ class NotificationDiffCallback : DiffUtil.ItemCallback<Notification>() {
         return oldItem == newItem
     }
 }
+

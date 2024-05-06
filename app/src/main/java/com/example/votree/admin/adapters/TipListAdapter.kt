@@ -1,5 +1,6 @@
 package com.example.votree.admin.adapters
 
+import android.util.Patterns
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -25,11 +26,16 @@ class TipListAdapter(private val listener: OnItemClickListener, private val isDi
 
         override fun bind(item: Tip) {
             super.bind(item)
-            val firstImageUrl = item.imageList.firstOrNull()
 
-            Glide.with(itemView.context)
-                .load(firstImageUrl)
-                .into(itemView.findViewById(R.id.tip_list_item_avatar))
+            if (item.imageList.isNotEmpty() && Patterns.WEB_URL.matcher(item.imageList[0]).matches()) {
+                Glide.with(itemView.context)
+                    .load(item.imageList[0])
+                    .into(itemView.findViewById(R.id.tip_list_item_avatar))
+            } else {
+                Glide.with(itemView.context)
+                    .load(R.drawable.report_default)
+                    .into(itemView.findViewById(R.id.tip_list_item_avatar))
+            }
 
             when (item.approvalStatus) {
                 -1 -> {

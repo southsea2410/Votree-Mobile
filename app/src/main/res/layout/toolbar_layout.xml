@@ -43,6 +43,19 @@
                 android:padding="4dp"
                 android:src="@drawable/ic_cart"
                 app:tint="@color/md_theme_onSurfaceVariant" />
+
+            <ImageButton
+                android:id="@+id/btnChat"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginEnd="24dp"
+                android:background="?attr/selectableItemBackground"
+                android:padding="4dp"
+                android:src="@drawable/ic_cart"
+                app:tint="@color/md_theme_onSurfaceVariant" />
         </LinearLayout>
     </RelativeLayout>
 

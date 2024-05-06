@@ -1,6 +1,7 @@
 package com.example.votree.admin.adapters
 
 import android.annotation.SuppressLint
+import android.icu.text.SimpleDateFormat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.votree.admin.interfaces.OnItemClickListener
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.Locale
 
 abstract class BaseListAdapter<T>(
     private val listener: OnItemClickListener
@@ -76,11 +78,26 @@ abstract class BaseListAdapter<T>(
     }
 
     fun priceFormat(price: String): String {
-        return price.substring(0, price.length - 3) + "." + price.substring(price.length - 3) + " VND"
+        val formattedPrice = StringBuilder()
+        val reversedPrice = price.reversed()
+
+        for (i in reversedPrice.indices) {
+            formattedPrice.append(reversedPrice[i])
+            if ((i + 1) % 3 == 0 && (i + 1) != reversedPrice.length) {
+                formattedPrice.append(',')
+            }
+        }
+
+        return "$${formattedPrice.reverse()}"
     }
 
     fun dateFormat(date: String): String {
-        return date.substring(7, 9) + "/" + date.substring(5, 6) + date.substring(6, 7) + "/" + date.substring(0, 4)
+        val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
+        val inputDate = inputFormat.parse(date)
+
+        val outputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
+
+        return outputFormat.format(inputDate)
     }
 }
 

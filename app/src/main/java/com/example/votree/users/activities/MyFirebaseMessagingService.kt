@@ -14,6 +14,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.votree.MainActivity
+import com.example.votree.R
 import com.example.votree.notifications.models.Notification
 import com.example.votree.notifications.view_models.NotificationViewModel
 import com.google.firebase.auth.ktx.auth
@@ -27,14 +28,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         println("From: ${remoteMessage.from}")
 
-        if (remoteMessage.notification != null) {
-            println("Message Notification Body: ${remoteMessage.notification!!.body}")
-
+        // Check for notification payload
+        remoteMessage.notification?.let {
+            println("Message Notification Body: ${it.body}")
+            sendNotification(remoteMessage.from ?: "", it.body ?: "")
         }
-        sendNotification(remoteMessage.from ?: "", remoteMessage.notification?.body ?: "")
 
-        // Extract orderId if available
+        // Extract orderId from the data payload
         val orderId = remoteMessage.data["orderId"] ?: ""
+
         val notification = Notification(
             title = remoteMessage.notification?.title ?: "No Title",
             content = remoteMessage.notification?.body ?: "No Content",
@@ -51,7 +53,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     private fun sendNotification(from: String, body: String) {
         Handler(Looper.getMainLooper()).post {
-            Toast.makeText(this@MyFirebaseMessagingService, "$from -> $body", Toast.LENGTH_SHORT)
+            Toast.makeText(this@MyFirebaseMessagingService, "$body", Toast.LENGTH_SHORT)
                 .show()
         }
 
@@ -65,7 +67,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val channelId = "My channel ID"
         val defaultSoundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.ic_info)
             .setContentTitle("VoTree")
             .setContentText(body)
             .setAutoCancel(true)

@@ -26,7 +26,7 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val adView = findViewById<AdView>(R.id.adView)
-        AdManager.loadBannerAd(adView)
+        AdManager.addAdView(adView, this)
 
         firebaseAuth = FirebaseAuth.getInstance()
 

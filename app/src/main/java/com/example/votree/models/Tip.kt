@@ -14,7 +14,7 @@ data class Tip (
     var shortDescription: String,
     var content: String,
     var imageList: List<String>,
-    var vote: Int,
+    var vote_count: Int,
     var approvalStatus: Int,
     var createdAt: Date = Date(),
     var updatedAt: Date = Date()
@@ -43,7 +43,7 @@ data class Tip (
             parcel.writeString(shortDescription)
             parcel.writeString(content)
             parcel.writeStringList(imageList)
-            parcel.writeInt(vote)
+            parcel.writeInt(vote_count)
             parcel.writeInt(approvalStatus)
             parcel.writeLong(createdAt.time)
             parcel.writeLong(updatedAt.time)

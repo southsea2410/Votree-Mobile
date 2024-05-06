@@ -12,7 +12,6 @@ import com.example.votree.products.repositories.CartRepository
 import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.users.repositories.StoreRepository
 import com.example.votree.utils.CartItemUpdateResult
-import com.example.votree.utils.SingleLiveEvent
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -27,16 +26,16 @@ class CartViewModel : ViewModel() {
     private val storeRepository = StoreRepository()
     private val productViewModel = ProductViewModel()
     private val currentUser = FirebaseAuth.getInstance().currentUser
-    val groupedProducts: SingleLiveEvent<List<ProductItem>?> = SingleLiveEvent()
+    val groupedProducts: MutableLiveData<List<ProductItem>?> = MutableLiveData()
 
-    private val _isLoading: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData()
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
-    private val _toastMessage: SingleLiveEvent<String> = SingleLiveEvent()
+    private val _toastMessage: MutableLiveData<String> = MutableLiveData()
     var toastMessage: LiveData<String> = _toastMessage
 
-    private val _cart: SingleLiveEvent<Cart?> = SingleLiveEvent()
+    private val _cart: MutableLiveData<Cart?> = MutableLiveData()
     val cart: MutableLiveData<Cart?>
         get() = _cart
 
@@ -55,6 +54,7 @@ class CartViewModel : ViewModel() {
             cart?.let {
                 viewModelScope.launch {
                     groupProductsByShopId(cart)
+                    _isLoading.postValue(false)
                 }
             }
         }
@@ -86,7 +86,10 @@ class CartViewModel : ViewModel() {
     fun removeCartItem(productId: String) {
         currentUser?.uid?.let { userId ->
             viewModelScope.launch {
+                _isLoading.postValue(true)
                 cartRepository.removeCartItem(userId, productId)
+                _toastMessage.postValue("Product removed from cart")
+                _isLoading.postValue(false)
             }
         }
     }
@@ -94,22 +97,33 @@ class CartViewModel : ViewModel() {
     fun calculateTotalProductsPrice(cart: Cart): LiveData<Double> {
         return liveData {
             val total = cart.productsMap.entries.sumByDouble { (productId, quantity) ->
-                val price = productViewModel.getProductPriceById(productId)
-                price?.times(quantity) ?: 0.0
+                val productRepository = ProductRepository(FirebaseFirestore.getInstance())
+                val product = productRepository.getProduct(productId)
+                val price = product.price
+                price.times(quantity) ?: 0.0
             }
+            Log.d("CartViewModel", "Total price: $total")
             emit(total)
+
         }
     }
 
     // Make sure this function is a suspending function
-    suspend fun groupProductsByShopId(cart: Cart) {
+    private suspend fun groupProductsByShopId(cart: Cart) {
         _isLoading.postValue(true)
 
         val firestore = FirebaseFirestore.getInstance()
         return withContext(Dispatchers.IO) {
+            if (cart.productsMap.isEmpty()) {
+                Log.d("CartViewModel", "Cart is empty")
+                groupedProducts.postValue(emptyList())
+                _isLoading.postValue(false)
+                return@withContext
+            }
+
             val productIds = cart.productsMap.keys.toList()
             val productsList = productIds.mapNotNull { productId ->
-                ProductRepository(firestore).getProduct(productId) // Assuming getProduct is a suspending function
+                ProductRepository(firestore).getProduct(productId)
             }
 
             val productsGroupedByShopId = productsList.groupBy { it.storeId }
@@ -128,7 +142,6 @@ class CartViewModel : ViewModel() {
                     }
 
                     _isLoading.postValue(false)
-                    // Return the grouped items
                     groupedProducts.postValue(groupedItems)
                 }, {
                     Log.d("CartViewModel", "Failed to fetch store with id $storeId")

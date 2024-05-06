@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.example.votree.R
 import com.example.votree.databinding.ActivityProductReviewBinding
 import com.example.votree.products.models.ProductReview
 import com.example.votree.products.repositories.ProductRepository
@@ -38,6 +39,15 @@ class ProductReviewActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupButton()
         checkReviewSubmitted()
+        setupNavigation()
+    }
+
+    private fun setupNavigation() {
+        binding.toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.arrow_back_24px)
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        binding.toolbar.title = getString(R.string.product_review)
     }
 
     private fun setupButton() {

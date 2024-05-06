@@ -10,7 +10,7 @@ data class Transaction(
     val customerId: String = "",
     val storeId: String = "",
     val productsMap: MutableMap<String, Int> = mutableMapOf(),
-    val remainPrice: Double = 0.0,
+    var remainPrice: Double = 0.0,
     val status: String = "",
     val name: String = "",
     val address: String = "",

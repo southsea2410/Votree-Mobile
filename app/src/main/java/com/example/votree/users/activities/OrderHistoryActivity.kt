@@ -1,17 +1,16 @@
 package com.example.votree.users.activities
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
 import com.example.votree.R
 import com.example.votree.databinding.ActivityOrderHistoryBinding
+import com.example.votree.products.adapters.OrderHistoryPagerAdapter
 import com.example.votree.products.view_models.OrderHistoryViewModel
 import com.example.votree.tips.AdManager
-import com.example.votree.users.adapters.OrderItemAdapter
 import com.google.android.gms.ads.AdView
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -25,7 +24,6 @@ class OrderHistoryActivity : AppCompatActivity(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         job = Job()
@@ -33,21 +31,33 @@ class OrderHistoryActivity : AppCompatActivity(), CoroutineScope {
         binding = ActivityOrderHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = OrderItemAdapter(emptyList(), this) // Initially empty list
-        binding.orderHistoryRv.layoutManager = LinearLayoutManager(this)
-        binding.orderHistoryRv.adapter = adapter
+        val pagerAdapter = OrderHistoryPagerAdapter(this, viewModel)
+        binding.orderHistoryVp.adapter = pagerAdapter
 
-        viewModel.transactions.observe(this) { transactions ->
-            // Update the adapter with new data
-            Log.d("OrderHistoryActivity", "Transactions: $transactions")
-            (binding.orderHistoryRv.adapter as OrderItemAdapter).apply {
-                this.transactions = transactions ?: emptyList()
-                notifyDataSetChanged()
+        TabLayoutMediator(binding.sortOrderTl, binding.orderHistoryVp) { tab, position ->
+            tab.text = when (position) {
+                0 -> "All"
+                1 -> "Pending"
+                2 -> "Delivered"
+                3 -> "Denied"
+                else -> throw IllegalArgumentException("Invalid position: $position")
             }
+        }.attach()
+
+        // Set the navigation icon to the back button
+        binding.toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.arrow_back_24px)
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressed()
         }
+        binding.toolbar.title = getString(R.string.order_history)
 
         val adView = findViewById<AdView>(R.id.adView)
-        AdManager.loadBannerAd(adView)
+        AdManager.addAdView(adView, this)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 
     override fun onDestroy() {

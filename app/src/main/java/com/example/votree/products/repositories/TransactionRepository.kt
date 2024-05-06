@@ -12,11 +12,12 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class TransactionRepository(private val db: FirebaseFirestore) {
-    suspend fun createAndUpdateTransaction(transaction: Transaction) {
+    suspend fun createAndUpdateTransaction(transaction: Transaction): String {
         val generatedId = createTransaction(transaction)
         updateTransactionId(transaction, generatedId)
         updateUserTransactionIdList(transaction.customerId, generatedId)
         updateStoreTransactionIdList(transaction.storeId, generatedId)
+        return generatedId
     }
 
     private suspend fun createTransaction(transaction: Transaction): String {
@@ -104,5 +105,42 @@ class TransactionRepository(private val db: FirebaseFirestore) {
 
         val querySnapshot = query.get().await()
         return !querySnapshot.isEmpty
+    }
+
+    suspend fun fetchOrdersForStore(storeId: String): List<Transaction> {
+        return withContext(Dispatchers.IO) {
+            val transactionList = mutableListOf<Transaction>()
+            val transactionRef = FirebaseFirestore.getInstance().collection("transactions")
+                .whereEqualTo("storeId", storeId)
+                .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .get()
+                .await()
+
+            for (document in transactionRef.documents) {
+                val transaction = document.toObject(Transaction::class.java)
+                transaction?.let { transactionList.add(it) }
+            }
+
+            transactionList
+        }
+    }
+
+    suspend fun getTransaction(transactionId: String): Transaction {
+        return withContext(Dispatchers.IO) {
+            val db = FirebaseFirestore.getInstance()
+            val transactionsCollection = db.collection("transactions")
+
+            val transactionDoc = transactionsCollection.document(transactionId).get().await()
+            transactionDoc.toObject(Transaction::class.java) ?: Transaction()
+        }
+    }
+
+    suspend fun toggleOrderStatus(transactionId: String, status: String) {
+        withContext(Dispatchers.IO) {
+            val db = FirebaseFirestore.getInstance()
+            val transactionsCollection = db.collection("transactions")
+
+            transactionsCollection.document(transactionId).update("status", status).await()
+        }
     }
 }

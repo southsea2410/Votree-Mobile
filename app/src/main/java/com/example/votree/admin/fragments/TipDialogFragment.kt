@@ -33,9 +33,9 @@ class TipDialogFragment : BaseDialogFragment<Tip>() {
         return TipListAdapter(listener, true)
     }
 
-    override fun fetchDataFromFirestore(accountId: String?) {
+    override fun fetchDataFromFirestore(id: String?) {
         val tipList = mutableListOf<Tip>()
-        db.collection(collectionName).whereEqualTo("userId", accountId)
+        db.collection(collectionName).whereEqualTo("userId", id)
             .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {

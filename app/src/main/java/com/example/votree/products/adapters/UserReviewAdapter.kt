@@ -62,7 +62,7 @@ class UserReviewAdapter(
     private suspend fun fetchUserName(userId: String): String? {
         val db = FirebaseFirestore.getInstance()
         val docSnapshot = db.collection("users").document(userId).get().await()
-        return docSnapshot.getString("fullName") // Assuming the field containing the user's name is "name"
+        return docSnapshot.getString("fullName") ?: "Unknown User"
     }
 
     fun setData(newReviews: List<ProductReview>) {
