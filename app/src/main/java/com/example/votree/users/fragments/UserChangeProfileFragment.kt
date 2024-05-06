@@ -34,12 +34,7 @@ class UserChangeProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val toolbar: MaterialToolbar = view.findViewById(R.id.change_info_toolbar)
         val updateButton = view.findViewById<Button>(R.id.update_btn)
-
-        toolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
 
         updateButton.setOnClickListener {
             updateUser()
