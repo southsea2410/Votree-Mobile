@@ -81,7 +81,7 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
                         .addOnSuccessListener { documentReference ->
                             val documentId = documentReference.id
                             lifecycleScope.launch {
-                                addFirestoreDocument("checkContent", "Please check this content: " + "${tip.title} - ${tip.shortDescription} - ${tip.content}", documentId)
+                                addFirestoreDocument("checkContent", "Please check this content (Harassment, Hate speech, Sexually explicit content, Dangerous content, not Plant-related and meaningless content should be rejected): " + "${tip.title} - ${tip.shortDescription} - ${tip.content}", documentId)
                             }
                             fireStoreInstance.collection("ProductTip").document(documentId)
                                 .update("id", documentId)
