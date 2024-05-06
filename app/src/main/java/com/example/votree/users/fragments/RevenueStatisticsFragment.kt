@@ -50,13 +50,23 @@ class RevenueStatisticsFragment : Fragment()  {
     private fun setupView() {
         lifecycleScope.launch {
             val storeId = userRepository.getStoreId(userId)
+
+            val ratings = storeRepository.getAverageProductRating(storeId)
+            val totalOrders = storeRepository.getTotalOrders(storeId)
+            val approval = storeRepository.getApproval(storeId)
+            val cancellation = storeRepository.getCancellation(storeId)
+
             val dateString = setupDateString(LocalDate.now())
             val date = extractDateFromString(dateString)
             val revenue = storeRepository.getWeeklyRevenue(storeId, date.first, date.second)
+            val weeklyOrders = storeRepository.getWeeklyTotalOrders(storeId, date.first, date.second)
 
+            binding.ratingsTxt.text = "${ratings} stars"
+            binding.approvalTxt.text = String.format("%.2f", approval/totalOrders*100) + "%"
+            binding.cancellationTxt.text = String.format("%.2f", cancellation/totalOrders*100) + "%"
             binding.statisticsDateTxt.text = "Revenue: ${dateString}"
-            binding.totalRevenueTxt.text = "₫${revenue.first}.000   "
-            binding.totalOrdersTxt.text = String.format("%02d", revenue.second)
+            binding.totalRevenueTxt.text = "$${revenue}"
+            binding.totalOrdersTxt.text = String.format("%02d", weeklyOrders)
             setupChart(storeId, date.first, date.second)
         }
     }
@@ -110,10 +120,11 @@ class RevenueStatisticsFragment : Fragment()  {
                 val dateString = setupDateString(lastSunday)
                 val date = extractDateFromString(dateString)
                 val revenue = storeRepository.getWeeklyRevenue(storeId, date.first, date.second)
+                val weeklyOrders = storeRepository.getWeeklyTotalOrders(storeId, date.first, date.second)
 
                 binding.statisticsDateTxt.text = "Revenue: ${dateString}"
-                binding.totalRevenueTxt.text = "₫${revenue.first}.000"
-                binding.totalOrdersTxt.text = String.format("%02d", revenue.second)
+                binding.totalRevenueTxt.text = "$${revenue}"
+                binding.totalOrdersTxt.text = String.format("%02d", weeklyOrders)
                 setupChart(storeId, date.first, date.second)
             }
         }
@@ -127,11 +138,12 @@ class RevenueStatisticsFragment : Fragment()  {
                 val dateString = setupDateString(nextMonday)
                 val date = extractDateFromString(dateString)
                 val revenue = storeRepository.getWeeklyRevenue(storeId, date.first, date.second)
+                val weeklyOrders = storeRepository.getWeeklyTotalOrders(storeId, date.first, date.second)
 
                 if (nextMonday.isBefore(LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)))) {
                     binding.statisticsDateTxt.text = "Revenue: ${dateString}"
-                    binding.totalRevenueTxt.text = "₫${revenue.first}.000"
-                    binding.totalOrdersTxt.text = String.format("%02d", revenue.second)
+                    binding.totalRevenueTxt.text = "$${revenue}"
+                    binding.totalOrdersTxt.text = String.format("%02d", weeklyOrders)
                     setupChart(storeId, date.first, date.second)
                 }
             }

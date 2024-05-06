@@ -106,27 +106,69 @@ class StoreRepository {
         return document.getString("storeName") ?: ""
     }
 
-    suspend fun getWeeklyRevenue(storeId: String, startDate: LocalDate, endDate: LocalDate): Pair<Long, Int> {
+    suspend fun getTotalOrders(storeId: String): Float {
+        val collection = db.collection("transactions")
+        val query = collection
+            .whereEqualTo("storeId", storeId)
+        val snapshot = query.get().await()
+
+        return snapshot.size().toFloat()
+    }
+
+    suspend fun getApproval(storeId: String): Float {
+        val collection = db.collection("transactions")
+        val query = collection
+            .whereEqualTo("storeId", storeId)
+            .whereEqualTo("status", "delivered")
+        val snapshot = query.get().await()
+
+        return snapshot.size().toFloat()
+    }
+
+    suspend fun getCancellation(storeId: String): Float {
+        val collection = db.collection("transactions")
+        val query = collection
+            .whereEqualTo("storeId", storeId)
+            .whereEqualTo("status", "denied")
+        val snapshot = query.get().await()
+
+        return snapshot.size().toFloat()
+    }
+
+    suspend fun getWeeklyTotalOrders(storeId: String, startDate: LocalDate, endDate: LocalDate): Int {
+        val start = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        val end = Date.from(endDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
+
+        val collection = db.collection("transactions")
+        val query = collection
+            .whereEqualTo("storeId", storeId)
+            .whereGreaterThanOrEqualTo("createdAt", start)
+            .whereLessThan("createdAt", end)
+        val snapshot = query.get().await()
+
+        return snapshot.size()
+    }
+
+    suspend fun getWeeklyRevenue(storeId: String, startDate: LocalDate, endDate: LocalDate): Long {
         val collection = db.collection("transactions")
         val start = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
         val end = Date.from(endDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant())
 
         val query = collection
             .whereEqualTo("storeId", storeId)
+            .whereEqualTo("status", "delivered")
             .whereGreaterThanOrEqualTo("createdAt", start)
             .whereLessThan("createdAt", end)
 
         val snapshot = query.get().await()
         var totalRevenue = 0L
-        var totalOrders = 0
 
         for (document in snapshot.documents) {
             val revenue = document.getLong("totalAmount") ?: 0L
             totalRevenue += revenue
-            totalOrders++
         }
 
-        return Pair(totalRevenue,totalOrders)
+        return totalRevenue
     }
 
     suspend fun getDailyRevenueList (storeId: String, startDate: LocalDate, endDate: LocalDate) : List<BarEntry> {
@@ -141,6 +183,7 @@ class StoreRepository {
         try {
             val query: Query = collection
                 .whereEqualTo("storeId", storeId)
+                .whereEqualTo("status", "delivered")
                 .whereGreaterThanOrEqualTo("createdAt", start)
                 .whereLessThanOrEqualTo("createdAt", end)
 

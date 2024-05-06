@@ -141,7 +141,9 @@ dependencies {
     // OTP View
     implementation("io.github.chaosleung:pinview:1.4.4")
 
+    //bar chart
     implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
     // Search Algorithm
 //    annotationProcessor("info.debatty:java-string-similarity:2.0.0")
 ////    implementation("info.debatty:java-string-similarity:2.0.0"){
