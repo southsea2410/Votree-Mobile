@@ -1,10 +1,12 @@
 package com.example.votree.products.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,8 +21,13 @@ import com.example.votree.products.models.Cart
 import com.example.votree.products.models.ProductReview
 import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.view_models.CartViewModel
+import com.example.votree.users.activities.ChatActivity
+import com.example.votree.users.activities.MessageActivity
 import com.example.votree.users.repositories.StoreRepository
+import com.example.votree.users.repositories.UserRepository
+import com.example.votree.utils.FirebaseRealtime
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.CoroutineScope
@@ -43,6 +50,22 @@ class ProductDetailFragment : Fragment() {
     ): View {
         binding = FragmentProductDetailBinding.inflate(inflater, container, false)
         setupUI()
+
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val uid = currentUser?.uid
+        val storeUid = args.currentProduct.storeId
+
+        if (uid != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val userRepository = UserRepository(FirebaseFirestore.getInstance())
+                val uidOfStore = userRepository.getUserByStoreId(storeUid)
+
+                if (uidOfStore != null) {
+                    FirebaseRealtime.getInstance().addFriend(uid, uidOfStore.id)
+                }
+            }
+        }
+
         return binding.root
     }
 
@@ -119,21 +142,25 @@ class ProductDetailFragment : Fragment() {
 
     private fun setupButtons() {
         with(binding) {
-            productDetailToolbar.setNavigationOnClickListener{
+            productDetailToolbar.setNavigationOnClickListener {
                 findNavController().navigateUp()
             }
             productDetailToolbar.setOnMenuItemClickListener {
-                when(it.itemId){
+                when (it.itemId) {
                     R.id.productDetail_to_StoreReport -> {
-                        val action = ProductDetailFragmentDirections.actionProductDetailToStoreReport(args.currentProduct.storeId)
+                        val action =
+                            ProductDetailFragmentDirections.actionProductDetailToStoreReport(args.currentProduct.storeId)
                         findNavController().navigate(action)
                         true
                     }
+
                     R.id.productDetail_to_ProductReport -> {
-                        val action = ProductDetailFragmentDirections.actionProductDetailToProductReport(args.currentProduct.id)
+                        val action =
+                            ProductDetailFragmentDirections.actionProductDetailToProductReport(args.currentProduct.id)
                         findNavController().navigate(action)
                         true
                     }
+
                     else -> false
                 }
             }
@@ -149,9 +176,27 @@ class ProductDetailFragment : Fragment() {
                 gotoReviewsList()
             }
 
-            storeInfo.setOnClickListener{
-                val directions = ProductDetailFragmentDirections.actionProductDetailToStoreProfile2(args.currentProduct.storeId)
+            storeInfo.setOnClickListener {
+                val directions =
+                    ProductDetailFragmentDirections.actionProductDetailToStoreProfile2(args.currentProduct.storeId)
                 findNavController().navigate(directions)
+            }
+
+            chattingBtn.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val userRepository = UserRepository(FirebaseFirestore.getInstance())
+                    val storeId = args.currentProduct.storeId
+                    val store = userRepository.getUserByStoreId(storeId)
+                    val intent = Intent(context, MessageActivity::class.java).apply {
+                        if (store != null) {
+                            putExtra("FRIEND_ID", store.id)
+                        }
+                        if (store != null) {
+                            putExtra("FRIEND_NAME", store.username)
+                        }
+                    }
+                    startActivity(intent)
+                }
             }
         }
     }
@@ -183,7 +228,8 @@ class ProductDetailFragment : Fragment() {
                 }
                 // Only take the first 2 reviews to display
                 val reviewsToDisplay = reviews.take(2)
-                userReviewAdapter = UserReviewAdapter(reviewsToDisplay, CoroutineScope(Dispatchers.Main))
+                userReviewAdapter =
+                    UserReviewAdapter(reviewsToDisplay, CoroutineScope(Dispatchers.Main))
                 reviewRecyclerView.adapter = userReviewAdapter
 
                 binding.totalReviewTv.text = reviews.size.toString()
@@ -195,7 +241,8 @@ class ProductDetailFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val productRepository = ProductRepository(firestore)
             try {
-                val productRating = productRepository.getAverageProductRating(args.currentProduct.id)
+                val productRating =
+                    productRepository.getAverageProductRating(args.currentProduct.id)
                 withContext(Dispatchers.Main) {
                     binding.totalRatingTv.text = productRating.toString()
                 }
@@ -205,8 +252,9 @@ class ProductDetailFragment : Fragment() {
         }
     }
 
-    private fun gotoReviewsList(){
-        val action = ProductDetailFragmentDirections.actionProductDetailToProductReviewListFragment(args.currentProduct)
+    private fun gotoReviewsList() {
+        val action =
+            ProductDetailFragmentDirections.actionProductDetailToProductReviewListFragment(args.currentProduct)
         findNavController().navigate(action)
     }
 

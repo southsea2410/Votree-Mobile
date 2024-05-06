@@ -20,11 +20,14 @@ import com.example.votree.tips.AdManager
 import com.example.votree.users.activities.MyFirebaseMessagingService
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.utils.AuthHandler
+import com.example.votree.utils.FirebaseRealtime
 import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
 import com.google.android.gms.ads.AdView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.messaging.FirebaseMessaging
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        // AdManager.setPremium(true, this)
         val adView = findViewById<AdView>(R.id.adView)
         AdManager.addAdView(adView, this)
 
@@ -56,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         permissionManager.checkPermissions()
 
         setupPermissions()
+        FirebaseRealtime.getInstance().setupCurrentUser()
 
         RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
             role = it ?: ""
@@ -64,10 +69,12 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
                     setupNavigation()
                 }
+
                 "store" -> {
                     Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
                     setupNavigation()
                 }
+
                 "admin" -> {
                     val intent = Intent(this, AdminMainActivity::class.java)
                     startActivity(intent)
@@ -82,8 +89,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("FCM Token", task.result)
                 val newToken = task.result
                 MyFirebaseMessagingService().onNewToken(newToken)
-            }
-            else {
+            } else {
                 Toast.makeText(this, "Failed to get token", Toast.LENGTH_SHORT).show()
             }
         }
@@ -128,8 +134,8 @@ class MainActivity : AppCompatActivity() {
             R.id.orderDetailsFragment,
             R.id.orderManagementForStoreFragment
         )
-        navController.addOnDestinationChangedListener { _ , destination, _  ->
-            if(destination.id in showDestinations) {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id in showDestinations) {
                 bottomNavigation.visibility = View.VISIBLE
             } else {
                 bottomNavigation.visibility = View.GONE
@@ -139,7 +145,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setupWithNavController(navController)
     }
 
-    private fun updateUserToSeller(role: String){
+    private fun updateUserToSeller(role: String) {
         // If RegisterToSeller activity is successful, and return the role as store, then update the user role to store
         RoleManagement.updateUserRole(AuthHandler.firebaseAuth, role)
     }
