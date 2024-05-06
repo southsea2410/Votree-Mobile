@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.votree.databinding.FragmentNotificationBinding
 import com.example.votree.notifications.adapters.NotificationAdapter
 import com.example.votree.notifications.models.Notification
@@ -30,6 +30,7 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
     private val viewModel: NotificationViewModel by viewModels()
     private var adapter = NotificationAdapter(this)
     private var selectedTab = 0
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +42,10 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("NotificationFragment", "onViewCreated")
+        swipeRefreshLayout = binding.swipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.fetchNotifications()
+        }
         setupRecyclerView()
         observeNotifications()
     }
@@ -56,9 +60,13 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
                 observeNotifications()
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                onTabSelected(tab)
+            }
         })
     }
 
@@ -89,7 +97,7 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
     }
 
     private fun observeNotifications() {
-        viewModel.notifications.observe(viewLifecycleOwner, Observer { notifications ->
+        viewModel.notifications.observe(viewLifecycleOwner) { notifications ->
             val filteredNotifications = when (selectedTab) {
                 0 -> notifications
                 1 -> notifications.filter { it.read }
@@ -97,8 +105,15 @@ class NotificationFragment : Fragment(), NotificationAdapter.OnNotificationClick
                 else -> notifications
             }
             Log.d("NotificationFragment", "Filtered notifications: $filteredNotifications")
-            (binding.notificationRecyclerView.adapter as NotificationAdapter).submitList(filteredNotifications)
-        })
+            (binding.notificationRecyclerView.adapter as NotificationAdapter).submitList(
+                filteredNotifications
+            )
+            swipeRefreshLayout.isRefreshing = false
+        }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            swipeRefreshLayout.isRefreshing = isLoading
+        }
     }
 
     override fun onDestroyView() {

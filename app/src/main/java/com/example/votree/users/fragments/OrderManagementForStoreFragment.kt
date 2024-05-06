@@ -87,7 +87,7 @@ class OrderManagementForStoreFragment : Fragment() {
 
     private fun filterOrders(position: Int) {
         val filteredOrders = when (position) {
-            0 -> orders // All orders
+            0 -> orders
             1 -> orders.filter { it.status == "pending" }
             2 -> orders.filter { it.status == "delivered" }
             3 -> orders.filter { it.status == "denied" }

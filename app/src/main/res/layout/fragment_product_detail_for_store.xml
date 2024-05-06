@@ -36,14 +36,30 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/productImage"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:contentDescription="Product Images"
-                android:scaleType="centerCrop"
-                android:src="@drawable/sample_plant" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="10dp"
+                app:strokeWidth="5dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/productImageViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="150dp"
+                    android:scaleType="centerCrop" />
+            </androidx.cardview.widget.CardView>
+
+            <!--            <ImageView-->
+            <!--                android:id="@+id/productImage"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:adjustViewBounds="true"-->
+            <!--                android:contentDescription="Product Images"-->
+            <!--                android:scaleType="centerCrop"-->
+            <!--                android:src="@drawable/sample_plant" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -495,48 +511,77 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <LinearLayout
-        android:id="@+id/productDetail_bab"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:gravity="center_horizontal"
-        app:fabAlignmentMode="center">
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/md_theme_inversePrimary_highContrast"
+        app:cardCornerRadius="8dp">
 
-        <Button
-            android:id="@+id/delete_btn"
-            style="@style/Widget.Material3.Button.IconButton.Outlined"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginEnd="10dp"
-            android:drawablePadding="8dp"
-            android:strokeColor="@color/md_theme_error"
-            android:text="Delete"
-            app:icon="@drawable/delete_24px"
-            app:iconPadding="8dp"
-            app:cornerRadius="5dp"
-            app:strokeWidth="2dp" />
-
-        <Button
-            android:id="@+id/hide_btn"
-            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/productDetail_bab"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:text="Hide"
-            app:cornerRadius="5dp"
-            app:icon="@drawable/ic_hide"
-            app:iconPadding="8dp" />
+            android:gravity="center_horizontal"
+            app:fabAlignmentMode="center">
 
-        <Button
-            android:id="@+id/update_btn"
-            style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:text="Update"
-            app:icon="@drawable/ic_edit"
-            app:iconPadding="8dp"
-            app:cornerRadius="5dp" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/delete_btn"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="0.3"
+                android:backgroundTint="@color/transparent"
+                android:drawablePadding="8dp"
+                android:strokeColor="@color/md_theme_error"
+                android:text="Delete"
+                app:cornerRadius="5dp"
+                app:icon="@drawable/delete_24px"
+                app:iconPadding="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.03"
+                android:gravity="center"
+                android:text="|" />
+
+            <Button
+                android:id="@+id/hide_btn"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="0.3"
+                android:backgroundTint="@color/transparent"
+                android:text="Hide"
+                app:cornerRadius="5dp"
+                app:icon="@drawable/ic_hide"
+                app:iconPadding="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.03"
+                android:gravity="center"
+                android:text="|" />
+
+            <Button
+                android:id="@+id/update_btn"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="0.3"
+                android:backgroundTint="@color/transparent"
+                android:text="Update"
+                app:cornerRadius="5dp"
+                app:icon="@drawable/ic_edit"
+                app:iconPadding="8dp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

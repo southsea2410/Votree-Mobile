@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.votree.databinding.FragmentAddNewProductBinding
 import com.example.votree.products.adapters.ProductImageAdapter
@@ -25,9 +26,11 @@ import com.example.votree.products.data.productCatagories.SuitClimate
 import com.example.votree.products.data.productCatagories.SuitEnvironment
 import com.example.votree.products.models.Product
 import com.example.votree.products.repositories.ProductRepository
+import com.example.votree.utils.ProgressDialogUtils
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 
 private const val IMAGE_REQUEST_CODE = 100
 
@@ -113,81 +116,82 @@ class AddNewProduct : Fragment() {
             val saleOff = binding.saleOffEt.text.toString()
 
             if (imageUris.isNotEmpty()) {
-                val imageUrls = mutableListOf<String>()
-                for (imageUri in imageUris) {
-                    productRepository.uploadProductImage(imageUri, onSuccess = { imageUrl ->
-                        imageUrls.add(imageUrl)
-                        if (imageUrls.size == imageUris.size) {
-                            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-                            Log.d("AddNewProduct", "User ID: $userId")
-                            firestore.collection("users").document(userId).get()
-                                .addOnSuccessListener { document ->
-                                    Log.d(
-                                        "AddNewProduct",
-                                        "DocumentSnapshot data: ${document.data}"
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        ProgressDialogUtils.showLoadingDialog(requireContext())
+                        val imageUrls = productRepository.uploadProductImages(imageUris)
+                        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                        Log.d("AddNewProduct", "User ID: $userId")
+                        firestore.collection("users").document(userId).get()
+                            .addOnSuccessListener { document ->
+                                Log.d(
+                                    "AddNewProduct",
+                                    "DocumentSnapshot data: ${document.data}"
+                                )
+                                if (document != null) {
+                                    val storeId = document.getString("storeId") ?: ""
+                                    val product = Product(
+                                        id = "",
+                                        storeId = storeId,
+                                        imageUrl = imageUrls,
+                                        productName = productName,
+                                        shortDescription = shortDescription,
+                                        description = longDescription,
+                                        averageRate = 0.0,
+                                        quantityOfRate = 0,
+                                        price = price.toDouble(),
+                                        inventory = quantity.toInt(),
+                                        quantitySold = 0,
+                                        type = PlantType.valueOf(type),
+                                        suitEnvironment = SuitEnvironment.valueOf(
+                                            suitEnvironment
+                                        ),
+                                        suitClimate = SuitClimate.valueOf(suitClimate),
+                                        saleOff = saleOff.toDouble()
                                     )
-                                    if (document != null) {
-                                        val storeId = document.getString("storeId") ?: ""
-                                        product = Product(
-                                            id = "",
-                                            storeId = storeId,
-                                            imageUrl = imageUrls,
-                                            productName = productName,
-                                            shortDescription = shortDescription,
-                                            description = longDescription,
-                                            averageRate = 0.0,
-                                            quantityOfRate = 0,
-                                            price = price.toDouble(),
-                                            inventory = quantity.toInt(),
-                                            quantitySold = 0,
-                                            type = PlantType.valueOf(type),
-                                            suitEnvironment = SuitEnvironment.valueOf(
-                                                suitEnvironment
-                                            ),
-                                            suitClimate = SuitClimate.valueOf(suitClimate),
-                                            saleOff = saleOff.toDouble()
-                                        )
 
-                                        productRepository.addProduct(
-                                            product,
-                                            onSuccess = { productId ->
-                                                findNavController().popBackStack()
-                                            },
-                                            onFailure = { exception ->
-                                                Toast.makeText(
-                                                    requireContext(),
-                                                    "Error: ${exception.message}",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            })
-                                    } else {
-                                        Log.d("AddNewProduct", "No such document")
-                                    }
+                                    productRepository.addProduct(
+                                        product,
+                                        onSuccess = { productId ->
+                                            ProgressDialogUtils.hideLoadingDialog()
+                                            findNavController().popBackStack()
+                                        },
+                                        onFailure = { exception ->
+                                            ProgressDialogUtils.hideLoadingDialog()
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Error: ${exception.message}",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    )
+                                } else {
+                                    Log.d("AddNewProduct", "No such document")
                                 }
-                                .addOnFailureListener { exception ->
-                                    Log.d("AddNewProduct", "get failed with ", exception)
-                                }
-                        }
-                    }, onFailure = { exception ->
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.d("AddNewProduct", "get failed with ", exception)
+                            }
+                    } catch (e: Exception) {
                         Toast.makeText(
                             requireContext(),
-                            "Error uploading image: ${exception.message}",
+                            "Error: ${e.message}",
                             Toast.LENGTH_SHORT
                         ).show()
-                        Log.d("AddNewProduct", "Error uploading image: ${exception.message}")
-                    })
+                        Log.e("AddNewProduct", "Error adding product: ${e.message}", e)
+                    }
                 }
             } else {
                 Toast.makeText(
                     requireContext(),
                     "Please select at least one image",
                     Toast.LENGTH_SHORT
-                )
-                    .show()
+                ).show()
                 Log.d("AddNewProduct", "No image selected")
             }
         }
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

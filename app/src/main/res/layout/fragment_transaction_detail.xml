@@ -30,73 +30,56 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="12dp"
-                    android:layout_marginBottom="19dp"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:textSize="12sp"
+                    android:gravity="bottom">
 
-                    <LinearLayout
+                    <RelativeLayout
+                        android:id="@+id/avatarClick"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:textSize="12sp"
-                        android:gravity="center">
+                        android:layout_height="wrap_content"
+                        android:clickable="true" >
 
-                        <TextView
-                            android:id="@+id/store_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/user_name"
-                            android:textColor="@color/md_theme_primary"
-                            android:textSize="32sp"
-                            android:textStyle="bold" />
-
-                        <Button
-                            android:id="@+id/view_store_profile"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:text="View Profile"
-                            android:textColor="@color/md_theme_primary"
-                            android:textSize="15sp"
-                            android:textStyle="normal"
-                            android:drawablePadding="8dp"
-                            app:backgroundTint="@color/transparent"
-                            app:strokeColor="@color/md_theme_primary"
-                            app:strokeWidth="2dp"
-                            style="?android:attr/buttonBarButtonStyle" />
+                            android:layout_marginBottom="20dp"
+                            android:orientation="horizontal">
 
-                    </LinearLayout>
+                            <com.google.android.material.imageview.ShapeableImageView
+                                app:shapeAppearanceOverlay="@style/circle_overlay"
+                                android:id="@+id/account_avatar"
+                                android:scaleType="centerCrop"
+                                android:layout_width="80dp"
+                                android:layout_height="80dp"
+                                android:scrollbarSize="4dp" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center">
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/accountRoleIcon"
-                            android:layout_width="5dp"
-                            android:layout_height="match_parent"
-                            android:layout_marginEnd="7dp"
-                            android:src="@drawable/icon_dot"
-                            android:layout_marginStart="5dp"
-                            android:contentDescription="@string/this_is_icon_for_illustration"
-                            app:layout_constraintTop_toBottomOf="@+id/tipImage"
-                            app:tint="@color/md_theme_onPrimaryContainer"/>
+                                <TextView
+                                    android:id="@+id/store_name"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="20dp"
+                                    android:layout_marginEnd="20dp"
+                                    android:textColor="@color/md_theme_secondary"
+                                    android:textSize="30sp"
+                                    android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="store"
-                            android:textSize="12sp"
-                            android:textColor="@color/md_theme_onPrimaryContainer"
-                            android:id="@+id/account_role"
-                            app:textAllCaps="true" />
+                            </LinearLayout>
 
-                    </LinearLayout>
+                        </LinearLayout>
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 

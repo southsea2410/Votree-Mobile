@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -25,8 +24,6 @@ import com.example.votree.products.view_models.CartViewModel
 import com.example.votree.products.view_models.ProductViewModel
 import com.example.votree.products.view_models.ShippingAddressViewModel
 import com.google.android.material.materialswitch.MaterialSwitch
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 const val DELIVERY_FEE = 10.0
@@ -43,6 +40,8 @@ class Checkout : Fragment() {
     private var shippingAddress: ShippingAddress? = null
 
     private var newAccumulatedPoints = 0
+    private var earnPoints = 0
+    private var skipPayment = true
     private val args: CheckoutArgs by navArgs()
 
     override fun onCreateView(
@@ -67,41 +66,20 @@ class Checkout : Fragment() {
         setupRecyclerView()
     }
 
-    private fun proceedToPayment(cart: Cart, shippingAddress: ShippingAddress?) {
-        val intent = Intent(activity, CheckoutActivity::class.java)
-        intent.putExtra("totalAmount", binding.totalAmountTv.text.toString())
-        intent.putExtra("cart", cart)
-        intent.putExtra("receiver", shippingAddress)
-        startActivityForResult(intent, 1)
-    }
-
-    private fun placeOrderWithoutPayment() {
-        Toast.makeText(context, "Order placed without upfront payment.", Toast.LENGTH_SHORT).show()
-    }
-
     private fun setupObservers() {
         val placeOrderButton: Button = binding.placeOrderBtn
         val payBeforeDeliverySwitch: MaterialSwitch = binding.paidBeforeDeliverySw
+        payBeforeDeliverySwitch.setOnCheckedChangeListener { _, isChecked ->
+            skipPayment = !isChecked
+        }
 
         placeOrderButton.setOnClickListener {
-            if (binding.usePointsSw.isChecked) {
-                val pointTransactionRepository = PointTransactionRepository()
-                lifecycleScope.launch {
-                    // Proceed to payment or place order without payment based on the payBeforeDeliverySwitch state
-                    if (payBeforeDeliverySwitch.isChecked) {
-                        proceedToPayment(cart, shippingAddress)
-                    } else {
-                        placeOrderWithoutPayment()
-                    }
-                }
-            } else {
-                // If the use points switch is unchecked, simply proceed without redeeming points
-                if (payBeforeDeliverySwitch.isChecked) {
-                    proceedToPayment(cart, shippingAddress)
-                } else {
-                    placeOrderWithoutPayment()
-                }
-            }
+            val intent = Intent(activity, CheckoutActivity::class.java)
+            intent.putExtra("totalAmount", binding.totalAmountTv.text.toString())
+            intent.putExtra("cart", cart)
+            intent.putExtra("receiver", shippingAddress)
+            intent.putExtra("skipPayment", skipPayment)
+            startActivityForResult(intent, 1)
         }
 
         // Observe the shippingAddress LiveData
@@ -122,12 +100,10 @@ class Checkout : Fragment() {
         if (args.cart != null) {
             cart = args.cart?.copy() ?: Cart()
 
-            CoroutineScope(Dispatchers.Main).launch {
-
-            }
             Log.d("Checkout", "cart: $cart")
             cartViewModel.calculateTotalProductsPrice(cart)
                 .observe(viewLifecycleOwner) { totalPrice ->
+                    earnPoints = totalPrice.toInt()
                     val totalAmount = totalPrice + DELIVERY_FEE
 
                     binding.totalProductsPriceTv.text = getString(R.string.price_format, totalPrice)
@@ -145,56 +121,55 @@ class Checkout : Fragment() {
     }
 
     private fun setupAccumulatePoints() {
-        // Get the state of the switch
         val accumulatePointsSwitch: MaterialSwitch = binding.usePointsSw
-
         accumulatePointsSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                val pointTransactionRepository = PointTransactionRepository()
-                lifecycleScope.launch {
-                    val currentPoints = pointTransactionRepository.getCurrentPoints() ?: 0
-                    val totalAmount = binding.totalAmountTv.text.toString().toDouble()
-
-                    // Calculate the discount from points (assuming 1 point = $0.01)
-                    val discountFromPoints = currentPoints * 0.01
-
-                    if (discountFromPoints >= totalAmount) {
-                        // If discount is more than or equal to total amount, purchase is free and update points
-                        val remainingPoints = ((discountFromPoints - totalAmount) / 0.01).toInt()
-                        newAccumulatedPoints = remainingPoints
-
-                        // Update UI to show no amount due
-                        binding.saleByPointsTv.text = getString(R.string.price_format, -totalAmount)
-                        binding.totalAmountTv.text = "0.0"
-                        binding.totalAmountBottomTv.text = "0.0"
-                    } else {
-                        // If discount is less than total amount, deduct all points and update total amount
-                        newAccumulatedPoints = currentPoints
-
-                        // Calculate new total amount after applying points
-                        val newTotalAmount = totalAmount - discountFromPoints
-                        binding.saleByPointsTv.text =
-                            getString(R.string.price_format, -discountFromPoints)
-                        binding.totalAmountTv.text = newTotalAmount.toString()
-                        binding.totalAmountBottomTv.text = newTotalAmount.toString()
-                    }
-                }
+                updateTotalAmountWithPoints()
             } else {
-                // If the switch is unchecked, re-update the total amount without applying points
-                cartViewModel.calculateTotalProductsPrice(cart)
-                    .observe(viewLifecycleOwner) { totalPrice ->
-                        val totalAmount = totalPrice + DELIVERY_FEE
-
-                        binding.totalProductsPriceTv.text =
-                            getString(R.string.price_format, totalPrice)
-                        binding.totalAmountTv.text = totalAmount.toString()
-                        binding.deliveryFeeTv.text = getString(R.string.price_format, DELIVERY_FEE)
-                        binding.totalAmountBottomTv.text =
-                            getString(R.string.price_format, totalAmount)
-                        binding.saleByPointsTv.text = getString(R.string.price_format, -0.0)
-                    }
+                updateTotalAmountWithoutPoints()
             }
         }
+    }
+
+    private fun updateTotalAmountWithPoints() {
+        lifecycleScope.launch {
+            val pointTransactionRepository = PointTransactionRepository()
+            val currentPoints = pointTransactionRepository.getCurrentPoints() ?: 0
+            val totalAmount = binding.totalAmountTv.text.toString().toDouble()
+
+            // Calculate the discount from points (assuming 1 point = $0.01)
+            val discountFromPoints = minOf(currentPoints * 0.01, totalAmount)
+
+            // Update the UI to reflect the discount
+            updateDiscountUI(discountFromPoints)
+            updateTotalAmountUI(totalAmount - discountFromPoints)
+
+            if (currentPoints * 0.01 < totalAmount) {
+                newAccumulatedPoints = currentPoints
+            } else {
+                newAccumulatedPoints = (currentPoints * 0.01 - discountFromPoints).toInt()
+                Log.d("Checkout", "newAccumulatedPoints: $newAccumulatedPoints")
+            }
+        }
+    }
+
+    private fun updateTotalAmountWithoutPoints() {
+        cartViewModel.calculateTotalProductsPrice(cart)
+            .observe(viewLifecycleOwner) { totalPrice ->
+                val totalAmount = totalPrice + DELIVERY_FEE
+                updateTotalAmountUI(totalAmount)
+                binding.saleByPointsTv.text = getString(R.string.price_format, -0.0)
+                newAccumulatedPoints = totalAmount.toInt()
+            }
+    }
+
+    private fun updateDiscountUI(discountFromPoints: Double) {
+        binding.saleByPointsTv.text = getString(R.string.price_format, -discountFromPoints)
+    }
+
+    private fun updateTotalAmountUI(totalAmount: Double) {
+        binding.totalAmountTv.text = getString(R.string.price_format, totalAmount)
+        binding.totalAmountBottomTv.text = getString(R.string.price_format, totalAmount)
     }
 
     private fun setupRecyclerView() {
@@ -212,7 +187,7 @@ class Checkout : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("Checkout", "onActivityResult: requestCode: $requestCode, resultCode: $resultCode")
-        // If success result from CheckoutActivity, navigate to CheckoutResultFragment
+        Log.d("Checkout", "earnPoint: $earnPoints, newAccumulatedPoints: $newAccumulatedPoints")
         if (requestCode == 1 && resultCode == -1) {
             lifecycleScope.launch {
                 val pointTransactionRepository = PointTransactionRepository()
@@ -221,10 +196,9 @@ class Checkout : Fragment() {
                     "Redeem points for purchase"
                 )
             }
-
             val action = CheckoutDirections.actionCheckoutToCheckoutResultFragment(
                 true,
-                newAccumulatedPoints,
+                earnPoints,
                 null
             )
             findNavController().navigate(action)
@@ -233,6 +207,7 @@ class Checkout : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        skipPayment = false
         _binding = null
     }
 }

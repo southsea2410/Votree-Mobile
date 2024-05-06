@@ -79,6 +79,24 @@ class OrderItemAdapter(
                      .load(product.imageUrl[0])
                      .placeholder(R.drawable.img_placeholder)
                      .into(holder.productImageIv)
+
+                // Set the review button visibility and click listener
+                if (transaction.status == "delivered") {
+                    holder.reviewBtn.visibility = View.VISIBLE
+                    holder.reviewBtn.setOnClickListener {
+                        coroutineScope.launch(Dispatchers.IO) {
+                            val isReviewed = transactionRepository.isReviewSubmitted(transaction.id, userId)
+                            withContext(Dispatchers.Main) {
+                                val intent = Intent(holder.itemView.context, ProductReviewActivity::class.java)
+                                intent.putExtra("isSubmitted", isReviewed)
+                                intent.putExtra("transactionId", transaction.id)
+                                holder.itemView.context.startActivity(intent)
+                            }
+                        }
+                    }
+                } else {
+                    holder.reviewBtn.visibility = View.GONE
+                }
             }
         }
 

@@ -7,19 +7,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.databinding.FragmentUserProfileBinding
 import com.example.votree.users.activities.OrderHistoryActivity
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.users.activities.SignInActivity
+import com.example.votree.users.factories.UserProfileViewModelFactory
 import com.example.votree.users.repositories.UserRepository
+import com.example.votree.users.view_models.UserProfileViewModel
+import com.example.votree.utils.ProgressDialogUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
 
 class UserProfileFragment : Fragment() {
+    private val viewModel: UserProfileViewModel by viewModels {
+        UserProfileViewModelFactory(UserRepository(FirebaseFirestore.getInstance()))
+    }
     private var _binding: FragmentUserProfileBinding? = null
     private val binding get() = _binding!!
 
@@ -33,25 +39,52 @@ class UserProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
         setupClickListeners()
         loadUserProfileDetailsFragment()
-    }
 
-    private fun setupView(){
-        val userRepository = UserRepository(FirebaseFirestore.getInstance())
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-        lifecycleScope.launch {
-            val user = userRepository.getUser(userId)
+        viewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
                 binding.userfullNameTv.text = user.fullName
                 binding.userRoleTv.text = user.role
+                Glide.with(requireContext())
+                    .load(user.avatar)
+                    .placeholder(R.drawable.avatar_default_2)
+                    .into(binding.userAvatarIv)
 
                 if (user.role == "store") {
                     disableBecomeSeller()
                 }
             }
         }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                ProgressDialogUtils.showLoadingDialog(requireContext())
+                // Hide all the attributes in the view
+                binding.userfullNameTv.visibility = View.GONE
+                binding.userRoleTv.visibility = View.GONE
+                binding.userAvatarIv.visibility = View.GONE
+                binding.becomeSellerLayout.visibility = View.GONE
+                binding.settingLayout.visibility = View.GONE
+                binding.ordersLayout.visibility = View.GONE
+                binding.pointsLayout.visibility = View.GONE
+                binding.logoutBtn.visibility = View.GONE
+            } else {
+                ProgressDialogUtils.hideLoadingDialog()
+                // Show all the attributes in the view
+                binding.userfullNameTv.visibility = View.VISIBLE
+                binding.userRoleTv.visibility = View.VISIBLE
+                binding.userAvatarIv.visibility = View.VISIBLE
+                binding.becomeSellerLayout.visibility = View.VISIBLE
+                binding.settingLayout.visibility = View.VISIBLE
+                binding.ordersLayout.visibility = View.VISIBLE
+                binding.pointsLayout.visibility = View.VISIBLE
+                binding.logoutBtn.visibility = View.VISIBLE
+            }
+        }
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        viewModel.loadUserProfile(userId)
     }
 
     private fun disableBecomeSeller() {

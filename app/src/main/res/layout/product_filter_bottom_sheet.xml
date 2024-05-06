@@ -117,7 +117,7 @@
                 android:id="@+id/suitEnvironment_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Suit Climate"
+                android:text="Suit Environment"
                 android:textAppearance="?textAppearanceLabelLarge" />
 
             <com.google.android.material.chip.ChipGroup

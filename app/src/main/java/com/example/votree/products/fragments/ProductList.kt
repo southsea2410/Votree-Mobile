@@ -1,6 +1,7 @@
 package com.example.votree.products.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,7 +23,9 @@ import com.example.votree.products.adapters.SuggestionSearchAdapter
 import com.example.votree.products.models.Product
 import com.example.votree.products.view_models.ProductFilterViewModel
 import com.example.votree.products.view_models.ProductViewModel
+import com.example.votree.users.activities.ChatActivity
 import com.example.votree.utils.GridSpacingItemDecoration
+import com.example.votree.utils.uiUtils.Companion.calculateNoOfColumns
 import com.google.android.material.tabs.TabLayout
 
 class ProductList : Fragment() {
@@ -64,6 +67,11 @@ class ProductList : Fragment() {
                 R.id.cart -> {
                     val action = ProductListDirections.actionProductListToCartList()
                     findNavController().navigate(action)
+                    true
+                }
+                R.id.chat -> {
+                    val intent = Intent(context, ChatActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false
@@ -119,7 +127,7 @@ class ProductList : Fragment() {
     private fun calculateNoOfColumns(context: Context): Int {
         val displayMetrics = context.resources.displayMetrics
         val screenWidthDp = displayMetrics.widthPixels / displayMetrics.density
-        val columnWidthDp = 180 // Assume each item in the grid takes up 180dp
+        val columnWidthDp = 180
         return (screenWidthDp / columnWidthDp).toInt()
     }
 
@@ -222,6 +230,8 @@ class ProductList : Fragment() {
                 }
                 else if (tab?.position == 3) {
                     showProductFilterBottomSheet()
+                } else {
+                    resetProductList()
                 }
             }
         })

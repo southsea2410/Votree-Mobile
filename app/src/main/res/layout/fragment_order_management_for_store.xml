@@ -13,13 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:elevation="4dp"
+        android:background="@color/md_theme_surface"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/orderFilter_tl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/md_theme_surface"
         app:tabGravity="fill"
         app:tabInlineLabel="true"
         app:tabMode="fixed">

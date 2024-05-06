@@ -9,7 +9,11 @@
         android:id="@+id/main_tip_fragment"
         android:name="com.example.votree.tips.TipMainScreenFragment"
         android:label="Tips Main Screen"
-        tools:layout="@layout/fragment_tip_main_screen" />
+        tools:layout="@layout/fragment_tip_main_screen" >
+        <action
+            android:id="@+id/action_main_tip_fragment_to_tipDetailFragment2"
+            app:destination="@id/tipDetailFragment2" />
+    </fragment>
 
     <fragment
         android:id="@+id/productList"
@@ -53,6 +57,9 @@
         <action
             android:id="@+id/action_productDetail_to_productReport"
             app:destination="@id/productReport" />
+        <action
+            android:id="@+id/action_productDetail_to_cartList"
+            app:destination="@id/cartList" />
     </fragment>
     <fragment
         android:id="@+id/notifications_fragment"
@@ -129,6 +136,9 @@
         <action
             android:id="@+id/action_storeManagement2_to_revenueStatisticsFragment"
             app:destination="@id/revenueStatisticsFragment" />
+        <action
+            android:id="@+id/action_storeManagement2_self"
+            app:destination="@id/storeManagement2" />
     </fragment>
     <fragment
         android:id="@+id/addNewProduct2"
@@ -150,6 +160,9 @@
         <action
             android:id="@+id/action_updateProduct_to_productDetailFragmentForStore"
             app:destination="@id/productDetailFragmentForStore" />
+        <action
+            android:id="@+id/action_updateProduct_to_storeManagement2"
+            app:destination="@id/storeManagement2" />
     </fragment>
     <fragment
         android:id="@+id/productDetailFragmentForStore"
@@ -289,6 +302,22 @@
             android:name="cart"
             app:argType="com.example.votree.products.models.Cart"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_checkoutResultFragment_to_productList"
+            app:destination="@id/productList" />
+    </fragment>
+    <fragment
+        android:id="@+id/tipDetailFragment2"
+        android:name="com.example.votree.tips.TipDetailFragment"
+        android:label="TipDetailFragment" >
+        <argument
+            android:name="tipData"
+            app:argType="com.example.votree.tips.models.ProductTip" />
+        <action
+            android:id="@+id/action_tipDetailFragment2_to_storeProfile2"
+            app:destination="@id/storeProfile2"
+            app:enterAnim="@anim/fui_slide_in_right"
+            app:exitAnim="@anim/fui_slide_out_left" />
     </fragment>
     <fragment
         android:id="@+id/revenueStatisticsFragment"

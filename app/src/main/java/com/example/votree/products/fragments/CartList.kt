@@ -70,6 +70,7 @@ class CartList : Fragment() {
                 adapter.notifyDataSetChanged()
                 Log.d("CartList", "Items in cart: $groupedItems")
             } else {
+                adapter.clearItems()
                 adapter.notifyDataSetChanged()
                 Log.d("CartList", "No items in cart")
             }

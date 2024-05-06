@@ -38,8 +38,24 @@
         <item name="android:minHeight">48dp</item>
     </style>
 
+    <style name="Widget.App.Button.OutlinedButton.DownvoteButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@drawable/downvote_color</item>
+        <item name="android:textColor">@drawable/vote_text_color</item>
+        <item name="iconTint">@drawable/vote_text_color</item>
+    </style>
+    <style name="Widget.App.Button.OutlinedButton.UpvoteButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@drawable/upvote_color</item>
+        <item name="android:textColor">@drawable/vote_text_color</item>
+        <item name="iconTint">@drawable/vote_text_color</item>
+    </style>
+
+
     <style name="circle_overlay">
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="square_overlay">
+        <item name="cornerSize">10%</item>
     </style>
 
     <style name="rounded_overlay">

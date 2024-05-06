@@ -29,6 +29,9 @@ class NotificationViewModel : ViewModel() {
     private val _productData = MutableLiveData<Product?>()
     val productData: LiveData<Product?> = _productData
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
     private val loadedProducts = mutableMapOf<String, Product>()
 
     init {
@@ -38,6 +41,7 @@ class NotificationViewModel : ViewModel() {
     fun fetchNotifications() {
         Log.d("NotificationViewModel", "Fetching notifications")
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 val snapshot = db.collection("users/$userId/notifications")
                     .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
@@ -48,6 +52,7 @@ class NotificationViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("NotificationViewModel", "Error fetching notifications", e)
             }
+            _isLoading.value = false
         }
     }
 
@@ -66,9 +71,7 @@ class NotificationViewModel : ViewModel() {
                 val notificationId = documentReference.id
                 db.collection("users/$userId/notifications").document(notificationId)
                     .update("id", notificationId).await()
-//                _notifications.postValue(_notifications.value?.plus(notification))
                 _notifications.value?.let {
-                    Log.d("NotificationViewModel", "Adding notification to list")
                     _notifications.postValue(it.plus(notification))
                 }
             } catch (e: Exception) {

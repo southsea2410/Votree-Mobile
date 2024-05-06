@@ -119,7 +119,7 @@ class TransactionRepository(private val db: FirebaseFirestore) {
             val transactionList = mutableListOf<Transaction>()
             val transactionRef = FirebaseFirestore.getInstance().collection("transactions")
                 .whereEqualTo("storeId", storeId)
-                .orderBy("createdAt")
+                .orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
                 .get()
                 .await()
 

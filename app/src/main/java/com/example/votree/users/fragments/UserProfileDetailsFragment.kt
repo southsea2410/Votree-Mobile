@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.votree.databinding.FragmentUserProfileDetailsBinding
 import com.example.votree.products.repositories.PointTransactionRepository
+import com.example.votree.products.repositories.ShippingAddressRepository
 import com.example.votree.users.repositories.UserRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,20 +31,25 @@ class UserProfileDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val userRepository = UserRepository(FirebaseFirestore.getInstance())
+        val shippingAddressRepository = ShippingAddressRepository(
+            FirebaseFirestore.getInstance(),
+            FirebaseAuth.getInstance()
+        )
         val pointTransactionRepository = PointTransactionRepository()
 
         lifecycleScope.launch {
             val user = userRepository.getUser(userId)
+            val address = shippingAddressRepository.getDefaultShippingAddress()
             user?.let {
                 binding.userNameTv.text = it.username
                 binding.userEmailTv.text = it.email
                 binding.userPhoneNumberTv.text = it.phoneNumber
-                binding.userAddressTv.text = it.address
+                binding.userAddressTv.text = address?.recipientAddress ?: ""
                 binding.createdDateTv.text = it.createdAt.toString()
 
                 // Fetch and update accumulated points within the same scope
                 val userPoints = pointTransactionRepository.getCurrentPoints()
-                binding.accumulatePointTv.text = userPoints.toString()
+                binding.accumulatePointsTv.text = userPoints.toString()
             }
         }
     }

@@ -16,6 +16,7 @@ import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.repositories.TransactionRepository
 import com.example.votree.users.repositories.StoreRepository
 import com.example.votree.utils.CustomToast
+import com.example.votree.utils.ProgressDialogUtils
 import com.example.votree.utils.ToastType
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -38,6 +39,7 @@ class CheckoutActivity : AppCompatActivity() {
     private val productRepository = ProductRepository(FirebaseFirestore.getInstance())
     private val transactionRepository = TransactionRepository(FirebaseFirestore.getInstance())
     private lateinit var userId: String
+    private var skipPayment = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,15 +49,19 @@ class CheckoutActivity : AppCompatActivity() {
 
         // Initialize Firebase Functions
         functions = FirebaseFunctions.getInstance()
+        skipPayment = intent.getBooleanExtra("skipPayment", false)
+        if (skipPayment) {
+            handleSuccessfulPayment()
+        } else {
+            // Initialize Stripe PaymentConfiguration with your publishable key
+            initializeStripePaymentConfiguration()
 
-        // Initialize Stripe PaymentConfiguration with your publishable key
-        initializeStripePaymentConfiguration()
+            // Initialize PaymentSheet
+            initializePaymentSheet()
 
-        // Initialize PaymentSheet
-        initializePaymentSheet()
-
-        // Fetch or create a Stripe customer
-        fetchOrCreateStripeCustomer()
+            // Fetch or create a Stripe customer
+            fetchOrCreateStripeCustomer()
+        }
     }
 
     private fun initializeStripePaymentConfiguration() {
@@ -169,6 +175,7 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun handleSuccessfulPayment() {
         lifecycleScope.launch {
+            ProgressDialogUtils.showLoadingDialog(this@CheckoutActivity)
             val cart = intent.getParcelableExtra<Cart>("cart")
             val receiver = intent.getParcelableExtra<ShippingAddress>("receiver")
 
@@ -188,12 +195,13 @@ class CheckoutActivity : AppCompatActivity() {
 
                     // 4. Clear the cart after checkout
                     clearCartAfterCheckout(cartData)
-
+                    ProgressDialogUtils.hideLoadingDialog()
                     // 5. Set the result and finish the activity
                     intent.putExtra("points", earnedPoints)
                     setResult(RESULT_OK, intent)
                     finish()
                 }
+                ProgressDialogUtils.hideLoadingDialog()
             }
         }
     }
@@ -267,6 +275,7 @@ class CheckoutActivity : AppCompatActivity() {
         FirebaseFirestore.getInstance().collection("products").document(productId).get()
             .addOnSuccessListener { productDocument ->
                 val storeId = productDocument.getString("storeId") ?: ""
+
                 val transaction = Transaction(
                     id = "",
                     customerId = userId,
@@ -283,11 +292,12 @@ class CheckoutActivity : AppCompatActivity() {
                 lifecycleScope.launch {
                     val totalAmount =
                         transactionRepository.calculateTotalPrice(transaction.productsMap)
+                    if (skipPayment) {
+                        transaction.remainPrice = totalAmount
+                    }
                     transaction.totalAmount = totalAmount + 10.0 // Add delivery fee
                     val generatedId = transactionRepository.createAndUpdateTransaction(transaction)
-                    Log.d(TAG, "Transaction ID: $generatedId")
                     transaction.id = generatedId
-                    Log.d(TAG, "Transaction: $transaction")
                     notifyStoreAboutNewOrder(transaction)
 
                     // Earn points after successful payment

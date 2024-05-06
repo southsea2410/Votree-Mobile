@@ -2,6 +2,8 @@ package com.example.votree.products.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,10 @@ class CheckoutResultFragment : Fragment() {
     private var _binding: FragmentCheckoutResultBinding? = null
     private val binding get() = _binding!!
     private val args: CheckoutResultFragmentArgs by navArgs()
+    private var autoNavigateHandler: Handler? = null
+    private var autoNavigateRunnable: Runnable? = null
+    private var countdownSeconds = 5
+    private var isCountdownActive = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,31 +35,69 @@ class CheckoutResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         updateUI()
+        if (!isCountdownActive) {
+            startAutoNavigateTimer()
+        } else {
+            val action =
+                CheckoutResultFragmentDirections.actionCheckoutResultFragmentToProductList()
+            findNavController().navigate(action)
+        }
     }
 
     private fun updateUI() {
-        if (args.checkoutResult) {
-            // Payment was successful
-            binding.productImageIv.setImageResource(R.drawable.ic_checkout_sc)
-            binding.pointsTv.text = "+ ${args.points} Points"
-            binding.orderHistoryBtn.setOnClickListener {
-                startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
-            }
-        } else {
-            // Payment failed
-            binding.productImageIv.setImageResource(R.drawable.ic_checkout_fail)
-            binding.thankYouTv.text = "Payment Failed"
-            binding.orderHistoryBtn.text = "Checkout Again"
-            binding.orderHistoryBtn.setOnClickListener {
-                val action =
-                    CheckoutResultFragmentDirections.actionCheckoutResultFragmentToCheckout(args.cart)
-                findNavController().navigate(action)
-            }
+        // Payment was successful
+        binding.productImageIv.setImageResource(R.drawable.ic_checkout_sc)
+        binding.pointsTv.text = "+ ${args.points} Points"
+        binding?.orderHistoryBtn?.setOnClickListener {
+            stopAutoNavigateTimer()
+            startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
         }
+        binding?.productListBtn?.setOnClickListener {
+            stopAutoNavigateTimer()
+            val action =
+                CheckoutResultFragmentDirections.actionCheckoutResultFragmentToProductList()
+            findNavController().navigate(action)
+        }
+
+        // Update the countdown text
+//        if (!isCountdownActive) {
+//            binding.countdownTv.text = "Redirecting to Product List in $countdownSeconds seconds"
+//        } else {
+//            binding.countdownTv.visibility = View.GONE
+//        }
+    }
+
+    private fun startAutoNavigateTimer() {
+        autoNavigateHandler = Handler(Looper.getMainLooper())
+        autoNavigateRunnable = Runnable {
+            val action =
+                CheckoutResultFragmentDirections.actionCheckoutResultFragmentToProductList()
+            findNavController().navigate(action)
+        }
+        autoNavigateHandler?.postDelayed(autoNavigateRunnable!!, 5200)
+        updateCountdownText()
+        isCountdownActive = true
+    }
+
+    private fun updateCountdownText() {
+        binding.countdownTv.text = "Redirecting to Product List in $countdownSeconds seconds"
+        countdownSeconds--
+        if (countdownSeconds >= 0) {
+            autoNavigateHandler?.postDelayed({
+                updateCountdownText()
+            }, 1000)
+        } else {
+            isCountdownActive = false
+        }
+    }
+
+    private fun stopAutoNavigateTimer() {
+        autoNavigateHandler?.removeCallbacks(autoNavigateRunnable!!)
+        isCountdownActive = false
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        stopAutoNavigateTimer()
     }
 }

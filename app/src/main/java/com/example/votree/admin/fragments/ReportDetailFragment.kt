@@ -1,25 +1,35 @@
 package com.example.votree.admin.fragments
 
+import android.graphics.PorterDuff
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.text.toLowerCase
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.admin.activities.AdminMainActivity
+import com.example.votree.models.Product
 import com.example.votree.models.Report
+import com.example.votree.models.Store
 import com.example.votree.models.Tip
 import com.example.votree.models.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Locale
@@ -36,34 +46,12 @@ class ReportDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_report_detail, container, false)
-        val viewDetailButton = view?.findViewById<Button>(R.id.viewDetailButton)
-        val viewReporterButton = view?.findViewById<Button>(R.id.viewReporterButton)
-        val viewUserButton = view?.findViewById<Button>(R.id.viewUserButton)
         val unresolveButton = view?.findViewById<Button>(R.id.unresolveButton)
         val warnButton = view?.findViewById<Button>(R.id.warnButton)
+        val resolvedButton = view?.findViewById<Button>(R.id.resolvedButton)
 
-        viewDetailButton?.setOnClickListener {
-            if (report?.tipId != null && report?.tipId != "") {
-                val fragment = TipDetailFragment()
-                db.collection("ProductTip").document(report!!.tipId!!).get()
-                    .addOnSuccessListener { document ->
-                        if (document != null) {
-                            val tip = document.toObject(Tip::class.java)
-                            fragment.arguments = Bundle().apply {
-                                putParcelable("tip", tip)
-                            }
-                            val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-                            (activity as AdminMainActivity).setCurrentFragment(TipDetailFragment())
-                            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
-                        }
-                    }
-            } else {
-                // for different type of report
-                val fragment = TipDetailFragment()
-            }
-        }
-
-        viewReporterButton?.setOnClickListener {
+        val avatarClick: RelativeLayout? = view?.findViewById(R.id.avatarClick)
+        avatarClick?.setOnClickListener {
             val fragment = AccountDetailFragment()
             db.collection("users").document(report!!.reporterId).get()
                 .addOnSuccessListener { document ->
@@ -79,51 +67,76 @@ class ReportDetailFragment : Fragment() {
                 }
         }
 
-        viewUserButton?.setOnClickListener {
-            val fragment = AccountDetailFragment()
-            db.collection("users").document(report!!.userId).get()
-                .addOnSuccessListener { document ->
-                    if (document != null) {
-                        val user = document.toObject(User::class.java)
-                        fragment.arguments = Bundle().apply {
-                            putParcelable("account", user)
-                        }
-                        val fragmentManager = (activity as FragmentActivity).supportFragmentManager
-                        (activity as AdminMainActivity).setCurrentFragment(AccountDetailFragment())
-                        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
-                    }
-                }
-        }
-
         unresolveButton?.setOnClickListener {
-            context?.let { it1 ->
-                MaterialAlertDialogBuilder(it1)
-                    .setTitle("Unresolve Report")
-                    .setMessage("This article is not violating the platform's rules?")
-                    .setNegativeButton("Cancel") { _, _ -> }
-                    .setPositiveButton("Accept") { _, _ ->
-                        db.collection("reports").document(report!!.id).update("processingMethod", "Unresolved")
-                            .addOnSuccessListener {
-                                activity?.supportFragmentManager?.popBackStack("report_list_fragment", POP_BACK_STACK_INCLUSIVE)
-                            }
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_feedback, null)
+            val alertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setTitle("Take notes something?")
+            val alertDialog = alertDialogBuilder.show()
+            val editTextFeedback = dialogView.findViewById<EditText>(R.id.editTextFeedback)
+            val buttonReject = dialogView.findViewById<Button>(R.id.buttonReject)
+            val buttonClose = dialogView.findViewById<Button>(R.id.buttonClose)
+            buttonReject.text = "Unresolve"
+
+            buttonReject.setOnClickListener {
+                db.collection("reports").document(report!!.id).update("processingState", "Unresolved", "processingContent", editTextFeedback.text.toString())
+                    .addOnSuccessListener {
+                        activity?.supportFragmentManager?.popBackStack("report_list_fragment", POP_BACK_STACK_INCLUSIVE)
                     }
-                    .show()
+                alertDialog.dismiss()
+            }
+
+            buttonClose.setOnClickListener {
+                alertDialog.dismiss()
             }
         }
 
         warnButton?.setOnClickListener {
-            context?.let { it1 ->
-                MaterialAlertDialogBuilder(it1)
-                    .setTitle("Warn User")
-                    .setMessage("This article violates the platform's rules?")
-                    .setNegativeButton("Cancel") { _, _ -> }
-                    .setPositiveButton("Accept") { _, _ ->
-                        db.collection("reports").document(report!!.id).update("processingMethod", "Warned")
-                            .addOnSuccessListener {
-                                activity?.supportFragmentManager?.popBackStack("report_list_fragment", POP_BACK_STACK_INCLUSIVE)
-                            }
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_feedback, null)
+            val alertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setTitle("Take notes something?")
+            val alertDialog = alertDialogBuilder.show()
+            val editTextFeedback = dialogView.findViewById<EditText>(R.id.editTextFeedback)
+            val buttonReject = dialogView.findViewById<Button>(R.id.buttonReject)
+            val buttonClose = dialogView.findViewById<Button>(R.id.buttonClose)
+            buttonReject.text = "Warn"
+
+            buttonReject.setOnClickListener {
+                db.collection("reports").document(report!!.id).update("processingContent", editTextFeedback.text.toString())
+                    .addOnSuccessListener {
+                        activity?.supportFragmentManager?.popBackStack("report_list_fragment", POP_BACK_STACK_INCLUSIVE)
                     }
-                    .show()
+                alertDialog.dismiss()
+            }
+
+            buttonClose.setOnClickListener {
+                alertDialog.dismiss()
+            }
+        }
+
+        resolvedButton?.setOnClickListener {
+            val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_feedback, null)
+            val alertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
+                .setView(dialogView)
+                .setTitle("Take notes something?")
+            val alertDialog = alertDialogBuilder.show()
+            val editTextFeedback = dialogView.findViewById<EditText>(R.id.editTextFeedback)
+            val buttonReject = dialogView.findViewById<Button>(R.id.buttonReject)
+            val buttonClose = dialogView.findViewById<Button>(R.id.buttonClose)
+            buttonReject.text = "Resolved"
+
+
+            buttonReject.setOnClickListener {
+                db.collection("reports").document(report!!.id).update("processingState", "Resolved", "processingContent", editTextFeedback.text.toString())
+                    .addOnSuccessListener {
+                        activity?.supportFragmentManager?.popBackStack("report_list_fragment", POP_BACK_STACK_INCLUSIVE)
+                    }
+                alertDialog.dismiss()
+            }
+
+            buttonClose.setOnClickListener {
+                alertDialog.dismiss()
             }
         }
 
@@ -144,42 +157,162 @@ class ReportDetailFragment : Fragment() {
     }
 
     private fun updateUI() {
-        report?.let {nonNullTip ->
-            view?.findViewById<ImageView>(R.id.reportImage)?.let { imageView ->
-                Glide.with(this)
-                    .load(nonNullTip.imageList[0])
-                    .into(imageView)
+        report?.let { nonNullReport ->
+            val processingState = view?.findViewById<TextView>(R.id.processingState)
+            val processingContentIcon = view?.findViewById<ImageView>(R.id.processing_content_icon)
+            val processingContent = view?.findViewById<TextView>(R.id.contentProcessingMethod)
+            val frameCover = view?.findViewById<View>(R.id.frame_cover)
+
+            if (nonNullReport.processingContent == "" || nonNullReport.processingContent == "null") {
+                processingContent?.visibility = View.GONE
+                processingContentIcon?.visibility = View.GONE
+                frameCover?.visibility = View.GONE
+            } else {
+                processingContent?.text = nonNullReport.processingContent
             }
 
-            if (nonNullTip.productId != null && nonNullTip.productId != "") {
-                view?.findViewById<TextView>(R.id.reportType)?.text = "Product"
-            } else if (nonNullTip.tipId != null && nonNullTip.tipId != "") {
+            if (nonNullReport.processingState.lowercase() == "resolved") {
+                processingState?.text = "Resolved"
+                processingState?.setTextColor(resources.getColor(R.color.md_theme_primary))
+                processingState?.setBackgroundResource(R.color.md_theme_primaryFixedDim)
+                context?.let { ContextCompat.getColor(it, R.color.md_theme_primary) }
+                    ?.let { processingContentIcon?.setColorFilter(it, PorterDuff.Mode.SRC_IN) }
+                frameCover?.setBackgroundColor(resources.getColor(R.color.md_theme_primaryFixedDim))
+            } else if (nonNullReport.processingState.lowercase() == "unresolved") {
+                processingState?.text = "Unresolved"
+                processingState?.setTextColor(resources.getColor(R.color.md_theme_error))
+                processingState?.setBackgroundResource(R.color.md_theme_errorContainer)
+                context?.let { ContextCompat.getColor(it, R.color.md_theme_error) }
+                    ?.let { processingContentIcon?.setColorFilter(it, PorterDuff.Mode.SRC_IN) }
+                frameCover?.setBackgroundColor(resources.getColor(R.color.md_theme_errorContainer))
+            } else {
+                processingState?.text = "Pending"
+                processingState?.setTextColor(resources.getColor(R.color.md_theme_onPrimary))
+                processingState?.setBackgroundResource(R.color.md_theme_pending)
+                context?.let { ContextCompat.getColor(it, R.color.yellow) }
+                    ?.let { processingContentIcon?.setColorFilter(it, PorterDuff.Mode.SRC_IN) }
+                frameCover?.setBackgroundColor(resources.getColor(R.color.md_theme_pending))
+            }
+
+            val viewDetailButton = view?.findViewById<Button>(R.id.viewDetailButton)
+
+            if (nonNullReport.tipId != null && nonNullReport.tipId != "") {
+                val fragment = TipDetailFragment()
+                db.collection("ProductTip").document(nonNullReport.tipId!!).get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            val tip = document.toObject(Tip::class.java)
+                            viewDetailButton?.setOnClickListener {
+                                fragment.arguments = Bundle().apply {
+                                    putParcelable("tip", tip)
+                                }
+                                val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+                                (activity as AdminMainActivity).setCurrentFragment(TipDetailFragment())
+                                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
+                            }
+                        }
+                    }
+            } else if (nonNullReport.productId != null && nonNullReport.productId != "") {
+                val fragment = ProductDetailFragment()
+                db.collection("products").document(nonNullReport.productId!!).get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            viewDetailButton?.setOnClickListener {
+                                val bundle = Bundle().apply {
+                                    putParcelable("product", document.toObject(Product::class.java))
+                                }
+                                fragment.arguments = bundle
+
+                                val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+
+                                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
+                            }
+                        }
+                    }
+            } else {
+                val fragment = AccountDetailFragment()
+                db.collection("stores").document(nonNullReport.userId).get()
+                    .addOnSuccessListener { document ->
+                        if (document != null) {
+                            val store = document.toObject(Store::class.java)
+                            db.collection("users").whereEqualTo("storeId", store?.id).get()
+                                .addOnSuccessListener { documents ->
+                                    if (documents != null) {
+                                        for (doc in documents) {
+                                            val user = doc.toObject(User::class.java)
+                                            user.id = doc.id
+                                            viewDetailButton?.setOnClickListener {
+                                                val bundle = Bundle().apply {
+                                                    putParcelable("account", user)
+                                                }
+                                                fragment.arguments = bundle
+
+                                                val fragmentManager = (activity as FragmentActivity).supportFragmentManager
+
+                                                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("report_detail_fragment").commit()
+                                            }
+                                        }
+                                    }
+                                }
+                        }
+                    }
+            }
+
+            val reportImage = view?.findViewById<ImageView>(R.id.reportImage)
+
+            if (nonNullReport.imageList.isNotEmpty() && Patterns.WEB_URL.matcher(nonNullReport.imageList[0]).matches()) {
+                reportImage?.let { imageView ->
+                    Glide.with(this)
+                        .load(nonNullReport.imageList[0])
+                        .into(imageView)
+                }
+                reportImage?.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putString("imageUrl", nonNullReport.imageList[0])
+
+                    val fragment = ImageFragment()
+                    fragment.arguments = bundle
+
+                    (activity as AdminMainActivity).supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
+            } else {
+                reportImage?.let { imageView ->
+                    Glide.with(this)
+                        .load(R.drawable.report_default)
+                        .into(imageView)
+                }
+                reportImage?.visibility = View.GONE
+            }
+
+            if (nonNullReport.tipId != null && nonNullReport.tipId != "") {
                 view?.findViewById<TextView>(R.id.reportType)?.text = "Tip"
+            } else if (nonNullReport.productId != null && nonNullReport.productId != "") {
+                view?.findViewById<TextView>(R.id.reportType)?.text = "Product"
             } else {
                 view?.findViewById<TextView>(R.id.reportType)?.text = "User"
             }
 
-            view?.findViewById<TextView>(R.id.reportDescription)?.text = nonNullTip.content
-
-            db.collection("users").document(nonNullTip.reporterId).get()
+            db.collection("users").document(nonNullReport.reporterId).get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
-                        val reportedByText = java.lang.String.format(resources.getString(R.string.reported_by), document.data?.get("username").toString())
-                        view?.findViewById<TextView>(R.id.reportedBy)?.text = reportedByText
+                        val user = document.toObject(User::class.java)
+                        view?.findViewById<TextView>(R.id.userName)?.text = user?.username
+                        view?.findViewById<TextView>(R.id.store_role)?.text = user?.role
+                        view?.findViewById<ImageView>(R.id.reporter_avatar)?.let {
+                            Glide.with(this)
+                                .load(user?.avatar)
+                                .into(it)
+                        }
                     }
                 }
 
-            db.collection("users").document(nonNullTip.userId).get()
-                .addOnSuccessListener { document ->
-                    if (document != null) {
-                        val beingReportedText = java.lang.String.format(resources.getString(R.string.being_reported), document.data?.get("username").toString())
-                        view?.findViewById<TextView>(R.id.beingReported)?.text = beingReportedText
-                    }
-                }
+            view?.findViewById<TextView>(R.id.report_content)?.text = nonNullReport.content
 
-            val reportedDate = dateFormat(nonNullTip.createdAt.toString())
-            val reportedDateText = java.lang.String.format(resources.getString(R.string.reported_date), reportedDate)
-            view?.findViewById<TextView>(R.id.reportedDate)?.text = reportedDateText
+            val reportedDate = dateFormat(nonNullReport.createdAt.toString())
+            view?.findViewById<TextView>(R.id.textViewDate)?.text = reportedDate
         }
     }
 

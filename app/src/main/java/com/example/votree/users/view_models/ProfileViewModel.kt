@@ -40,4 +40,19 @@ class ProfileViewModel : ViewModel(){
             }
         return _userStore
     }
+
+    fun queryUser(uid: String) : LiveData<User?>{
+        val user = MutableLiveData<User?>()
+        val userRef = firestore.collection("users")
+
+        userRef.document(uid).get().addOnSuccessListener { userDocument ->
+            Log.d("ProfileViewModel", "User: ${userDocument.toObject(User::class.java)}")
+            user.value = userDocument.toObject(User::class.java)
+        }
+        .addOnFailureListener { exception ->
+            Log.w("ProfileViewModel", "Error getting documents: ", exception)
+            user.value = null
+        }
+        return user
+    }
 }

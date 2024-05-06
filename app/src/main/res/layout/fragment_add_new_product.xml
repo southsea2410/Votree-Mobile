@@ -15,28 +15,6 @@
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="10dp"
-        app:strokeWidth="5dp">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/productImageViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:scaleType="centerCrop" />
-    </androidx.cardview.widget.CardView>
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:elevation="10dp" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,6 +24,76 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="10dp"
+                app:strokeWidth="5dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/productImageViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:scaleType="centerCrop" />
+            </androidx.cardview.widget.CardView>
+
+            <!--    <com.google.android.material.divider.MaterialDivider-->
+            <!--        android:layout_width="match_parent"-->
+            <!--        android:layout_height="2dp"-->
+            <!--        android:layout_marginStart="10dp"-->
+            <!--        android:layout_marginEnd="10dp"-->
+            <!--        android:elevation="10dp" />-->
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:backgroundTint="@color/md_theme_inversePrimary_mediumContrast"
+                app:cardCornerRadius="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/addImage_btn"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.45"
+                        android:backgroundTint="@color/transparent"
+                        android:text="Add Image"
+                        app:icon="@drawable/file_upload"
+                        app:iconGravity="textStart"
+                        app:iconPadding="10dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.1"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="|" />
+
+                    <Button
+                        android:id="@+id/saveProduct_btn"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.45"
+                        android:backgroundTint="@color/transparent"
+                        android:text="Create Product"
+                        app:cornerRadius="5dp"
+                        app:icon="@drawable/ic_save"
+                        app:iconGravity="textStart"
+                        app:iconPadding="10dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -213,6 +261,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_marginBottom="16dp"
                     android:padding="16dp">
 
                     <TextView
@@ -268,7 +317,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:hint="Sale Off"
+                        android:hint="Sale Off (%)"
                         app:endIconMode="clear_text">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -282,35 +331,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/addImage_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:text="Add Image"
-                app:cornerRadius="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.541"
-                app:layout_constraintStart_toEndOf="@+id/productImage_iv"
-                app:layout_constraintTop_toTopOf="@+id/productImage_iv" />
-
-            <Button
-                android:id="@+id/saveProduct_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="48dp"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="24dp"
-                android:text="Create Product"
-                app:cornerRadius="5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/saleOff_layout"
-                app:layout_constraintVertical_bias="0.0" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

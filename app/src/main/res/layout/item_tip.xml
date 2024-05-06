@@ -16,14 +16,14 @@
         android:background="?attr/selectableItemBackground"
         android:minHeight="64dp">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
+            app:shapeAppearanceOverlay="@style/square_overlay"
             android:id="@+id/tip_list_item_avatar"
+            android:scaleType="centerCrop"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:padding="16dp"
-            android:scrollbarSize="4dp"
-            app:srcCompat="@drawable/shape_avatar"
-            android:contentDescription="@string/first_image_of_tip" />
+            app:srcCompat="@drawable/shape_avatar" />
 
         <LinearLayout
             android:layout_width="match_parent"

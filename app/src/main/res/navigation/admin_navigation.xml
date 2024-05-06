@@ -16,9 +16,9 @@
     </fragment>
     <fragment
         android:id="@+id/tipDetailFragment"
-        android:name="com.example.votree.admin.fragments.TipDetailFragment"
+        android:name="com.example.votree.admin.fragments.TipDetailFragmentAdmin"
         android:label="fragment_tip_detail"
-        tools:layout="@layout/fragment_tip_detail" >
+        tools:layout="@layout/fragment_tip_detail_admin" >
         <action
             android:id="@+id/action_tipDetailFragment2_to_tipsFragment"
             app:destination="@id/tipListFragment" />

@@ -24,7 +24,7 @@ class DialogDateListAdapter(private val nDates: List<String>, listener: OnItemCl
             super.bind(item)
             // Set the background color based on the selected position
             if (absoluteAdapterPosition == singleitem_selection_position) {
-                itemView.setBackgroundResource(android.R.color.holo_green_light)
+                itemView.setBackgroundResource(android.R.color.holo_red_light)
             } else {
                 itemView.setBackgroundResource(android.R.color.transparent)
             }

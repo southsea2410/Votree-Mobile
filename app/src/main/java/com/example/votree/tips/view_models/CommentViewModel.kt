@@ -26,11 +26,11 @@ class CommentViewModel : ViewModel() {
         )
         commentRef.add(comment)
             .addOnSuccessListener {
-                Log.d("TipsViewModel", "[Comment] Comment added to database" + comment.toString())
+                Log.d("CommentViewModel", "[Comment] Comment added to database" + comment.toString())
                 queryComments(tip)
             }
             .addOnFailureListener { e ->
-                Log.w("TipsViewModel", "[Comment] Error adding comment to database" + comment.toString())
+                Log.w("CommentViewModel", "[Comment] Error adding comment to database" + comment.toString())
             }
     }
 
@@ -52,21 +52,21 @@ class CommentViewModel : ViewModel() {
                             counter++
                             queriedComments[i].fullName = document.toObject<User>()?.fullName ?: ""
                             queriedComments[i].avatar = document.toObject<User>()?.avatar ?: ""
-                            Log.d("TipsViewModel", "Comment $i: " + queriedComments[i].toString())
+                            Log.d("CommentViewModel", "Comment $i: " + queriedComments[i].toString())
                             if (counter == queriedComments.size){
-                                Log.d("TipsViewModel", "Comment list updated")
+                                Log.d("CommentViewModel", "Comment list updated")
                                 _commentList.value = queriedComments
                             }
                         }
                         .addOnFailureListener{
-                            Log.d("TipsViewModel", "Error getting author name and avatar: ", it)
+                            Log.d("CommentViewModel", "Error getting author name and avatar: ", it)
                         }
 
                 }
-                Log.d("TipsViewModel", "Done getting comments")
+                Log.d("CommentViewModel", "Done getting comments")
             }
             .addOnFailureListener{
-                Log.d("TipsViewModel", "Error getting comments: ", it)
+                Log.d("CommentViewModel", "Error getting comments: ", it)
             }
         return
     }

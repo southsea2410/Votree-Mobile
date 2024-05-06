@@ -1,6 +1,7 @@
 package com.example.votree.admin.adapters
 
 import android.annotation.SuppressLint
+import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -25,9 +26,15 @@ class ReportListAdapter(private val listener: OnItemClickListener, private val i
         override fun bind(item: Report) {
             super.bind(item)
 
-            Glide.with(itemView.context)
-                .load(item.imageList[0])
-                .into(itemView.findViewById(R.id.report_list_item_image))
+            if (item.imageList.isNotEmpty() && Patterns.WEB_URL.matcher(item.imageList[0]).matches()) {
+                Glide.with(itemView.context)
+                    .load(item.imageList[0])
+                    .into(itemView.findViewById(R.id.report_list_item_image))
+            } else {
+                Glide.with(itemView.context)
+                    .load(R.drawable.report_default)
+                    .into(itemView.findViewById(R.id.report_list_item_image))
+            }
 
             itemView.findViewById<TextView>(R.id.report_list_item_short_description).text =
                 item.shortDescription
