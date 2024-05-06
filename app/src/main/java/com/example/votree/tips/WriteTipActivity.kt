@@ -7,18 +7,26 @@ import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.votree.R
 import com.example.votree.databinding.ActivityWriteTipBinding
 import com.example.votree.tips.models.ProductTip
 import com.example.votree.utils.AuthHandler
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
     private val fireStoreInstance = FirebaseFirestore.getInstance()
     private val storageInstance = FirebaseStorage.getInstance()
     var imageUri : Uri? = null
+    val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +80,9 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
                     fireStoreInstance.collection("ProductTip").add(tip)
                         .addOnSuccessListener { documentReference ->
                             val documentId = documentReference.id
+                            lifecycleScope.launch {
+                                addFirestoreDocument("checkContent", "Please check this content: " + "${tip.title} - ${tip.shortDescription} - ${tip.content}", documentId)
+                            }
                             fireStoreInstance.collection("ProductTip").document(documentId)
                                 .update("id", documentId)
                             Toast.makeText(
@@ -102,5 +113,23 @@ class WriteTipActivity : AppCompatActivity(R.layout.activity_write_tip) {
             return false
         }
         return true
+    }
+
+    suspend fun addFirestoreDocument(collectionName: String, tipContent: String, tipId: String) {
+        val documentData = hashMapOf(
+            "tipContent" to tipContent,
+            "tipId" to tipId
+        )
+
+        // Add the document to Firestore
+        try {
+            withContext(Dispatchers.IO) {
+                db.collection(collectionName).add(documentData).await()
+            }
+            // Document added successfully
+        } catch (e: Exception) {
+            // Handle any errors
+            println("Error adding document: $e")
+        }
     }
 }
