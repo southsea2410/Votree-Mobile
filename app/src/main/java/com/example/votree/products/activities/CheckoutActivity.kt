@@ -293,13 +293,11 @@ class CheckoutActivity : AppCompatActivity() {
                     val totalAmount =
                         transactionRepository.calculateTotalPrice(transaction.productsMap)
                     if (skipPayment) {
-                        transaction.remainPrice = cart.totalPrice
+                        transaction.remainPrice = totalAmount
                     }
                     transaction.totalAmount = totalAmount + 10.0 // Add delivery fee
                     val generatedId = transactionRepository.createAndUpdateTransaction(transaction)
-                    Log.d(TAG, "Transaction ID: $generatedId")
                     transaction.id = generatedId
-                    Log.d(TAG, "Transaction: $transaction")
                     notifyStoreAboutNewOrder(transaction)
 
                     // Earn points after successful payment

@@ -100,8 +100,14 @@ class OrderDetailsFragment : Fragment() {
             binding.denyBtn.isEnabled = true
             binding.deliverBtn.isEnabled = true
         } else {
-            // Disable the buttons
-            binding.denyBtn.isEnabled = false
+            binding.denyBtn.setStrokeColorResource(R.color.md_theme_outlineVariant)
+            binding.denyBtn.setIconTintResource(R.color.md_theme_outlineVariant)
+            binding.denyBtn.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.md_theme_outlineVariant
+                )
+            )
             binding.deliverBtn.isEnabled = false
         }
 

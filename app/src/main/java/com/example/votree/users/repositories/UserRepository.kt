@@ -14,6 +14,16 @@ class UserRepository(private val db: FirebaseFirestore) {
         return snapshot.toObject(User::class.java)
     }
 
+    fun getUserWithCallback(userId: String, callback: (User?) -> Unit) {
+        usersCollection.document(userId).get()
+            .addOnSuccessListener { snapshot ->
+                callback(snapshot.toObject(User::class.java))
+            }
+            .addOnFailureListener { exception ->
+                callback(null)
+            }
+    }
+
     suspend fun updateUser(userId: String, user: User) {
         usersCollection.document(userId).set(user).await()
     }
