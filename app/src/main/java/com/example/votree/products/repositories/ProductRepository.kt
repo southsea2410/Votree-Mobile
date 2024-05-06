@@ -6,6 +6,7 @@ import com.example.votree.products.models.Product
 import com.example.votree.products.models.ProductReview
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume

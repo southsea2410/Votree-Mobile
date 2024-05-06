@@ -134,6 +134,9 @@
             android:id="@+id/action_storeManagement2_to_orderManagementForStoreFragment"
             app:destination="@id/orderManagementForStoreFragment" />
         <action
+            android:id="@+id/action_storeManagement2_to_revenueStatisticsFragment"
+            app:destination="@id/revenueStatisticsFragment" />
+        <action
             android:id="@+id/action_storeManagement2_self"
             app:destination="@id/storeManagement2" />
     </fragment>
@@ -316,4 +319,9 @@
             app:enterAnim="@anim/fui_slide_in_right"
             app:exitAnim="@anim/fui_slide_out_left" />
     </fragment>
+    <fragment
+        android:id="@+id/revenueStatisticsFragment"
+        android:name="com.example.votree.users.fragments.RevenueStatisticsFragment"
+        android:label="fragment_revenue_statistics"
+        tools:layout="@layout/fragment_revenue_statistics" />
 </navigation>

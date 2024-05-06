@@ -16,6 +16,11 @@ class UserRepository(private val db: FirebaseFirestore) {
         return snapshot.toObject(User::class.java)
     }
 
+    suspend fun getStoreId(userId: String): String {
+        val snapshot = usersCollection.document(userId).get().await()
+        return snapshot.getString("storeId") ?:""
+    }
+
     fun getUserWithCallback(userId: String, callback: (User?) -> Unit) {
         usersCollection.document(userId).get()
             .addOnSuccessListener { snapshot ->
