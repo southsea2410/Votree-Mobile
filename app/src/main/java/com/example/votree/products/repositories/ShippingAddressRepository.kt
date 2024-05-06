@@ -13,50 +13,75 @@ class ShippingAddressRepository @Inject constructor(
     private val auth: FirebaseAuth
 ) {
     private val userId get() = auth.currentUser?.uid!!
+    private val usersCollection = db.collection("users")
     private val addressesCollection =
         db.collection("users").document(userId).collection("addresses")
 
-    suspend fun saveShippingAddress(address: ShippingAddress) {
+    suspend fun saveShippingAddress(address: ShippingAddress, userId: String) {
         try {
-            Log.d("ShippingAddressRepo", "Checking for duplicate addresses")
-
-            // Query Firestore for any addresses matching the new address's details
-            val duplicateQuery = addressesCollection
-                .whereEqualTo("recipientName", address.recipientName)
-                .whereEqualTo("recipientAddress", address.recipientAddress)
-                .whereEqualTo("recipientPhoneNumber", address.recipientPhoneNumber)
-                .get().await()
-
-            // Check if the query returned any documents
-            if (duplicateQuery.documents.isNotEmpty()) {
+            // Check for duplicate addresses
+            if (isDuplicateAddress(address)) {
                 Log.d("ShippingAddressRepo", "Duplicate address found. Aborting save.")
                 return
             }
 
             // If the new address is set as the default, update all other default addresses to non-default
-            if (address.default) {
-                val defaultAddresses =
-                    addressesCollection.whereEqualTo("default", true).get().await().documents
-                for (doc in defaultAddresses) {
-                    doc.reference.update("default", false).await()
-                    Log.d("ShippingAddressRepo", "Updated address ${doc.id} to not be the default.")
-                }
-            }
+            updateOtherDefaultAddresses(address)
 
             // Save the new address or update the existing one
-            if (address.id.isNullOrEmpty()) {
-                val newDocRef = addressesCollection.document()
-                address.id = newDocRef.id
-                newDocRef.set(address).await()
-                Log.d("ShippingAddressRepo", "Saved new address with ID: ${address.id}")
-            } else {
-                addressesCollection.document(address.id).set(address).await()
-                Log.d("ShippingAddressRepo", "Updated address with ID: ${address.id}")
+            val savedAddress = saveOrUpdateAddress(address)
+            Log.d("ShippingAddressRepo", "Saved/updated address with ID: ${savedAddress.id}")
+
+            // Update the user's document with the new default address ID if the address is set as default
+            if (address.default) {
+                updateUserDefaultAddress(userId, savedAddress.id)
+                Log.d(
+                    "ShippingAddressRepo",
+                    "Updated user $userId default address to ${savedAddress.id}"
+                )
             }
         } catch (e: Exception) {
             Log.e("ShippingAddressRepo", "Error saving/updating address: ${e.message}", e)
             throw e
         }
+    }
+
+    private suspend fun isDuplicateAddress(address: ShippingAddress): Boolean {
+        val duplicateQuery = addressesCollection
+            .whereEqualTo("recipientName", address.recipientName)
+            .whereEqualTo("recipientAddress", address.recipientAddress)
+            .whereEqualTo("recipientPhoneNumber", address.recipientPhoneNumber)
+            .get().await()
+
+        return duplicateQuery.documents.isNotEmpty()
+    }
+
+    private suspend fun updateOtherDefaultAddresses(newDefaultAddress: ShippingAddress) {
+        if (newDefaultAddress.default) {
+            val defaultAddresses =
+                addressesCollection.whereEqualTo("default", true).get().await().documents
+            for (doc in defaultAddresses) {
+                doc.reference.update("default", false).await()
+                Log.d("ShippingAddressRepo", "Updated address ${doc.id} to not be the default.")
+            }
+        }
+    }
+
+    private suspend fun saveOrUpdateAddress(address: ShippingAddress): ShippingAddress {
+        return if (address.id.isNullOrEmpty()) {
+            val newDocRef = addressesCollection.document()
+            address.id = newDocRef.id
+            newDocRef.set(address).await()
+            address
+        } else {
+            addressesCollection.document(address.id).set(address).await()
+            address
+        }
+    }
+
+    private suspend fun updateUserDefaultAddress(userId: String, defaultAddressId: String) {
+        val userDocRef = usersCollection.document(userId)
+        userDocRef.update("address", defaultAddressId).await()
     }
 
     suspend fun getShippingAddresses(
@@ -66,7 +91,6 @@ class ShippingAddressRepository @Inject constructor(
         val addresses = addressesCollection.get().await()
             .documents.mapNotNull { it.toObject(ShippingAddress::class.java) }
         Log.d("ShippingAddressRepo", "Fetched shipping addresses: $addresses")
-//        shippingAddress.postValue(addresses)
         selectedShippingAddress.postValue(addresses.find { it.default })
         selectedShippingAddress.value = addresses.find { it.default }
         return addresses

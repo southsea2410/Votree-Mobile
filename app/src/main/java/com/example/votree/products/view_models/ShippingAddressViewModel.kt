@@ -43,7 +43,8 @@ class ShippingAddressViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 _isLoading.postValue(true)
-                repository.saveShippingAddress(address)
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+                repository.saveShippingAddress(address, userId)
                 _shippingAddress.postValue(address)
             } catch (e: Exception) {
                 Log.e("ShippingAddressViewModel", "Error saving shipping address: $e")

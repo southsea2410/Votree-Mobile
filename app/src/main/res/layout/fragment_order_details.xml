@@ -335,7 +335,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/deny_btn"
             style="@style/Widget.Material3.Button.IconButton.Outlined"
             android:layout_width="0dp"

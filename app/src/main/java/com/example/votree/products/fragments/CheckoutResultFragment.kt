@@ -45,39 +45,26 @@ class CheckoutResultFragment : Fragment() {
     }
 
     private fun updateUI() {
-        if (args.checkoutResult) {
-            // Payment was successful
-            binding.productImageIv.setImageResource(R.drawable.ic_checkout_sc)
-            binding.pointsTv.text = "+ ${args.points} Points"
-            binding.orderHistoryBtn.setOnClickListener {
-                stopAutoNavigateTimer()
-                startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
-            }
-            binding.productListBtn.setOnClickListener {
-                stopAutoNavigateTimer()
-                val action =
-                    CheckoutResultFragmentDirections.actionCheckoutResultFragmentToProductList()
-                findNavController().navigate(action)
-            }
-        } else {
-            // Payment failed
-            binding.productImageIv.setImageResource(R.drawable.ic_checkout_fail)
-            binding.thankYouTv.text = "Payment Failed"
-            binding.orderHistoryBtn.text = "Checkout Again"
-            binding.orderHistoryBtn.setOnClickListener {
-                stopAutoNavigateTimer()
-                val action =
-                    CheckoutResultFragmentDirections.actionCheckoutResultFragmentToCheckout(args.cart)
-                findNavController().navigate(action)
-            }
+        // Payment was successful
+        binding.productImageIv.setImageResource(R.drawable.ic_checkout_sc)
+        binding.pointsTv.text = "+ ${args.points} Points"
+        binding?.orderHistoryBtn?.setOnClickListener {
+            stopAutoNavigateTimer()
+            startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
+        }
+        binding?.productListBtn?.setOnClickListener {
+            stopAutoNavigateTimer()
+            val action =
+                CheckoutResultFragmentDirections.actionCheckoutResultFragmentToProductList()
+            findNavController().navigate(action)
+        }
 
-        }
         // Update the countdown text
-        if (!isCountdownActive) {
-            binding.countdownTv.text = "Redirecting to Product List in $countdownSeconds seconds"
-        } else {
-            binding.countdownTv.visibility = View.GONE
-        }
+//        if (!isCountdownActive) {
+//            binding.countdownTv.text = "Redirecting to Product List in $countdownSeconds seconds"
+//        } else {
+//            binding.countdownTv.visibility = View.GONE
+//        }
     }
 
     private fun startAutoNavigateTimer() {
@@ -106,12 +93,11 @@ class CheckoutResultFragment : Fragment() {
 
     private fun stopAutoNavigateTimer() {
         autoNavigateHandler?.removeCallbacks(autoNavigateRunnable!!)
-        isCountdownActive = true
+        isCountdownActive = false
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
         stopAutoNavigateTimer()
     }
 }
