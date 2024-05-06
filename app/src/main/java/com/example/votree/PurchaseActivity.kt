@@ -1,59 +1,47 @@
 package com.example.votree
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.votree.products.activities.CheckoutActivity
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
 
 class PurchaseActivity : AppCompatActivity() {
-
-    private val functions = Firebase.functions
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.upgrade_premium)
 
-        val product = findViewById<LinearLayout>(R.id.one_month)
-        product.setOnClickListener {
-            purchaseProduct("prod_PxGXLc3T7jpleW")
+        val product1 = findViewById<LinearLayout>(R.id.one_month)
+        val product2 = findViewById<LinearLayout>(R.id.six_month)
+        val product3 = findViewById<LinearLayout>(R.id.one_year)
+        val backBtn = findViewById<ImageButton>(R.id.back_button)
+
+        product1.setOnClickListener {
+            purchaseProduct("prod_Q2ZgygFEMIEQQq", "price_1PCUXHL1bECNnFcvaOWt26Vj")
+        }
+
+        product2.setOnClickListener {
+            purchaseProduct("prod_Q2ZjppsU2YISdN", "price_1PCUaFL1bECNnFcvLh848hRr")
+        }
+
+        product3.setOnClickListener {
+            purchaseProduct("prod_Q2ZkPUOhLvTpLE", "price_1PCUabL1bECNnFcvvmKt9edx")
+        }
+
+        backBtn.setOnClickListener {
+            finish()
         }
     }
 
-    fun checkPurchaseStatus(productId: String) {
-        // Implement the logic to check if the user has purchased the product
-        // ...
-
-        // onPurchaseStatusChecked(isPurchased)
-    }
-
-    private fun purchaseProduct(productId: String) {
-        // Implement the logic to initiate the purchase flow
-        // ...
-
-        onPurchaseCompleted()
-    }
-
-    fun handlePurchaseResult(isPurchased: Boolean) {
-        // Implement the logic to handle the UI and other post-purchase actions
-        if (isPurchased) {
-            // Grant access, update UI, etc.
-        } else {
-            // Show error message, etc.
-        }
-    }
-
-    private fun onPurchaseStatusChecked(isPurchased: Boolean) {
-        // Xử lý trạng thái mua hàng và cập nhật giao diện người dùng
-    }
-
-    private fun onPurchaseCompleted() {
-        // Xử lý sau khi mua hàng thành công
-    }
-
-    private fun onPurchaseFailed(errorMessage: String) {
-        // Xử lý khi mua hàng thất bại
+    private fun purchaseProduct(productId: String, priceId: String) {
+        val intent = Intent(this, CheckoutActivity::class.java)
+        intent.putExtra("productId", productId)
+        intent.putExtra("priceId", priceId)
+        startActivityForResult(intent, 1)
     }
 }

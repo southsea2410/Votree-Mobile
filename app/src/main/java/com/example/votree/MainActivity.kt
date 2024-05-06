@@ -25,7 +25,11 @@ import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
 import com.google.android.gms.ads.AdView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
 
 
@@ -52,9 +56,9 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // AdManager.setPremium(true, this)
         val adView = findViewById<AdView>(R.id.adView)
         AdManager.addAdView(adView, this)
+        checkPremiumStatus()
 
         permissionManager = PermissionManager(this)
         permissionManager.checkPermissions()
@@ -106,6 +110,26 @@ class MainActivity : AppCompatActivity() {
             finish()
         } else {
             AuthHandler.storeUserIdInSharedPreferences(this)
+        }
+    }
+
+    private fun checkPremiumStatus() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        currentUser?.let {
+            val usersRef = FirebaseDatabase.getInstance().getReference("Users")
+            val userNode = usersRef.child(it.uid)
+            userNode.child("isPremium").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val isPremium = snapshot.value as? Boolean ?: false
+
+                    Log.d("FirebaseManager", "User is premium: $isPremium")
+                    AdManager.setPremium(isPremium, applicationContext)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("FirebaseManager", "Failed to read premium status", error.toException())
+                }
+            })
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.votree.PurchaseActivity
 import com.example.votree.R
 import com.example.votree.databinding.FragmentUserProfileBinding
 import com.example.votree.users.activities.OrderHistoryActivity
@@ -127,6 +128,11 @@ class UserProfileFragment : Fragment() {
         binding.logoutBtn.setOnClickListener {
             // Navigate to Sign In Activity
             navigateLogout()
+        }
+
+        binding.paymentMethodBtn.setOnClickListener {
+            val intent = Intent(context, PurchaseActivity::class.java)
+            startActivity(intent)
         }
     }
 

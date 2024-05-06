@@ -1,6 +1,8 @@
 package com.example.votree.utils
 
 import android.util.Log
+import com.example.votree.MainActivity
+import com.example.votree.tips.AdManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DatabaseError
@@ -97,6 +99,14 @@ class FirebaseRealtime {
                 Log.e("FirebaseManager", "Failed to update friends list", error.toException())
             }
         })
+    }
+
+    fun setPremiumOnFirebase(premium: Boolean) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        currentUser?.let {
+            val userNode = usersRef.child(it.uid)
+            userNode.child("isPremium").setValue(premium)
+        }
     }
 
     companion object {
