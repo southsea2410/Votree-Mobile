@@ -54,7 +54,6 @@ class CartViewModel : ViewModel() {
             cart?.let {
                 viewModelScope.launch {
                     groupProductsByShopId(cart)
-                    _isLoading.postValue(false)
                 }
             }
         }
@@ -115,7 +114,6 @@ class CartViewModel : ViewModel() {
         val firestore = FirebaseFirestore.getInstance()
         return withContext(Dispatchers.IO) {
             if (cart.productsMap.isEmpty()) {
-                Log.d("CartViewModel", "Cart is empty")
                 groupedProducts.postValue(emptyList())
                 _isLoading.postValue(false)
                 return@withContext
@@ -147,6 +145,7 @@ class CartViewModel : ViewModel() {
                     Log.d("CartViewModel", "Failed to fetch store with id $storeId")
                 })
             }
+
         }
     }
 }

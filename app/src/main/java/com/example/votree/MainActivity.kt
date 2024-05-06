@@ -20,11 +20,18 @@ import com.example.votree.tips.AdManager
 import com.example.votree.users.activities.MyFirebaseMessagingService
 import com.example.votree.users.activities.RegisterToSeller
 import com.example.votree.utils.AuthHandler
+import com.example.votree.utils.FirebaseRealtime
 import com.example.votree.utils.PermissionManager
 import com.example.votree.utils.RoleManagement
 import com.google.android.gms.ads.AdView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.messaging.FirebaseMessaging
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -51,11 +58,13 @@ class MainActivity : AppCompatActivity() {
 
         val adView = findViewById<AdView>(R.id.adView)
         AdManager.addAdView(adView, this)
+        checkPremiumStatus()
 
         permissionManager = PermissionManager(this)
         permissionManager.checkPermissions()
 
         setupPermissions()
+        FirebaseRealtime.getInstance().setupCurrentUser()
 
         RoleManagement.checkUserRole(firebaseAuth = AuthHandler.firebaseAuth, onSuccess = {
             role = it ?: ""
@@ -64,10 +73,12 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Welcome User", Toast.LENGTH_SHORT).show()
                     setupNavigation()
                 }
+
                 "store" -> {
                     Toast.makeText(this, "Welcome Seller", Toast.LENGTH_SHORT).show()
                     setupNavigation()
                 }
+
                 "admin" -> {
                     val intent = Intent(this, AdminMainActivity::class.java)
                     startActivity(intent)
@@ -82,8 +93,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("FCM Token", task.result)
                 val newToken = task.result
                 MyFirebaseMessagingService().onNewToken(newToken)
-            }
-            else {
+            } else {
                 Toast.makeText(this, "Failed to get token", Toast.LENGTH_SHORT).show()
             }
         }
@@ -100,6 +110,26 @@ class MainActivity : AppCompatActivity() {
             finish()
         } else {
             AuthHandler.storeUserIdInSharedPreferences(this)
+        }
+    }
+
+    private fun checkPremiumStatus() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        currentUser?.let {
+            val usersRef = FirebaseDatabase.getInstance().getReference("Users")
+            val userNode = usersRef.child(it.uid)
+            userNode.child("isPremium").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val isPremium = snapshot.value as? Boolean ?: false
+
+                    Log.d("FirebaseManager", "User is premium: $isPremium")
+                    AdManager.setPremium(isPremium, applicationContext)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("FirebaseManager", "Failed to read premium status", error.toException())
+                }
+            })
         }
     }
 
@@ -128,8 +158,8 @@ class MainActivity : AppCompatActivity() {
             R.id.orderDetailsFragment,
             R.id.orderManagementForStoreFragment
         )
-        navController.addOnDestinationChangedListener { _ , destination, _  ->
-            if(destination.id in showDestinations) {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id in showDestinations) {
                 bottomNavigation.visibility = View.VISIBLE
             } else {
                 bottomNavigation.visibility = View.GONE
@@ -139,7 +169,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setupWithNavController(navController)
     }
 
-    private fun updateUserToSeller(role: String){
+    private fun updateUserToSeller(role: String) {
         // If RegisterToSeller activity is successful, and return the role as store, then update the user role to store
         RoleManagement.updateUserRole(AuthHandler.firebaseAuth, role)
     }

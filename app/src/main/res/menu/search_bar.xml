@@ -7,4 +7,11 @@
         android:icon="@drawable/ic_cart"
         android:iconTint="@color/black"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/chat"
+        android:title="Chat"
+        android:icon="@drawable/chat_24px"
+        android:iconTint="@color/black"
+        app:showAsAction="always" />
 </menu>

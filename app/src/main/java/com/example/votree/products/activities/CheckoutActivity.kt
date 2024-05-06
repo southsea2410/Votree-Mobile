@@ -14,19 +14,23 @@ import com.example.votree.products.repositories.CartRepository
 import com.example.votree.products.repositories.PointTransactionRepository
 import com.example.votree.products.repositories.ProductRepository
 import com.example.votree.products.repositories.TransactionRepository
+import com.example.votree.tips.AdManager
 import com.example.votree.users.repositories.StoreRepository
 import com.example.votree.utils.CustomToast
 import com.example.votree.utils.ProgressDialogUtils
 import com.example.votree.utils.ToastType
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.HttpsCallableResult
 import com.stripe.android.PaymentConfiguration
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Date
+
 
 @Suppress("DEPRECATION")
 class CheckoutActivity : AppCompatActivity() {
@@ -83,7 +87,13 @@ class CheckoutActivity : AppCompatActivity() {
             db.collection("stripe_customers").document(user.uid).get()
                 .addOnSuccessListener { document ->
                     customerId = document.getString("customer_id") ?: ""
-                    fetchPaymentIntentClientSecret()
+                    val productId = intent.getStringExtra("productId")
+
+                    if (productId == null) {
+                        fetchPaymentIntentClientSecret()
+                    } else {
+                        createSubscription()
+                    }
                 }
                 .addOnFailureListener { exception ->
                     createStripeCustomer(user)
@@ -114,6 +124,30 @@ class CheckoutActivity : AppCompatActivity() {
     private fun storeStripeCustomerId(userId: String, customerId: String) {
         FirebaseFirestore.getInstance().collection("stripe_customers").document(userId)
             .set(mapOf("customer_id" to customerId))
+    }
+
+    private fun createSubscription() {
+        val priceId = intent.getStringExtra("priceId")
+        val data: MutableMap<String, Any?> = HashMap()
+
+        data["customerId"] = customerId
+        data["priceId"] = priceId
+
+        functions.getHttpsCallable("createSubscription").call(data)
+            .addOnCompleteListener { task: Task<HttpsCallableResult> ->
+                if (task.isSuccessful) {
+                    val result =
+                        task.result.data as Map<String, Any>?
+                    paymentIntentClientSecret = result!!["clientSecret"] as String?
+                    configurePaymentSheet()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Failed to create subscription.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
     }
 
     private fun fetchPaymentIntentClientSecret() {
@@ -155,7 +189,14 @@ class CheckoutActivity : AppCompatActivity() {
         when (paymentSheetResult) {
             is PaymentSheetResult.Completed -> {
                 CustomToast.show(this, "Payment Succeed", ToastType.SUCCESS)
-                handleSuccessfulPayment()
+                val productId = intent.getStringExtra("productId")
+                if (productId != null) {
+                    AdManager.setPremium(true, this)
+                    AdManager.setPremiumOnFirebase(true)
+                    finish()
+                } else {
+                    handleSuccessfulPayment()
+                }
             }
 
             is PaymentSheetResult.Canceled -> {
@@ -293,13 +334,11 @@ class CheckoutActivity : AppCompatActivity() {
                     val totalAmount =
                         transactionRepository.calculateTotalPrice(transaction.productsMap)
                     if (skipPayment) {
-                        transaction.remainPrice = cart.totalPrice
+                        transaction.remainPrice = totalAmount
                     }
                     transaction.totalAmount = totalAmount + 10.0 // Add delivery fee
                     val generatedId = transactionRepository.createAndUpdateTransaction(transaction)
-                    Log.d(TAG, "Transaction ID: $generatedId")
                     transaction.id = generatedId
-                    Log.d(TAG, "Transaction: $transaction")
                     notifyStoreAboutNewOrder(transaction)
 
                     // Earn points after successful payment

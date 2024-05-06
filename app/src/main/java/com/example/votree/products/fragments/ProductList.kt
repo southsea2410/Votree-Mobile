@@ -1,6 +1,7 @@
 package com.example.votree.products.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -22,6 +23,7 @@ import com.example.votree.products.adapters.SuggestionSearchAdapter
 import com.example.votree.products.models.Product
 import com.example.votree.products.view_models.ProductFilterViewModel
 import com.example.votree.products.view_models.ProductViewModel
+import com.example.votree.users.activities.ChatActivity
 import com.example.votree.utils.GridSpacingItemDecoration
 import com.example.votree.utils.uiUtils.Companion.calculateNoOfColumns
 import com.google.android.material.tabs.TabLayout
@@ -65,6 +67,11 @@ class ProductList : Fragment() {
                 R.id.cart -> {
                     val action = ProductListDirections.actionProductListToCartList()
                     findNavController().navigate(action)
+                    true
+                }
+                R.id.chat -> {
+                    val intent = Intent(context, ChatActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false

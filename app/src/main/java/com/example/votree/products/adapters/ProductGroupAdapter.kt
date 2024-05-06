@@ -61,6 +61,11 @@ class ProductGroupAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun clearItems() {
+        items = emptyList()
+        notifyDataSetChanged()
+    }
+
     inner class HeaderViewHolder(private val binding: GroupShopItemsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ProductItem.ProductHeader) {
@@ -126,6 +131,23 @@ class ProductGroupAdapter(
         }
     }
 
+    //    class ProductDiffCallback(
+//        private val oldList: List<ProductItem>,
+//        private val newList: List<ProductItem>
+//    ) : DiffUtil.Callback() {
+//
+//        override fun getOldListSize(): Int = oldList.size
+//
+//        override fun getNewListSize(): Int = newList.size
+//
+//        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//            return oldList[oldItemPosition] == newList[newItemPosition]
+//        }
+//
+//        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//            return oldList[oldItemPosition] == newList[newItemPosition]
+//        }
+//    }
     class ProductDiffCallback(
         private val oldList: List<ProductItem>,
         private val newList: List<ProductItem>
@@ -136,11 +158,37 @@ class ProductGroupAdapter(
         override fun getNewListSize(): Int = newList.size
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+
+            return when {
+                oldItem is ProductItem.ProductHeader && newItem is ProductItem.ProductHeader -> {
+                    oldItem.shopName == newItem.shopName
+                }
+
+                oldItem is ProductItem.ProductData && newItem is ProductItem.ProductData -> {
+                    oldItem.product.id == newItem.product.id
+                }
+
+                else -> false
+            }
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+
+            return when {
+                oldItem is ProductItem.ProductHeader && newItem is ProductItem.ProductHeader -> {
+                    oldItem.shopName == newItem.shopName && oldItem.isChecked == newItem.isChecked
+                }
+
+                oldItem is ProductItem.ProductData && newItem is ProductItem.ProductData -> {
+                    oldItem.product == newItem.product && oldItem.quantity == newItem.quantity && oldItem.isChecked == newItem.isChecked
+                }
+
+                else -> false
+            }
         }
     }
 }

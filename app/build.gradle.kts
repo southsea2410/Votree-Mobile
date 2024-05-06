@@ -137,9 +137,12 @@ dependencies {
     //
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-
+    implementation("de.hdodenhof:circleimageview:3.1.0")
     // OTP View
     implementation("io.github.chaosleung:pinview:1.4.4")
+
+    //bar chart
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     // Search Algorithm
 //    annotationProcessor("info.debatty:java-string-similarity:2.0.0")

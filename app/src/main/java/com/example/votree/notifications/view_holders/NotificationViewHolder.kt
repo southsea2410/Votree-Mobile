@@ -48,7 +48,6 @@ class NotificationViewHolder(
             listener.onNotificationClick(notification)
             markNotificationAsRead(notification)
             updateNotificationBackground(notification)
-
         }
 
         notificationViewModel.transactionData.observe(viewLifecycleOwner) { transaction ->
@@ -79,7 +78,7 @@ class NotificationViewHolder(
         }
 
          Glide.with(binding.root)
-             .load(product?.imageUrl)
+             .load(product?.imageUrl?.get(0))
              .error(R.drawable.img_placeholder)
              .into(binding.notificationImageIv)
     }

@@ -4,7 +4,9 @@ import android.net.Uri
 import com.example.votree.users.models.User
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class UserRepository(private val db: FirebaseFirestore) {
     private val usersCollection = db.collection("users")
@@ -12,6 +14,21 @@ class UserRepository(private val db: FirebaseFirestore) {
     suspend fun getUser(userId: String): User? {
         val snapshot = usersCollection.document(userId).get().await()
         return snapshot.toObject(User::class.java)
+    }
+
+    suspend fun getStoreId(userId: String): String {
+        val snapshot = usersCollection.document(userId).get().await()
+        return snapshot.getString("storeId") ?:""
+    }
+
+    fun getUserWithCallback(userId: String, callback: (User?) -> Unit) {
+        usersCollection.document(userId).get()
+            .addOnSuccessListener { snapshot ->
+                callback(snapshot.toObject(User::class.java))
+            }
+            .addOnFailureListener { exception ->
+                callback(null)
+            }
     }
 
     suspend fun updateUser(userId: String, user: User) {
@@ -48,5 +65,21 @@ class UserRepository(private val db: FirebaseFirestore) {
                 "role" to "store"
             )
         ).await()
+    }
+
+    suspend fun getUserByStoreId(storeId: String): User? {
+        return withContext(Dispatchers.IO) {
+            val snapshot = usersCollection
+                .whereEqualTo("storeId", storeId)
+                .limit(1)
+                .get()
+                .await()
+
+            if (snapshot.documents.isNotEmpty()) {
+                snapshot.documents.first().toObject(User::class.java)
+            } else {
+                null
+            }
+        }
     }
 }

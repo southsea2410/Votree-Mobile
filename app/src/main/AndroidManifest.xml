@@ -15,7 +15,10 @@
         android:name="android.permission.READ_MEDIA_AUDIO"
         android:minSdkVersion="33" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
@@ -30,6 +33,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
+
+        <activity
+            android:name=".PurchaseActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".users.activities.ChatActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".users.activities.MessageActivity"
+            android:exported="false" />
+
         <activity
             android:name=".users.activities.OrderManagementForStoreActivity"
             android:exported="false" />

@@ -2,6 +2,7 @@ package com.example.votree.tips
 
 import android.content.Context
 import android.view.View
+import com.example.votree.utils.FirebaseRealtime
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 
@@ -32,6 +33,10 @@ object AdManager {
                 loadAd(adView, context)
             }
         }
+    }
+
+    fun setPremiumOnFirebase(premium: Boolean) {
+        FirebaseRealtime.getInstance().setPremiumOnFirebase(premium)
     }
 
     fun removeAdView(adView: AdView) {
