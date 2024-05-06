@@ -11,16 +11,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE
 import com.bumptech.glide.Glide
 import com.example.votree.R
 import com.example.votree.admin.activities.AdminMainActivity
+import com.example.votree.models.CheckContent
 import com.example.votree.models.Store
 import com.example.votree.models.Tip
 import com.example.votree.models.User
@@ -106,6 +106,32 @@ class TipDetailFragment : Fragment() {
             val avatarClick: RelativeLayout? = view?.findViewById(R.id.avatarClick)
             val tipImage = view?.findViewById<ImageView>(R.id.tipImage)
             val tipShortDes: TextView? = view?.findViewById(R.id.tipShortDescription)
+            val responseFromAI: TextView? = view?.findViewById(R.id.responseFromAI)
+            val frameOfAIResponse: LinearLayout? = view?.findViewById(R.id.frameAI)
+
+            if (nonNullTip.approvalStatus < 1) {
+                frameOfAIResponse?.visibility = View.VISIBLE
+                view?.findViewById<View>(R.id.upFrame)?.visibility = View.VISIBLE
+                view?.findViewById<View>(R.id.downFrame)?.visibility = View.VISIBLE
+                db.collection("checkContent")
+                    .whereEqualTo("tipId", nonNullTip.id)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        if (querySnapshot.isEmpty) {
+                            responseFromAI?.text = "No response from AI"
+                        } else {
+                            val checkContent = querySnapshot.documents[0].toObject(CheckContent::class.java)
+                            responseFromAI?.text = transformParagraph(checkContent?.response!!)
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(ContentValues.TAG, "Error getting documents: ", e)
+                    }
+            } else {
+                frameOfAIResponse?.visibility = View.GONE
+                view?.findViewById<View>(R.id.upFrame)?.visibility = View.GONE
+                view?.findViewById<View>(R.id.downFrame)?.visibility = View.GONE
+            }
 
             tipImage?.setOnClickListener {
                 val bundle = Bundle()
@@ -223,6 +249,17 @@ class TipDetailFragment : Fragment() {
             view?.findViewById<TextView>(R.id.upvotes)?.text = upvotesText
             view?.findViewById<TextView>(R.id.tipDescription)?.text = nonNullTip.content
         }
+    }
+
+    private fun transformParagraph(paragraph: String): String {
+        // Replace "**" with "-"
+        val transformedParagraph = paragraph.replace("**", "_")
+
+        // Split the paragraph into separate lines
+        val lines = transformedParagraph.split(".")
+
+        // Join the lines back together with a "." separator
+        return lines.joinToString(".")
     }
 
     private fun dateFormat(date: String): String {

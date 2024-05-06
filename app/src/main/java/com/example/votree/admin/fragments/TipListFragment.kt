@@ -135,74 +135,74 @@ class TipListFragment : BaseListFragment<Tip>(), OnItemClickListener {
 
     private var isFetchingData = false // Flag to prevent concurrent fetch operations
 
-//    public override fun fetchDataFromFirestore() {
-//        super.fetchDataFromFirestore()
-//        if (currentUserId != "") {
-//            db.collection(collectionName)
-//                .whereEqualTo("userId", currentUserId)
-//                .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
-//                .addSnapshotListener { snapshots, e ->
-//                    if (e != null) {
-//                        Log.w("TipListFragment", "listen:error", e)
-//                        return@addSnapshotListener
-//                    }
-//
-//                    itemList.clear()
-//                    for (doc in snapshots!!) {
-//                        val tip = doc.toObject(Tip::class.java)
-//                        tip.id = doc.id
-//                        itemList.add(tip)
-//                    }
-//                    adapter.setData(itemList)
-//                }
-//        } else {
-//            db.collection(collectionName)
-//                .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
-//                .addSnapshotListener { snapshots, e ->
-//                    if (e != null) {
-//                        Log.w("TipListFragment", "listen:error", e)
-//                        return@addSnapshotListener
-//                    }
-//
-//                    itemList.clear()
-//                    tempList.clear()
-//                    for (doc in snapshots!!) {
-//                        val tip = doc.toObject(Tip::class.java)
-//                        tip.id = doc.id
-//                        itemList.add(tip)
-//                    }
-//                    tempList.addAll(itemList)
-//                    adapter.setData(itemList)
-//                }
-//        }
-//    }
-
     public override fun fetchDataFromFirestore() {
         super.fetchDataFromFirestore()
+        if (currentUserId != "") {
+            db.collection(collectionName)
+                .whereEqualTo("userId", currentUserId)
+                .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .addSnapshotListener { snapshots, e ->
+                    if (e != null) {
+                        Log.w("TipListFragment", "listen:error", e)
+                        return@addSnapshotListener
+                    }
 
-        val query = db.collection(collectionName)
-            .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                    itemList.clear()
+                    for (doc in snapshots!!) {
+                        val tip = doc.toObject(Tip::class.java)
+                        tip.id = doc.id
+                        itemList.add(tip)
+                    }
+                    adapter.setData(itemList)
+                }
+        } else {
+            db.collection(collectionName)
+                .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                .addSnapshotListener { snapshots, e ->
+                    if (e != null) {
+                        Log.w("TipListFragment", "listen:error", e)
+                        return@addSnapshotListener
+                    }
 
-        if (currentUserId.isNotEmpty()) {
-            query.whereEqualTo("userId", currentUserId)
-        }
-
-        query.addSnapshotListener { snapshots, e ->
-            if (e != null) {
-                Log.w("TipListFragment", "listen:error", e)
-                return@addSnapshotListener
-            }
-
-            val tempList = mutableListOf<Tip>()
-            snapshots?.forEach { doc ->
-                val tip = doc.toObject(Tip::class.java)
-                tip.id = doc.id
-                tempList.add(tip)
-            }
-
-            adapter.setData(tempList)
+                    itemList.clear()
+                    tempList.clear()
+                    for (doc in snapshots!!) {
+                        val tip = doc.toObject(Tip::class.java)
+                        tip.id = doc.id
+                        itemList.add(tip)
+                    }
+                    tempList.addAll(itemList)
+                    adapter.setData(itemList)
+                }
         }
     }
+
+//    public override fun fetchDataFromFirestore() {
+//        super.fetchDataFromFirestore()
+//
+//        val query = db.collection(collectionName)
+//            .orderBy("updatedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+//
+//        if (currentUserId.isNotEmpty()) {
+//            query.whereEqualTo("userId", currentUserId)
+//        }
+//
+//        query.addSnapshotListener { snapshots, e ->
+//            if (e != null) {
+//                Log.w("TipListFragment", "listen:error", e)
+//                return@addSnapshotListener
+//            }
+//
+//            val tempList = mutableListOf<Tip>()
+//            snapshots?.forEach { doc ->
+//                val tip = doc.toObject(Tip::class.java)
+//                tip.id = doc.id
+//                tempList.add(tip)
+//            }
+//
+//            adapter.setData(tempList)
+//        }
+//    }
 
 
 //    override fun fetchDataFromFirestore(queryString: String?) {
@@ -264,7 +264,14 @@ class TipListFragment : BaseListFragment<Tip>(), OnItemClickListener {
                         .setMessage("Are you sure you want to delete this tip?")
                         .setPositiveButton("Yes") { _, _ ->
                             db.collection(collectionName).document(adapter.getItem(position).id).delete()
-                                .addOnSuccessListener { Log.d(ContentValues.TAG, "DocumentSnapshot successfully deleted!") }
+                                .addOnSuccessListener {
+                                    db.collection("checkContent").whereEqualTo("tipId", adapter.getItem(position).id).get().addOnSuccessListener { documents ->
+                                        for (doc in documents) {
+                                            db.collection("checkContent").document(doc.id).delete()
+                                        }
+                                    }
+                                    Log.d(ContentValues.TAG, "DocumentSnapshot successfully deleted!")
+                                }
                                 .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error deleting document", e) }
 
                             (activity as FragmentActivity).supportFragmentManager.popBackStack()
