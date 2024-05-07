@@ -1,27 +1,24 @@
 package com.example.votree.users.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.votree.databinding.FragmentRevenueStatisticsBinding
 import com.example.votree.users.repositories.StoreRepository
 import com.example.votree.users.repositories.UserRepository
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
-import java.util.Date
-import java.time.LocalDate
 import java.time.DayOfWeek
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 
@@ -44,6 +41,7 @@ class RevenueStatisticsFragment : Fragment()  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
+        setupNavigation()
         setupOnClick()
     }
 
@@ -158,5 +156,11 @@ class RevenueStatisticsFragment : Fragment()  {
         val lastDate = LocalDate.parse(matches[1] + "/2024", formatter)
 
         return Pair(firstDate, lastDate)
+    }
+
+    private fun setupNavigation() {
+        binding.revenueStatisticsToolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 }
